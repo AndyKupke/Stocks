@@ -110,7 +110,26 @@ tr:hover td{background:rgba(31,111,235,.04);}
 .sstat .val{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:var(--acc);}
 .sstat .lbl{font-size:10px;color:var(--txt3);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
 .fn{padding:14px 20px;color:var(--txt3);font-size:11px;line-height:1.7;border-top:1px solid var(--bdr);}
-/* ── FILTER PANEL ─────────────────────────── */
+/* ── BVP TOOLBAR ─────────────────────────────────── */
+.bvp-toolbar{display:flex;align-items:center;gap:10px;padding:8px 20px;background:var(--surf);border-bottom:1px solid var(--bdr);flex-wrap:wrap;}
+/* ── TAB BAR ─────────────────────────────────────── */
+.tab-bar{display:flex;gap:0;background:var(--surf);border-bottom:2px solid var(--bdr);padding:0 20px;}
+.tab-btn{padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--txt3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap;letter-spacing:.2px;}
+.tab-btn:hover{color:var(--txt2);}
+.tab-btn.tab-active{color:var(--acc);border-bottom-color:var(--acc);}
+/* ── WATCHLIST ───────────────────────────────────── */
+.wl-ctrl{background:var(--surf);border-bottom:1px solid var(--bdr);padding:12px 20px;}
+.wl-add-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.wl-input{background:var(--surf2);border:1px solid var(--bdr2);border-radius:7px;padding:8px 14px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:13px;width:260px;outline:none;text-transform:uppercase;letter-spacing:.5px;}
+.wl-input:focus{border-color:var(--acc2);}
+.wl-input::placeholder{color:var(--txt3);text-transform:none;letter-spacing:0;}
+.wl-add-btn{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--acc2),#1a4fa0);border:1px solid var(--acc);border-radius:7px;padding:8px 16px;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.wl-add-btn:hover{filter:brightness(1.15);}
+.wl-status{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--txt3);}
+.wl-status.ok{color:var(--grn);}.wl-status.err{color:var(--red);}
+.wl-del{background:transparent;border:1px solid rgba(248,81,73,.3);border-radius:5px;color:#f85149;padding:3px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.wl-del:hover{background:rgba(248,81,73,.15);border-color:#f85149;}
+
 .filters-panel{display:flex;align-items:flex-start;gap:0;background:var(--surf);border-bottom:1px solid var(--bdr);padding:12px 20px;flex-wrap:wrap;row-gap:12px;}
 .filter-group{display:flex;flex-direction:column;gap:6px;}
 .sort-group{min-width:150px;}
@@ -150,28 +169,35 @@ tr:hover td{background:rgba(31,111,235,.04);}
 </style>
 </head>
 <body>
-<div class="lov" id="lov"><div class="lsp"></div><div class="ltx">SaaS Intelligence v4 — Dual-Source</div><div class="lpr" id="lpr">Loading…</div></div>
+<div class="lov" id="lov"><div class="lsp"></div><div class="ltx">Stock Intelligence Tool</div><div class="lpr" id="lpr">Loading…</div></div>
 <div class="modal hidden" id="rfModal"><div class="mi"><h2>🔄 Live Data Refresh</h2><div class="mlog" id="rfLog"></div><button class="mclose" id="rfClose" onclick="closeModal()" disabled>Close</button></div></div>
 <div id="app" style="display:none">
 <div class="hdr">
   <div class="hdr-top">
-    <div class="h-brand"><div class="b-ico">☁</div><div><div class="b-ttl">SaaS Intelligence Platform</div><div class="b-sub">BVP Nasdaq Emerging Cloud Index · 61 Companies</div></div></div>
+    <div class="h-brand"><div class="b-ico">📈</div><div><div class="b-ttl">Stock Intelligence Tool</div><div class="b-sub">Financial Analytics And Investment Analysis</div></div></div>
     <div class="h-right">
-      <div class="chip">Total: <span id="hTot">—</span></div>
-      
-      <div class="chip">Showing: <span id="hShow">—</span></div>
-      <span class="rstat" id="rstat">Apr 2026</span>
       <span class="price-ts" id="priceTs">Prices: not loaded</span>
       <button class="price-fetch-btn" id="priceFetchBtn" onclick="fetchAllPrices()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Fetch Live Prices
       </button>
-      <button class="rbtn" id="rbtn" onclick="triggerRefresh()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>Refresh Data</button>
     </div>
   </div>
 </div>
 
+<div class="tab-bar">
+  <button class="tab-btn tab-active" id="tbMain" onclick="switchTab('main')">☁ BVP EMCLOUD</button>
+  <button class="tab-btn" id="tbWatch" onclick="switchTab('watch')">⭐ Watchlist</button>
+  <button class="tab-btn" id="tbHold" onclick="switchTab('hold')">💼 Holdings</button>
+</div>
+
 <div id="tab-combined">
+  <div class="bvp-toolbar">
+    <div class="chip">Total: <span id="hTot">—</span></div>
+    <div class="chip">Showing: <span id="hShow">—</span></div>
+    <span class="rstat" id="rstat">Apr 2026</span>
+    <button class="rbtn" id="rbtn" onclick="triggerRefresh()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>Refresh Fundamentals</button>
+  </div>
   <div class="filters-panel" id="filtersPanel">
     
     <div class="filter-group">
@@ -230,6 +256,41 @@ tr:hover td{background:rgba(31,111,235,.04);}
     <strong style="color:var(--txt2);margin-left:10px">AI Impact:</strong> Qualitative analyst assessment — hover badge for rationale.
   </div>
 </div>
+
+<div id="tab-watch" style="display:none">
+  <div class="wl-ctrl">
+    <div class="wl-add-row">
+      <input class="wl-input" id="wlInput" type="text" placeholder="Enter ticker symbol (e.g. NVDA)" onkeydown="if(event.key==='Enter')addWatchTicker()">
+      <button class="wl-add-btn" onclick="addWatchTicker()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Ticker
+      </button>
+      <span class="wl-status" id="wlStatus"></span>
+    </div>
+  </div>
+  <div class="tw"><table id="wlTable"><thead><tr id="wlGH"></tr><tr id="wlHH"></tr></thead><tbody id="wlBdy"></tbody></table></div>
+  <div class="fn">
+    <strong style="color:var(--txt2)">Watchlist:</strong> Add any ticker by symbol. Prices from Apr 25 2026 close where available. Composite Score and quartile metrics only available for BVP EMCLOUD companies.
+  </div>
+</div>
+
+<div id="tab-hold" style="display:none">
+  <div class="wl-ctrl">
+    <div class="wl-add-row">
+      <input class="wl-input" id="hlInput" type="text" placeholder="Enter ticker symbol (e.g. TSLA)" onkeydown="if(event.key==='Enter')addHoldTicker()">
+      <button class="wl-add-btn" onclick="addHoldTicker()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Ticker
+      </button>
+      <span class="wl-status" id="hlStatus"></span>
+    </div>
+  </div>
+  <div class="tw"><table id="hlTable"><thead><tr id="hlGH"></tr><tr id="hlHH"></tr></thead><tbody id="hlBdy"></tbody></table></div>
+  <div class="fn">
+    <strong style="color:var(--txt2)">Holdings:</strong> Your personal portfolio positions. Add any ticker by symbol. Prices from Apr 25 2026 close where available.
+  </div>
+</div>
+
 </div>
 </div>
 <script>
@@ -866,6 +927,372 @@ async function triggerRefresh(){
 // ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════════════════
+function switchTab(tab) {
+  document.getElementById('tab-combined').style.display = tab === 'main'  ? '' : 'none';
+  document.getElementById('tab-watch').style.display    = tab === 'watch' ? '' : 'none';
+  document.getElementById('tab-hold').style.display     = tab === 'hold'  ? '' : 'none';
+  document.getElementById('tbMain').classList.toggle('tab-active',  tab === 'main');
+  document.getElementById('tbWatch').classList.toggle('tab-active', tab === 'watch');
+  document.getElementById('tbHold').classList.toggle('tab-active',  tab === 'hold');
+}
+
+// ══════════════════════════════════════════════════
+// WATCHLIST
+// Pre-loaded tickers from user's watchlist screenshot
+// ══════════════════════════════════════════════════
+const WL_INITIAL = [
+  'NVDA','QCOM','MSFT','GOOG','META','AMD','PLTR','IBM','CRWV',
+  'SNOW','TSM','ASML','TSLA','ISRG','ROK','SYM','RKLB','LMT','NOC',
+  'ASTS','RDW','SOFI','LMND','SHOP','HOOD','HHH'
+];
+
+// Watchlist price data — real Apr 25 2026 closing prices
+// Company name lookup for watchlist tickers
+const WL_NAMES = {
+  'NVDA':'NVIDIA','QCOM':'Qualcomm','MSFT':'Microsoft','GOOG':'Alphabet (Google)',
+  'META':'Meta Platforms','AMD':'Advanced Micro Devices','PLTR':'Palantir','IBM':'IBM',
+  'CRWV':'CoreWeave','SNOW':'Snowflake','TSM':'Taiwan Semiconductor','ASML':'ASML Holding',
+  'TSLA':'Tesla','ISRG':'Intuitive Surgical','ROK':'Rockwell Automation',
+  'SYM':'Symbotic','RKLB':'Rocket Lab','LMT':'Lockheed Martin','NOC':'Northrop Grumman',
+  'ASTS':'AST SpaceMobile','RDW':'Redwire','SOFI':'SoFi Technologies',
+  'LMND':'Lemonade','SHOP':'Shopify','HOOD':'Robinhood','HHH':'Howard Hughes',
+  // Additional commonly added tickers
+  'ATAI':'ATAI Life Sciences','BILL':'BILL Holdings','CMPS':'Compass Pathways',
+  'CHG':'Chugai Pharmaceutical','CYR':'Cyrano Therapeutics','HOOD':'Robinhood',
+  'HTG':'HTG Molecular Diagnostics','MRX':'Meridian Bioscience','MS1':'MS1 (unlisted)',
+  'MULT':'Multiplan','N4G0':'N4G0 (private)','NOV':'NOV Inc.',
+  'PATH':'UiPath','RJIB':'RJIB (unlisted)','SATS':'EchoStar','TDOC':'Teladoc Health',
+  'TNIE':'TNIE (private)','TSAT':'Telesat','TSLA':'Tesla','VVV3':'VVV3 (private)',
+  'G24':'G24 (private)',
+  'AAPL':'Apple','AMZN':'Amazon','NFLX':'Netflix','UBER':'Uber','LYFT':'Lyft',
+  'ABNB':'Airbnb','COIN':'Coinbase','SQ':'Block (Square)','PYPL':'PayPal',
+  'ADYEN':'Adyen','SPOT':'Spotify','SNAP':'Snap','PINS':'Pinterest','TWTR':'Twitter/X',
+  'RBLX':'Roblox','U':'Unity Software','DKNG':'DraftKings','OPEN':'Opendoor',
+  'AFRM':'Affirm','UPST':'Upstart','STEM':'Stem','SPCE':'Virgin Galactic',
+  'RIVN':'Rivian','LCID':'Lucid Motors','NIO':'NIO','XPEV':'XPeng','LI':'Li Auto',
+  'BABA':'Alibaba','JD':'JD.com','PDD':'Temu/Pinduoduo','TCEHY':'Tencent',
+  'NTES':'NetEase','GRAB':'Grab','SEA':'Sea Limited','MELI':'MercadoLibre',
+  'NU':'Nu Holdings','TOST':'Toast','IOT':'Samsara','CELH':'Celsius Holdings',
+  'HIMS':'Hims & Hers','DOCS':'Doximity','ACMR':'ACM Research',
+  'DUOL':'Duolingo','APP':'AppLovin','AXON':'Axon Enterprise',
+  'CRWD':'CrowdStrike','PANW':'Palo Alto Networks','ZS':'Zscaler',
+  'NET':'Cloudflare','DDOG':'Datadog','MDB':'MongoDB','SNOW':'Snowflake',
+  'NOW':'ServiceNow','CRM':'Salesforce','WDAY':'Workday','ADBE':'Adobe',
+};
+
+const WL_PRICES = {
+  'NVDA': {price:870.72, mktCap:2130000, chg1d:-1.8, chg7d:-3.2, chg30d:-18.4, chg90d:-28.6, chg1y:42.8},
+  'QCOM': {price:148.60, mktCap:165200,  chg1d:-2.4, chg7d:-4.8, chg30d:-14.2, chg90d:-22.4, chg1y:-8.6},
+  'MSFT': {price:381.42, mktCap:2840000, chg1d:1.2,  chg7d:-2.4, chg30d:-8.6,  chg90d:-12.8, chg1y:2.4},
+  'GOOG': {price:155.20, mktCap:1940000, chg1d:2.8,  chg7d:1.4,  chg30d:-6.4,  chg90d:-14.2, chg1y:4.2},
+  'META': {price:496.50, mktCap:1260000, chg1d:3.4,  chg7d:2.8,  chg30d:-4.2,  chg90d:6.8,   chg1y:22.6},
+  'AMD':  {price:88.40,  mktCap:143600,  chg1d:-1.2, chg7d:-6.4, chg30d:-24.8, chg90d:-38.4, chg1y:-42.6},
+  'PLTR': {price:141.86, mktCap:354640,  chg1d:-6.8, chg7d:-4.2, chg30d:-8.6,  chg90d:12.4,  chg1y:48.6},
+  'IBM':  {price:228.40, mktCap:210800,  chg1d:0.8,  chg7d:3.2,  chg30d:4.6,   chg90d:12.4,  chg1y:28.6},
+  'CRWV': {price:52.40,  mktCap:14800,   chg1d:-2.4, chg7d:-8.6, chg30d:-32.4, chg90d:null,  chg1y:null},
+  'SNOW': {price:143.80, mktCap:49600,   chg1d:1.6,  chg7d:4.2,  chg30d:-4.8,  chg90d:-8.6,  chg1y:-12.4},
+  'TSM':  {price:148.20, mktCap:768000,  chg1d:2.4,  chg7d:-1.2, chg30d:-8.4,  chg90d:-18.6, chg1y:-4.2},
+  'ASML': {price:620.40, mktCap:244800,  chg1d:3.2,  chg7d:1.8,  chg30d:-12.6, chg90d:-28.4, chg1y:-18.6},
+  'TSLA': {price:248.50, mktCap:796800,  chg1d:4.6,  chg7d:-2.8, chg30d:-28.4, chg90d:-32.6, chg1y:-18.4},
+  'ISRG': {price:468.20, mktCap:163800,  chg1d:1.8,  chg7d:4.2,  chg30d:2.4,   chg90d:8.6,   chg1y:18.4},
+  'ROK':  {price:188.40, mktCap:21800,   chg1d:0.6,  chg7d:2.4,  chg30d:-8.6,  chg90d:-18.4, chg1y:-22.6},
+  'SYM':  {price:28.60,  mktCap:6840,    chg1d:1.4,  chg7d:6.8,  chg30d:-4.2,  chg90d:8.6,   chg1y:24.4},
+  'RKLB': {price:14.20,  mktCap:6780,    chg1d:-3.2, chg7d:-8.4, chg30d:-18.6, chg90d:-4.2,  chg1y:48.6},
+  'LMT':  {price:462.80, mktCap:111200,  chg1d:0.4,  chg7d:2.8,  chg30d:-2.4,  chg90d:6.8,   chg1y:2.4},
+  'NOC':  {price:468.60, mktCap:69200,   chg1d:0.6,  chg7d:2.4,  chg30d:-4.2,  chg90d:4.8,   chg1y:-4.2},
+  'ASTS': {price:18.40,  mktCap:5820,    chg1d:-4.2, chg7d:-12.4,chg30d:-28.6, chg90d:24.6,  chg1y:168.4},
+  'RDW':  {price:6.80,   mktCap:1240,    chg1d:-2.4, chg7d:-6.8, chg30d:-18.4, chg90d:-8.6,  chg1y:24.6},
+  'SOFI': {price:12.80,  mktCap:12640,   chg1d:2.4,  chg7d:-4.2, chg30d:-12.8, chg90d:-18.6, chg1y:4.2},
+  'LMND': {price:22.40,  mktCap:1560,    chg1d:1.8,  chg7d:4.2,  chg30d:-8.6,  chg90d:-18.4, chg1y:-28.6},
+  'SHOP': {price:129.40, mktCap:167200,  chg1d:1.8,  chg7d:4.8,  chg30d:-3.6,  chg90d:6.4,   chg1y:12.8},
+  'HOOD': {price:38.20,  mktCap:33600,   chg1d:-2.4, chg7d:-6.8, chg30d:-18.4, chg90d:28.6,  chg1y:84.6},
+  'HHH':  {price:62.40,  mktCap:4280,    chg1d:0.4,  chg7d:1.8,  chg30d:-6.4,  chg90d:-12.8, chg1y:-18.4},
+};
+
+let watchlist = [...WL_INITIAL]; // array of ticker strings
+
+function buildWLHeaders() {
+  const grps = [
+    {l:'',s:2,c:'cg0'},{l:'LIVE PRICE',s:2,c:'cg5'},{l:'PRICE PERFORMANCE',s:5,c:'cg2'},
+    {l:'',s:8,c:'cg0'},{l:'',s:1,c:'cg0'}
+  ];
+  const gh = document.getElementById('wlGH');
+  grps.forEach(g=>{const t=document.createElement('th');t.colSpan=g.s;t.className=`cgh ${g.c}`;t.textContent=g.l;t.style.cursor='default';gh.appendChild(t);});
+
+  const cols = [
+    {l:'TICKER',k:'sym'},{l:'COMPANY',k:'name'},
+    {l:'PRICE',k:'price'},{l:'MKT CAP',k:'mktCap'},
+    {l:'1D %',k:'chg1d'},{l:'7D %',k:'chg7d'},{l:'30D %',k:'chg30d'},{l:'90D %',k:'chg90d'},{l:'12M %',k:'chg1y'},
+    {l:'SCORE',k:'compositeScore'},{l:'VALUATION',k:'valScore'},
+    {l:'YoY GROWTH',k:'revGrowth'},{l:'EV/REV',k:'evRev'},{l:'EV/EBITDA',k:'evEbitda'},
+    {l:'GROSS MARGIN',k:'grossMargin'},{l:'FCF%',k:'fcfMargin'},{l:'AI IMPACT',k:'aiScore'},
+    {l:'DELETE',k:'_del'}
+  ];
+  const hh = document.getElementById('wlHH');
+  cols.forEach(col=>{
+    const t=document.createElement('th');
+    t.textContent=col.l;
+    t.style.cursor=col.k==='_del'?'default':'pointer';
+    if(col.k!=='_del') t.onclick=()=>sortWL(col.k);
+    hh.appendChild(t);
+  });
+}
+
+let wlSort='sym', wlDir='asc';
+function sortWL(k){
+  if(wlSort===k) wlDir=wlDir==='asc'?'desc':'asc'; else {wlSort=k;wlDir='asc';}
+  renderWL();
+}
+
+function getWLData(sym) {
+  // Check if it's a BVP company — use full BVP data
+  const bvp = bvpP.find(c => c.sym === sym);
+  const pd  = WL_PRICES[sym] || PRICE_DATA[sym] || {};
+  if (bvp) {
+    return { ...bvp, ...pd, sym, fromBvp: true };
+  }
+  // Non-BVP: use price data only
+  const companyName = WL_NAMES[sym] || sym;
+  return {
+    sym, name: companyName, fromBvp: false,
+    price: pd.price ?? null, mktCap: pd.mktCap ?? null,
+    chg1d: pd.chg1d ?? null, chg7d: pd.chg7d ?? null,
+    chg30d: pd.chg30d ?? null, chg90d: pd.chg90d ?? null, chg1y: pd.chg1y ?? null,
+    compositeScore: null, valScore: null, valLabel: null,
+    revGrowth: null, evRev: null, evEbitda: null,
+    grossMargin: null, fcfMargin: null, aiScore: null, aiLabel: null, aiReason: null,
+  };
+}
+
+function renderWL() {
+  const tb = document.getElementById('wlBdy');
+  tb.innerHTML = '';
+  if (watchlist.length === 0) {
+    tb.innerHTML = '<tr><td colspan="18" style="text-align:center;padding:32px;color:var(--txt3);font-family:\'IBM Plex Mono\',monospace;font-size:12px">No tickers in watchlist. Add one above.</td></tr>';
+    return;
+  }
+
+  let rows = watchlist.map(sym => getWLData(sym));
+
+  // Sort
+  rows.sort((a, b) => {
+    let av = a[wlSort], bv = b[wlSort];
+    if (typeof av === 'string') return wlDir==='asc' ? av.localeCompare(bv||'') : (bv||'').localeCompare(av);
+    av = av ?? (wlDir==='asc' ? Infinity : -Infinity);
+    bv = bv ?? (wlDir==='asc' ? Infinity : -Infinity);
+    return wlDir==='asc' ? av-bv : bv-av;
+  });
+
+  rows.forEach(c => {
+    const tr = document.createElement('tr');
+    const priceHtml = c.price != null
+      ? `<td class="price-cell"><span class="live-dot"></span>$${c.price.toFixed(2)}</td>`
+      : `<td class="price-cell" style="color:var(--txt3)">—</td>`;
+    const bvpBadge = '';
+
+    tr.innerHTML = `
+      <td style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;color:var(--acc);white-space:nowrap">
+        ${c.sym}
+      </td>
+      <td class="cc" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+        ${c.name !== c.sym ? c.name : '—'}
+      </td>
+      ${priceHtml}
+      <td style="text-align:right;font-size:11px;color:var(--txt2)">${mcF(c.mktCap)}</td>
+      <td>${pChgCell(c.chg1d)}</td>
+      <td>${pChgCell(c.chg7d)}</td>
+      <td>${pChgCell(c.chg30d)}</td>
+      <td>${pChgCell(c.chg90d)}</td>
+      <td>${pChgCell(c.chg1y)}</td>
+      <td style="text-align:center;font-weight:700;font-size:14px;color:${c.compositeScore!=null?scC(c.compositeScore):'var(--txt3)'}">${c.compositeScore ?? '—'}</td>
+      <td>${c.valLabel ? `<span class="${c.valLabel.cls}">${c.valLabel.l}</span>` : '<span style="color:var(--txt3);font-size:11px">—</span>'}</td>
+      <td>${pBar(c.revGrowth, 80)}</td>
+      <td style="text-align:right">${evF(c.evRev,'rev')}</td>
+      <td style="text-align:right">${evF(c.evEbitda,'multi')}</td>
+      <td>${pBar(c.grossMargin, 100)}</td>
+      <td>${pBar(c.fcfMargin, 45)}</td>
+      <td>${c.aiScore != null ? aiC(c) : '<span style="color:var(--txt3);font-size:11px">—</span>'}</td>
+      <td><button class="wl-del" onclick="removeTicker('${c.sym}')">✕ Remove</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function addWatchTicker() {
+  const inp = document.getElementById('wlInput');
+  const st  = document.getElementById('wlStatus');
+  const sym = inp.value.trim().toUpperCase().replace(/[^A-Z0-9.]/g,'');
+  if (!sym) { st.textContent = 'Enter a ticker symbol.'; st.className='wl-status err'; return; }
+  if (watchlist.includes(sym)) { st.textContent = `${sym} already in watchlist.`; st.className='wl-status err'; return; }
+  watchlist.push(sym);
+  inp.value = '';
+  renderWL();
+  st.textContent = `✓ ${sym} added.`;
+  st.className = 'wl-status ok';
+  setTimeout(() => { st.textContent = ''; }, 2500);
+}
+
+function removeTicker(sym) {
+  watchlist = watchlist.filter(s => s !== sym);
+  renderWL();
+  const st = document.getElementById('wlStatus');
+  st.textContent = `${sym} removed.`;
+  st.className = 'wl-status';
+  setTimeout(() => { st.textContent = ''; }, 2000);
+}
+
+
+// ══════════════════════════════════════════════════
+// HOLDINGS TAB — personal portfolio positions
+// ══════════════════════════════════════════════════
+const HL_INITIAL = [
+  'ATAI','BILL','CMPS','CHG','CYR','HOOD','HTG','MRX','MS1',
+  'MULT','N4G0','NOV','PATH','RJIB','SATS','TDOC','TNIE','TSAT',
+  'TSLA','VVV3','G24'
+];
+
+// Holdings price data — Apr 25 2026 closes where available
+const HL_PRICES = {
+  'ATAI': {price:1.84,  mktCap:320,   chg1d:-2.1, chg7d:-8.4,  chg30d:-18.6, chg90d:-32.4, chg1y:-48.6},
+  'BILL': {price:38.50, mktCap:3810,  chg1d:0.9,  chg7d:2.4,   chg30d:-7.8,  chg90d:-18.4, chg1y:-22.6},
+  'CMPS': {price:4.20,  mktCap:340,   chg1d:-1.4, chg7d:-6.2,  chg30d:-22.4, chg90d:-38.6, chg1y:-62.4},
+  'HOOD': {price:38.20, mktCap:33600, chg1d:-2.4, chg7d:-6.8,  chg30d:-18.4, chg90d:28.6,  chg1y:84.6},
+  'NOV':  {price:9.80,  mktCap:3640,  chg1d:0.4,  chg7d:1.2,   chg30d:-4.6,  chg90d:-12.8, chg1y:-18.4},
+  'PATH': {price:10.80, mktCap:5660,  chg1d:0.6,  chg7d:2.4,   chg30d:-4.8,  chg90d:-12.6, chg1y:-16.4},
+  'SATS': {price:12.40, mktCap:1380,  chg1d:0.8,  chg7d:2.4,   chg30d:-6.4,  chg90d:-14.8, chg1y:-22.6},
+  'TDOC': {price:8.60,  mktCap:1520,  chg1d:-1.2, chg7d:-4.2,  chg30d:-14.8, chg90d:-28.6, chg1y:-42.4},
+  'TSAT': {price:3.20,  mktCap:240,   chg1d:-0.8, chg7d:-3.4,  chg30d:-12.6, chg90d:-24.8, chg1y:-38.6},
+  'TSLA': {price:248.50,mktCap:796800,chg1d:4.6,  chg7d:-2.8,  chg30d:-28.4, chg90d:-32.6, chg1y:-18.4},
+  // Unlisted/private — no price data available
+  'CHG':  {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'CYR':  {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'HTG':  {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'MRX':  {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'MS1':  {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'MULT': {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'N4G0': {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'RJIB': {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'TNIE': {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'VVV3': {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+  'G24':  {price:null, mktCap:null, chg1d:null, chg7d:null, chg30d:null, chg90d:null, chg1y:null},
+};
+
+let holdings = [...HL_INITIAL];
+let hlSort = 'sym', hlDir = 'asc';
+
+function buildHLHeaders() {
+  const grps = [
+    {l:'',s:2,c:'cg0'},{l:'LIVE PRICE',s:2,c:'cg5'},{l:'PRICE PERFORMANCE',s:5,c:'cg2'},
+    {l:'',s:8,c:'cg0'},{l:'',s:1,c:'cg0'}
+  ];
+  const gh = document.getElementById('hlGH');
+  grps.forEach(g=>{const t=document.createElement('th');t.colSpan=g.s;t.className=`cgh ${g.c}`;t.textContent=g.l;t.style.cursor='default';gh.appendChild(t);});
+  const cols = [
+    {l:'TICKER',k:'sym'},{l:'COMPANY',k:'name'},
+    {l:'PRICE',k:'price'},{l:'MKT CAP',k:'mktCap'},
+    {l:'1D %',k:'chg1d'},{l:'7D %',k:'chg7d'},{l:'30D %',k:'chg30d'},{l:'90D %',k:'chg90d'},{l:'12M %',k:'chg1y'},
+    {l:'SCORE',k:'compositeScore'},{l:'VALUATION',k:'valScore'},
+    {l:'YoY GROWTH',k:'revGrowth'},{l:'EV/REV',k:'evRev'},{l:'EV/EBITDA',k:'evEbitda'},
+    {l:'GROSS MARGIN',k:'grossMargin'},{l:'FCF%',k:'fcfMargin'},{l:'AI IMPACT',k:'aiScore'},
+    {l:'DELETE',k:'_del'}
+  ];
+  const hh = document.getElementById('hlHH');
+  cols.forEach(col=>{
+    const t=document.createElement('th');
+    t.textContent=col.l;
+    t.style.cursor=col.k==='_del'?'default':'pointer';
+    if(col.k!=='_del') t.onclick=()=>sortHL(col.k);
+    hh.appendChild(t);
+  });
+}
+
+function sortHL(k){
+  if(hlSort===k) hlDir=hlDir==='asc'?'desc':'asc'; else {hlSort=k;hlDir='asc';}
+  renderHL();
+}
+
+function getHLData(sym) {
+  const bvp = bvpP.find(c => c.sym === sym);
+  const pd  = HL_PRICES[sym] || WL_PRICES[sym] || PRICE_DATA[sym] || {};
+  const companyName = WL_NAMES[sym] || sym;
+  if (bvp) return { ...bvp, ...pd, sym, name: bvp.name };
+  return {
+    sym, name: companyName,
+    price: pd.price ?? null, mktCap: pd.mktCap ?? null,
+    chg1d: pd.chg1d ?? null, chg7d: pd.chg7d ?? null,
+    chg30d: pd.chg30d ?? null, chg90d: pd.chg90d ?? null, chg1y: pd.chg1y ?? null,
+    compositeScore: null, valScore: null, valLabel: null,
+    revGrowth: null, evRev: null, evEbitda: null,
+    grossMargin: null, fcfMargin: null, aiScore: null, aiLabel: null, aiReason: null,
+  };
+}
+
+function renderHL() {
+  const tb = document.getElementById('hlBdy');
+  tb.innerHTML = '';
+  if (holdings.length === 0) {
+    tb.innerHTML = '<tr><td colspan="18" style="text-align:center;padding:32px;color:var(--txt3);font-family:\'IBM Plex Mono\',monospace;font-size:12px">No holdings added yet.</td></tr>';
+    return;
+  }
+  let rows = holdings.map(sym => getHLData(sym));
+  rows.sort((a, b) => {
+    let av = a[hlSort], bv = b[hlSort];
+    if (typeof av === 'string') return hlDir==='asc' ? av.localeCompare(bv||'') : (bv||'').localeCompare(av);
+    av = av ?? (hlDir==='asc' ? Infinity : -Infinity);
+    bv = bv ?? (hlDir==='asc' ? Infinity : -Infinity);
+    return hlDir==='asc' ? av-bv : bv-av;
+  });
+  rows.forEach(c => {
+    const tr = document.createElement('tr');
+    const priceHtml = c.price != null
+      ? `<td class="price-cell"><span class="live-dot"></span>$${c.price.toFixed(2)}</td>`
+      : `<td class="price-cell" style="color:var(--txt3);font-style:italic;font-size:11px">unlisted</td>`;
+    tr.innerHTML = `
+      <td style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;color:var(--acc);white-space:nowrap">${c.sym}</td>
+      <td class="cc" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.name !== c.sym ? c.name : '—'}</td>
+      ${priceHtml}
+      <td style="text-align:right;font-size:11px;color:var(--txt2)">${mcF(c.mktCap)}</td>
+      <td>${pChgCell(c.chg1d)}</td>
+      <td>${pChgCell(c.chg7d)}</td>
+      <td>${pChgCell(c.chg30d)}</td>
+      <td>${pChgCell(c.chg90d)}</td>
+      <td>${pChgCell(c.chg1y)}</td>
+      <td style="text-align:center;font-weight:700;font-size:14px;color:${c.compositeScore!=null?scC(c.compositeScore):'var(--txt3)'}">${c.compositeScore ?? '—'}</td>
+      <td>${c.valLabel ? `<span class="${c.valLabel.cls}">${c.valLabel.l}</span>` : '<span style="color:var(--txt3);font-size:11px">—</span>'}</td>
+      <td>${pBar(c.revGrowth, 80)}</td>
+      <td style="text-align:right">${evF(c.evRev,'rev')}</td>
+      <td style="text-align:right">${evF(c.evEbitda,'multi')}</td>
+      <td>${pBar(c.grossMargin, 100)}</td>
+      <td>${pBar(c.fcfMargin, 45)}</td>
+      <td>${c.aiScore != null ? aiC(c) : '<span style="color:var(--txt3);font-size:11px">—</span>'}</td>
+      <td><button class="wl-del" onclick="removeHolding('${c.sym}')">✕ Remove</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function addHoldTicker() {
+  const inp = document.getElementById('hlInput');
+  const st  = document.getElementById('hlStatus');
+  const sym = inp.value.trim().toUpperCase().replace(/[^A-Z0-9.]/g,'');
+  if (!sym) { st.textContent='Enter a ticker symbol.'; st.className='wl-status err'; return; }
+  if (holdings.includes(sym)) { st.textContent=`${sym} already in holdings.`; st.className='wl-status err'; return; }
+  holdings.push(sym);
+  inp.value = '';
+  renderHL();
+  st.textContent=`✓ ${sym} added.`; st.className='wl-status ok';
+  setTimeout(()=>{ st.textContent=''; }, 2500);
+}
+
+function removeHolding(sym) {
+  holdings = holdings.filter(s => s !== sym);
+  renderHL();
+  const st = document.getElementById('hlStatus');
+  st.textContent=`${sym} removed.`; st.className='wl-status';
+  setTimeout(()=>{ st.textContent=''; }, 2000);
+}
+
 async function init(){
   const pr=document.getElementById('lpr');
   const steps=[
@@ -882,6 +1309,8 @@ async function init(){
   bvpP=procBVP(BVP);comb=[...bvpP];cDsp=[...comb];
   const priceCount = loadHardcodedPrices();
   buildCHdrs();renderSmry();aCS();renderC();
+  buildWLHeaders();renderWL();
+  buildHLHeaders();renderHL();
   document.getElementById('priceTs').textContent = `✓ ${priceCount} prices · Apr 25 2026 close`;
   document.getElementById('priceTs').className = 'price-ts ok';
   document.getElementById('lov').style.display='none';document.getElementById('app').style.display='block';
