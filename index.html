@@ -2613,7 +2613,7 @@ const YAHOO_EXPLICIT = {
   'RHM':   'RHM.DE',        // Rheinmetall
   'AIR':   'AIR.DE',        // Airbus
   'HAG':   'HAG.DE',        // Hensoldt
-  'A11Q13':'HAKG.DE',       // Heckler & Koch
+  'A11Q13':'MLHK.PA',       // Heckler & Koch (Euronext Paris — not XETRA)
   'SEJ1':  'SAF.PA',        // Safran (Paris primary)
   'RRU':   'RRU.DE',        // Rolls-Royce (XETRA; LSE is RR.L)
   'CSF':   'HO.PA',         // Thales SA (Paris: HO)
@@ -2637,7 +2637,7 @@ const YAHOO_EXPLICIT = {
   // SaaS / Tech
   'ADYEN': 'ADYEN.AS',      // Adyen (Amsterdam)
   'WISE':  'WISE.L',        // Wise PLC (LSE)
-  'MULT':  'MULTITUDE.HE',  // Multitude AG (Helsinki)
+  'MULT':  'MULT.DE',        // Multitude AG (Frankfurt/XETRA — not Helsinki)
   'G24':   'GYC.DE',        // Scout24 SE (XETRA: GYC)
   'CHG':   'CHG.DE',        // Chapters Group
   'CYR':   'CYR.DE',        // cyan AG
@@ -2646,7 +2646,7 @@ const YAHOO_EXPLICIT = {
   'HTG':   'HTG.DE',        // HomeToGo SE
   'MRX':   'MRX.DE',        // Mister Spex SE
   'MS1':   'MS1.DE',        // Marley Spoon
-  'N4G0':  'N4G.DE',        // Naga Group
+  'N4G0':  'N4G0.DE',       // Naga Group (current XETRA ticker)
   'EVD':   'EVD.DE',        // CTS Eventim
   'SIX2':  'SIX2.DE',       // Sixt SE
   '09B':   'LMN.SW',        // lastminute.com (SIX Zurich: LMN)
@@ -2674,7 +2674,7 @@ const YAHOO_EXPLICIT = {
   '000660.KS': '000660.KS', // SK Hynix
   '005930.KS': '005930.KS', // Samsung
   // Oslo
-  'KON.OL': 'KON.OL',       // Kongsberg Gruppen
+  'KON.OL': 'KOG.OL',       // Kongsberg Gruppen (correct Oslo ticker)
   // Misc
   'FEZ': 'FEZ',              // SPDR Euro Stoxx 50 ETF (US-listed)
   'IB1T': 'IB1T.DE',        // iShares Bitcoin ETP (XETRA)
@@ -2742,7 +2742,11 @@ async function yahooFetchOne(sym) {
     'Accept-Language': 'en-US,en;q=0.9',
   };
 
-  // 7 proxy strategies tried in sequence — first success wins
+  // Quote API URL (v7) — fallback when chart API is rate-limited; gives price + 1d change only
+  const qUrl  = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}`;
+  const qUrl2 = qUrl.replace('query1', 'query2');
+
+  // 9 strategies tried in sequence — chart API first (full history), quote API as fallback
   const ATTEMPTS = [
     { url: yUrl,  hdrs },
     { url: yUrl2, hdrs },
@@ -2751,9 +2755,11 @@ async function yahooFetchOne(sym) {
     { url: `https://corsproxy.io/?${encodeURIComponent(yUrl)}`,               hdrs: {} },
     { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yUrl)}`, hdrs: {} },
     { url: `https://thingproxy.freeboard.io/fetch/${yUrl}`,                   hdrs: {} },
+    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(qUrl2)}`, hdrs: {}, isQuote: true },
+    { url: `https://corsproxy.io/?${encodeURIComponent(qUrl2)}`,              hdrs: {}, isQuote: true },
   ];
 
-  for (const { url, hdrs: h } of ATTEMPTS) {
+  for (const { url, hdrs: h, isQuote } of ATTEMPTS) {
     try {
       const r = await fetch(url, {
         signal: AbortSignal.timeout(10000),
@@ -2767,6 +2773,12 @@ async function yahooFetchOne(sym) {
         const wrapper = JSON.parse(text);
         json = wrapper.contents ? JSON.parse(wrapper.contents) : wrapper;
       } catch(e) { continue; }
+
+      if (isQuote) {
+        const q = json?.quoteResponse?.result?.[0];
+        if (q && q.regularMarketPrice != null) return { _quoteOnly: true, quote: q };
+        continue;
+      }
       const result = json?.chart?.result?.[0];
       if (result && result.timestamp?.length > 2) return result;
     } catch(e) {
@@ -2935,6 +2947,13 @@ async function fetchAllPrices() {
     try {
       const result = await yahooFetchOne(sym);
       if (!result) return null;
+      if (result._quoteOnly) {
+        const q = result.quote;
+        fetched++;
+        return { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
+          chg1d: q.regularMarketChangePercent ?? null,
+          chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
+      }
       const d = processYahooCandles(sym, result);
       if (d) { fetched++; return { sym, ...d }; }
     } catch(e) {}
