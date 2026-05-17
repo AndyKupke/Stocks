@@ -1403,7 +1403,7 @@ function loadPortfolio(){
     return out;
   }catch(e){ return {}; }
 }
-function savePortfolio(p){ try{localStorage.setItem(LS_KEY,JSON.stringify(p));}catch(e){} scheduleSave(); }
+function savePortfolio(p){ try{localStorage.setItem(LS_KEY,JSON.stringify(p)); markDirty();}catch(e){} scheduleSave(); }
 
 function loadBuySet(){
   try{
@@ -1411,7 +1411,7 @@ function loadBuySet(){
     return r ? new Set(JSON.parse(r)) : new Set();
   }catch(e){ return new Set(); }
 }
-function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BUY_SET]));}catch(e){} scheduleSave(); }
+function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BUY_SET])); markDirty();}catch(e){} scheduleSave(); }
 
 let PORTFOLIO = loadPortfolio();
 let BUY_SET   = loadBuySet();
@@ -2435,7 +2435,7 @@ function loadPriceData(){
   } catch(e) { return {}; }
 }
 function savePriceData(){
-  try { localStorage.setItem(LS_PRICES_KEY, JSON.stringify(priceData)); } catch(e) {}
+  try { localStorage.setItem(LS_PRICES_KEY, JSON.stringify(priceData)); markDirty(); } catch(e) {}
   scheduleSave();
 }
 
@@ -2448,6 +2448,11 @@ const GH_FILE  = 'portfolio-data.json';
 const GH_RAW   = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${GH_FILE}`;
 const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
 const LS_PAT   = 'gh_pat_v1';
+const LS_DIRTY = 'gh_dirty_v1';  // ms timestamp of last unsaved local change
+
+function markDirty(){ try{ localStorage.setItem(LS_DIRTY, Date.now().toString()); }catch(e){} }
+function clearDirty(){ try{ localStorage.removeItem(LS_DIRTY); }catch(e){} }
+function getDirtyTs(){ return parseInt(localStorage.getItem(LS_DIRTY)||'0',10); }
 
 let ghSha       = null;
 let ghSaveTimer = null;
@@ -2517,6 +2522,7 @@ async function syncToGitHub(){
     if(res.ok){
       const d = await res.json();
       ghSha = d.content.sha;
+      clearDirty();
       const now = new Date();
       setSyncStatus(`Synced ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`, 'var(--grn)');
     } else if(res.status === 409){
@@ -4196,15 +4202,22 @@ async function init(){
     new Promise(r=>setTimeout(()=>r(null),6000))
   ]);
 
-  if(ghData){
+  const dirtyTs = getDirtyTs();
+  const ghTs    = ghData?.lastUpdated ? new Date(ghData.lastUpdated).getTime() : 0;
+
+  if(ghData && ghTs >= dirtyTs){
+    // GitHub is up-to-date — use it
     if(ghData.portfolio) PORTFOLIO = ghData.portfolio;
     if(ghData.buySet)    BUY_SET   = new Set(ghData.buySet);
     if(ghData.prices)    priceData = ghData.prices;
-    // Update local cache
-    try{ localStorage.setItem(LS_KEY,      JSON.stringify(PORTFOLIO));   }catch(e){}
-    try{ localStorage.setItem(LS_BUY_KEY,  JSON.stringify([...BUY_SET]));}catch(e){}
-    try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));  }catch(e){}
+    try{ localStorage.setItem(LS_KEY,       JSON.stringify(PORTFOLIO));   }catch(e){}
+    try{ localStorage.setItem(LS_BUY_KEY,   JSON.stringify([...BUY_SET]));}catch(e){}
+    try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));   }catch(e){}
     setSyncStatus('Loaded from GitHub', 'var(--grn)');
+  } else if(ghData && dirtyTs > ghTs){
+    // Local changes are newer than GitHub — keep local data and push it up
+    setSyncStatus('Local changes detected — syncing…', 'var(--org)');
+    setTimeout(syncToGitHub, 500);
   } else {
     setSyncStatus(getPat() ? 'GitHub unavailable — using local cache' : 'No token — using local cache', 'var(--txt3)');
   }
