@@ -1643,11 +1643,11 @@ function renderPortfolioTab(q='',th='',view='all'){
   // ── Totals row ──────────────────────────────────────────────────────────
   // Sum positions and EUR volume across ALL portfolio stocks (not just filtered)
   let totalPositions = 0, totalBuyPositions = 0, totalEurVolume = 0, totalBuyVolume = 0;
-  all.forEach(s => {
+  filtered.forEach(s => {
     const pd = priceData[s.t] || {};
     if (isBuy(s.t)) {
       totalBuyPositions++;
-      totalBuyVolume += 25000;  // standard buy position
+      totalBuyVolume += 25000;
     } else {
       const sh = getShares(s.t);
       if (sh && pd.price) totalEurVolume += sh * pd.price;
@@ -1655,16 +1655,15 @@ function renderPortfolioTab(q='',th='',view='all'){
     totalPositions++;
   });
   const grandVolume = totalEurVolume + totalBuyVolume;
-  const COLS = 20;
-  // Columns: Ticker(1) Company(1) Price(1) Shares(1) PosVal(1) +Det(1)[6hid] +Perf(1)[7hid] Remove(1) = 21 total
   const grandFmt = grandVolume > 0
     ? '€ ' + grandVolume.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2})
     : '—';
+  const isFiltered = filtered.length < all.length;
   tf.innerHTML = `<tr style="background:var(--surf2);border-top:2px solid var(--bdr2);font-family:'IBM Plex Mono',monospace;font-size:10px;">
-    <td style="padding:7px 9px;font-weight:600;color:var(--txt)">TOTAL</td>
+    <td style="padding:7px 9px;font-weight:600;color:var(--txt)">${isFiltered ? 'FILTERED' : 'TOTAL'}</td>
     <td style="padding:7px 9px;color:var(--txt2);">
       ${totalPositions} pos &nbsp;·&nbsp; ${totalBuyPositions} buy × €25K
-      ${filtered.length < total ? ` &nbsp;·&nbsp; ${filtered.length}/${total}` : ''}
+      ${isFiltered ? ` &nbsp;·&nbsp; ${filtered.length} of ${all.length}` : ''}
     </td>
     <td style="padding:7px 9px;"></td>
     <td style="padding:7px 9px;text-align:right;color:var(--txt3);">—</td>
