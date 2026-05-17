@@ -93,7 +93,7 @@
     },
     "BKSY": {
       "shares": 0,
-      "_portChecked": true
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -2547,5 +2547,5 @@
       "chgytd": 40.14466739460933
     }
   },
-  "lastUpdated": "2026-05-17T19:50:58.461Z"
+  "lastUpdated": "2026-05-17T19:51:05.261Z"
 }
