@@ -16,7 +16,7 @@
       "shares": 32
     },
     "PATH": {
-      "shares": 0
+      "shares": 300
     },
     "G24": {
       "shares": 60
@@ -78,5 +78,5 @@
   },
   "buySet": [],
   "prices": {},
-  "lastUpdated": "2026-05-17T18:47:44.841Z"
+  "lastUpdated": "2026-05-17T18:47:47.146Z"
 }
