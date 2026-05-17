@@ -93,15 +93,14 @@
     },
     "BKSY": {
       "shares": 0,
-      "_portChecked": false
+      "_portChecked": true
     }
   },
   "buySet": [
     "RHM",
     "SPIR",
     "PL",
-    "ASTS",
-    "BKSY"
+    "ASTS"
   ],
   "prices": {
     "S0LR": {
@@ -2547,5 +2546,5 @@
       "chgytd": 40.14466739460933
     }
   },
-  "lastUpdated": "2026-05-17T19:50:23.432Z"
+  "lastUpdated": "2026-05-17T19:50:35.342Z"
 }
