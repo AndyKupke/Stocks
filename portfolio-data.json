@@ -1,79 +1,79 @@
 {
   "portfolio": {
     "MULT": {
-      "shares": 10
+      "shares": 3725
     },
     "CYR": {
-      "shares": 10
+      "shares": 6475
     },
     "VVV3": {
-      "shares": 20
+      "shares": 120
     },
     "TSLA": {
-      "shares": 3
+      "shares": 7
     },
     "HOOD": {
-      "shares": 0
+      "shares": 32
     },
     "PATH": {
-      "shares": 0
+      "shares": 300
     },
     "G24": {
-      "shares": 0
+      "shares": 60
     },
     "CHG": {
-      "shares": 0
+      "shares": 125
     },
     "TNIE": {
-      "shares": 0
+      "shares": 45000
     },
     "HTG": {
-      "shares": 0
+      "shares": 11397
     },
     "NVO": {
-      "shares": 0
+      "shares": 190
     },
     "MRX": {
-      "shares": 0
+      "shares": 8310
     },
     "MS1": {
-      "shares": 0
+      "shares": 56480
     },
     "BILL": {
-      "shares": 0
+      "shares": 90
     },
     "N4G0": {
-      "shares": 0
+      "shares": 415
     },
     "RJIB": {
-      "shares": 0
+      "shares": 5490
     },
     "SATS": {
-      "shares": 0
+      "shares": 130
     },
     "TSAT": {
-      "shares": 0
+      "shares": 360
     },
     "ATAI": {
       "shares": 4225
     },
     "CMPS": {
-      "shares": 0
+      "shares": 400
     },
     "TDOC": {
-      "shares": 0
+      "shares": 200
     },
     "IB1T": {
-      "shares": 0
+      "shares": 500
     },
     "S0LR": {
-      "shares": 0
+      "shares": 250
     },
     "Q8Y0": {
-      "shares": 0
+      "shares": 300
     },
     "SNSE": {
-      "shares": 0
+      "shares": 167
     }
   },
   "buySet": [],
@@ -2301,5 +2301,5 @@
       "chgytd": -58.61707568055879
     }
   },
-  "lastUpdated": "2026-05-17T19:00:52.636Z"
+  "lastUpdated": "2026-05-17T19:03:47.081Z"
 }
