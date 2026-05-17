@@ -19,7 +19,7 @@
       "shares": 0
     },
     "G24": {
-      "shares": 0
+      "shares": 60
     },
     "CHG": {
       "shares": 125
@@ -78,5 +78,5 @@
   },
   "buySet": [],
   "prices": {},
-  "lastUpdated": "2026-05-17T18:47:27.922Z"
+  "lastUpdated": "2026-05-17T18:47:31.499Z"
 }
