@@ -1,6 +1,82 @@
 {
-  "portfolio": {},
+  "portfolio": {
+    "MULT": {
+      "shares": 10
+    },
+    "CYR": {
+      "shares": 0
+    },
+    "VVV3": {
+      "shares": 0
+    },
+    "TSLA": {
+      "shares": 0
+    },
+    "HOOD": {
+      "shares": 0
+    },
+    "PATH": {
+      "shares": 0
+    },
+    "G24": {
+      "shares": 0
+    },
+    "CHG": {
+      "shares": 0
+    },
+    "TNIE": {
+      "shares": 0
+    },
+    "HTG": {
+      "shares": 0
+    },
+    "NVO": {
+      "shares": 0
+    },
+    "MRX": {
+      "shares": 0
+    },
+    "MS1": {
+      "shares": 0
+    },
+    "BILL": {
+      "shares": 0
+    },
+    "N4G0": {
+      "shares": 0
+    },
+    "RJIB": {
+      "shares": 0
+    },
+    "SATS": {
+      "shares": 0
+    },
+    "TSAT": {
+      "shares": 0
+    },
+    "ATAI": {
+      "shares": 0
+    },
+    "CMPS": {
+      "shares": 0
+    },
+    "TDOC": {
+      "shares": 0
+    },
+    "IB1T": {
+      "shares": 0
+    },
+    "S0LR": {
+      "shares": 0
+    },
+    "Q8Y0": {
+      "shares": 0
+    },
+    "SNSE": {
+      "shares": 0
+    }
+  },
   "buySet": [],
   "prices": {},
-  "lastUpdated": null
+  "lastUpdated": "2026-05-17T18:44:39.198Z"
 }
