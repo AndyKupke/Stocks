@@ -10,7 +10,7 @@
       "shares": 120
     },
     "TSLA": {
-      "shares": 0
+      "shares": 7
     },
     "HOOD": {
       "shares": 32
@@ -25,7 +25,7 @@
       "shares": 125
     },
     "TNIE": {
-      "shares": 0
+      "shares": 45000
     },
     "HTG": {
       "shares": 11397
@@ -52,7 +52,7 @@
       "shares": 130
     },
     "TSAT": {
-      "shares": 0
+      "shares": 360
     },
     "ATAI": {
       "shares": 4225
@@ -61,7 +61,7 @@
       "shares": 400
     },
     "TDOC": {
-      "shares": 0
+      "shares": 200
     },
     "IB1T": {
       "shares": 500
@@ -73,10 +73,10 @@
       "shares": 300
     },
     "SNSE": {
-      "shares": 0
+      "shares": 167
     }
   },
   "buySet": [],
   "prices": {},
-  "lastUpdated": "2026-05-17T18:47:31.499Z"
+  "lastUpdated": "2026-05-17T18:47:44.841Z"
 }
