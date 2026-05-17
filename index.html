@@ -1416,6 +1416,7 @@ function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BU
 let PORTFOLIO       = loadPortfolio();
 let BUY_SET         = loadBuySet();
 let DELETED_TICKERS = new Set();
+let CUSTOM_STOCKS   = {}; // ticker → full stock object for user-added or user-edited stocks
 
 function isInPort(t){ return !!PORTFOLIO[t]; }
 function isBuy(t)   { return BUY_SET.has(t); }
@@ -2302,13 +2303,16 @@ function confirmAdd(){
   const nm=document.getElementById('a-nm').value.trim();
   if(!tk||!nm){alert('Ticker and name required.');return;}
   if(ST.find(s=>s.t===tk)){alert('Ticker already in list.');return;}
-  ST.push({t:tk,n:nm,th:document.getElementById('a-th').value,ind:document.getElementById('a-in').value,
+  const newStock = {t:tk,n:nm,th:document.getElementById('a-th').value,ind:document.getElementById('a-in').value,
     reg:document.getElementById('a-rg').value,ex:document.getElementById('a-ex').value||'NASDAQ',
     cv:document.getElementById('a-cv').value,rk:parseInt(document.getElementById('a-rk').value)||2,
     dp:document.getElementById('a-dp').checked,etf:document.getElementById('a-et').checked,
     hr:document.getElementById('a-hr').checked,priv:document.getElementById('a-pr').checked,
     ipo:document.getElementById('a-ipo').checked,note:document.getElementById('a-nt').value.trim(),
-    id:ST.length+1});
+    id:ST.length+1};
+  ST.push(newStock);
+  CUSTOM_STOCKS[tk] = newStock;
+  scheduleSave();
   closeModal();wlFilter();renderThesesTab();renderFw();
 }
 
@@ -2391,6 +2395,11 @@ function confirmEdit() {
     if (priceData[origTk])  { priceData[newTk] = priceData[origTk]; delete priceData[origTk]; savePriceData(); }
   }
 
+  // Persist edit to CUSTOM_STOCKS
+  if (newTk !== origTk) delete CUSTOM_STOCKS[origTk];
+  CUSTOM_STOCKS[newTk] = {...ST[idx]};
+  scheduleSave();
+
   closeEditModal();
   wlFilter();
   renderPortfolioTab();
@@ -2402,6 +2411,7 @@ function removeStock(tk){
   if(isInPort(tk)){delete PORTFOLIO[tk];savePortfolio(PORTFOLIO);}
   BUY_SET.delete(tk); saveBuySet();
   DELETED_TICKERS.add(tk);
+  delete CUSTOM_STOCKS[tk];
   ST=ST.filter(s=>s.t!==tk);ST.forEach((s,i)=>s.id=i+1);
   scheduleSave();
   wlFilter();renderPortfolioTab();renderThesesTab();
@@ -2522,6 +2532,7 @@ async function syncToGitHub(){
     buySet: [...BUY_SET],
     prices: priceData,
     deletedTickers: [...DELETED_TICKERS],
+    customStocks: CUSTOM_STOCKS,
     lastUpdated: new Date().toISOString()
   };
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
@@ -4283,6 +4294,7 @@ async function init(){
     if(ghData.buySet)          BUY_SET         = new Set(ghData.buySet);
     if(ghData.prices)          priceData       = ghData.prices;
     if(ghData.deletedTickers)  DELETED_TICKERS = new Set(ghData.deletedTickers);
+    if(ghData.customStocks)    CUSTOM_STOCKS   = ghData.customStocks;
     try{ localStorage.setItem(LS_KEY,       JSON.stringify(PORTFOLIO));   }catch(e){}
     try{ localStorage.setItem(LS_BUY_KEY,   JSON.stringify([...BUY_SET]));}catch(e){}
     try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));   }catch(e){}
@@ -4300,6 +4312,12 @@ async function init(){
   el.textContent='Rendering tabs…';
   await new Promise(r=>setTimeout(r,200));
 
+  // Apply custom stocks: update existing entries or add new ones
+  for(const [tk, obj] of Object.entries(CUSTOM_STOCKS)){
+    const idx = ST.findIndex(s => s.t === tk);
+    if(idx >= 0) ST[idx] = {...ST[idx], ...obj};
+    else ST.push(obj);
+  }
   if(DELETED_TICKERS.size) ST = ST.filter(s => !DELETED_TICKERS.has(s.t));
   ST.forEach((s,i)=>{s.id=i+1;});
   let changed = false;
