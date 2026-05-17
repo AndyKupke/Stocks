@@ -82,11 +82,16 @@
     "SPIR": {
       "shares": 0,
       "_portChecked": false
+    },
+    "PL": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
     "RHM",
-    "SPIR"
+    "SPIR",
+    "PL"
   ],
   "prices": {
     "S0LR": {
@@ -2521,5 +2526,5 @@
       "chgytd": 11.803283250578636
     }
   },
-  "lastUpdated": "2026-05-17T19:36:10.974Z"
+  "lastUpdated": "2026-05-17T19:36:15.417Z"
 }
