@@ -1413,8 +1413,9 @@ function loadBuySet(){
 }
 function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BUY_SET])); markDirty();}catch(e){} scheduleSave(); }
 
-let PORTFOLIO = loadPortfolio();
-let BUY_SET   = loadBuySet();
+let PORTFOLIO       = loadPortfolio();
+let BUY_SET         = loadBuySet();
+let DELETED_TICKERS = new Set();
 
 function isInPort(t){ return !!PORTFOLIO[t]; }
 function isBuy(t)   { return BUY_SET.has(t); }
@@ -2398,8 +2399,11 @@ function confirmEdit() {
 
 function removeStock(tk){
   if(!confirm('Remove '+tk+' from long list?'))return;
-  if(isInPort(tk)){if(!confirm(tk+' is in your portfolio — remove from both?'))return;delete PORTFOLIO[tk];savePortfolio(PORTFOLIO);}
+  if(isInPort(tk)){delete PORTFOLIO[tk];savePortfolio(PORTFOLIO);}
+  BUY_SET.delete(tk); saveBuySet();
+  DELETED_TICKERS.add(tk);
   ST=ST.filter(s=>s.t!==tk);ST.forEach((s,i)=>s.id=i+1);
+  scheduleSave();
   wlFilter();renderPortfolioTab();renderThesesTab();
 }
 function wlReset(){
@@ -2517,6 +2521,7 @@ async function syncToGitHub(){
     portfolio: PORTFOLIO,
     buySet: [...BUY_SET],
     prices: priceData,
+    deletedTickers: [...DELETED_TICKERS],
     lastUpdated: new Date().toISOString()
   };
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
@@ -4274,15 +4279,17 @@ async function init(){
 
   if(ghData && ghTs >= dirtyTs){
     // GitHub is up-to-date — use it
-    if(ghData.portfolio) PORTFOLIO = ghData.portfolio;
-    if(ghData.buySet)    BUY_SET   = new Set(ghData.buySet);
-    if(ghData.prices)    priceData = ghData.prices;
+    if(ghData.portfolio)       PORTFOLIO       = ghData.portfolio;
+    if(ghData.buySet)          BUY_SET         = new Set(ghData.buySet);
+    if(ghData.prices)          priceData       = ghData.prices;
+    if(ghData.deletedTickers)  DELETED_TICKERS = new Set(ghData.deletedTickers);
     try{ localStorage.setItem(LS_KEY,       JSON.stringify(PORTFOLIO));   }catch(e){}
     try{ localStorage.setItem(LS_BUY_KEY,   JSON.stringify([...BUY_SET]));}catch(e){}
     try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));   }catch(e){}
     setSyncStatus('Loaded from GitHub', 'var(--grn)');
   } else if(ghData && dirtyTs > ghTs){
     // Local changes are newer than GitHub — keep local data and push it up
+    if(ghData.deletedTickers) DELETED_TICKERS = new Set(ghData.deletedTickers);
     setSyncStatus('Local changes detected — syncing…', 'var(--org)');
     setTimeout(syncToGitHub, 500);
   } else {
@@ -4293,6 +4300,7 @@ async function init(){
   el.textContent='Rendering tabs…';
   await new Promise(r=>setTimeout(r,200));
 
+  if(DELETED_TICKERS.size) ST = ST.filter(s => !DELETED_TICKERS.has(s.t));
   ST.forEach((s,i)=>{s.id=i+1;});
   let changed = false;
   ST.filter(s=>s.dp).forEach(s=>{
