@@ -10,7 +10,7 @@
       "shares": 20
     },
     "TSLA": {
-      "shares": 0
+      "shares": 3
     },
     "HOOD": {
       "shares": 0
@@ -55,7 +55,7 @@
       "shares": 0
     },
     "ATAI": {
-      "shares": 4225
+      "shares": 0
     },
     "CMPS": {
       "shares": 0
@@ -2301,5 +2301,5 @@
       "chgytd": -58.61707568055879
     }
   },
-  "lastUpdated": "2026-05-17T18:54:04.312Z"
+  "lastUpdated": "2026-05-17T18:54:19.750Z"
 }
