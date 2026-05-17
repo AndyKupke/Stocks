@@ -4218,6 +4218,9 @@ async function init(){
 
   const dirtyTs = getDirtyTs();
   const ghTs    = ghData?.lastUpdated ? new Date(ghData.lastUpdated).getTime() : 0;
+  console.log('[GH INIT] ghData loaded:', !!ghData, '| ghTs:', ghTs, '| dirtyTs:', dirtyTs);
+  console.log('[GH INIT] localStorage ATAI:', localStorage.getItem(LS_KEY) ? JSON.parse(localStorage.getItem(LS_KEY))?.ATAI : 'not set');
+  if(ghData) console.log('[GH INIT] GitHub ATAI:', ghData.portfolio?.ATAI);
 
   if(ghData && ghTs >= dirtyTs){
     // GitHub is up-to-date — use it
@@ -4235,6 +4238,7 @@ async function init(){
   } else {
     setSyncStatus(getPat() ? 'GitHub unavailable — using local cache' : 'No token — using local cache', 'var(--txt3)');
   }
+  console.log('[GH INIT] PORTFOLIO.ATAI after load decision:', PORTFOLIO['ATAI']);
 
   el.textContent='Rendering tabs…';
   await new Promise(r=>setTimeout(r,200));
