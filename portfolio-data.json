@@ -4,7 +4,7 @@
       "shares": 4225
     },
     "CYR": {
-      "shares": 90
+      "shares": 6475
     },
     "VVV3": {
       "shares": 20
@@ -22,13 +22,13 @@
       "shares": 0
     },
     "CHG": {
-      "shares": 0
+      "shares": 125
     },
     "TNIE": {
       "shares": 0
     },
     "HTG": {
-      "shares": 0
+      "shares": 11397
     },
     "NVO": {
       "shares": 0
@@ -40,7 +40,7 @@
       "shares": 0
     },
     "BILL": {
-      "shares": 0
+      "shares": 90
     },
     "N4G0": {
       "shares": 0
@@ -49,16 +49,16 @@
       "shares": 0
     },
     "SATS": {
-      "shares": 0
+      "shares": 130
     },
     "TSAT": {
       "shares": 0
     },
     "ATAI": {
-      "shares": 0
+      "shares": 4225
     },
     "CMPS": {
-      "shares": 0
+      "shares": 400
     },
     "TDOC": {
       "shares": 0
@@ -2301,5 +2301,5 @@
       "chgytd": -58.61707568055879
     }
   },
-  "lastUpdated": "2026-05-17T18:51:45.321Z"
+  "lastUpdated": "2026-05-17T18:52:05.734Z"
 }
