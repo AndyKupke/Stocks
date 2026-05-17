@@ -64,10 +64,10 @@
       "shares": 0
     },
     "IB1T": {
-      "shares": 0
+      "shares": 500
     },
     "S0LR": {
-      "shares": 0
+      "shares": 250
     },
     "Q8Y0": {
       "shares": 0
@@ -78,5 +78,5 @@
   },
   "buySet": [],
   "prices": {},
-  "lastUpdated": "2026-05-17T18:46:43.260Z"
+  "lastUpdated": "2026-05-17T18:46:50.969Z"
 }
