@@ -22,7 +22,7 @@
       "shares": 0
     },
     "CHG": {
-      "shares": 0
+      "shares": 125
     },
     "TNIE": {
       "shares": 0
@@ -40,7 +40,7 @@
       "shares": 0
     },
     "BILL": {
-      "shares": 0
+      "shares": 90
     },
     "N4G0": {
       "shares": 0
@@ -55,10 +55,10 @@
       "shares": 0
     },
     "ATAI": {
-      "shares": 0
+      "shares": 4225
     },
     "CMPS": {
-      "shares": 0
+      "shares": 400
     },
     "TDOC": {
       "shares": 0
@@ -2301,5 +2301,5 @@
       "chgytd": -58.61707568055879
     }
   },
-  "lastUpdated": "2026-05-17T18:54:22.563Z"
+  "lastUpdated": "2026-05-17T18:57:28.955Z"
 }
