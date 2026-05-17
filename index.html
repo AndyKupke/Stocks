@@ -1899,6 +1899,7 @@ function renderLLTable(){
       <td>${flH(s)}</td>
       <td><span class="nm" title="${s.note}">${s.note}</span></td>
       <td style="white-space:nowrap">
+        <button class="ab-btn" style="margin-right:3px" onclick="fetchSinglePrice('${s.t}',this)" title="Fetch live price">&#9889;</button>
         <button class="ab-btn" style="margin-right:3px" onclick="editStock('${s.t}')">&#9998;</button>
         <button class="ab-btn" onclick="removeStock('${s.t}')">✕</button>
       </td>
@@ -2911,6 +2912,37 @@ async function anthropicFetchBatch(tickers) {
 }
 
 // ── Orchestrator ─────────────────────────────────────────────────────
+
+async function fetchSinglePrice(sym, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  try {
+    const result = await yahooFetchOne(sym);
+    let d = null;
+    if (result) {
+      if (result._quoteOnly) {
+        const q = result.quote;
+        d = { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
+          chg1d: q.regularMarketChangePercent ?? null,
+          chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
+      } else {
+        d = processYahooCandles(sym, result);
+        if (d) d = { sym, ...d };
+      }
+    }
+    if (d) {
+      applyFetchedPrices([d]);
+      if (btn) { btn.textContent = '✓'; btn.style.color = 'var(--grn)'; }
+    } else {
+      if (btn) { btn.textContent = '✕'; btn.style.color = 'var(--red)'; }
+    }
+  } catch(e) {
+    if (btn) { btn.textContent = '✕'; btn.style.color = 'var(--red)'; }
+  }
+  if (btn) {
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = '⚡'; btn.style.color = ''; }, 2000);
+  }
+}
 
 function applyFetchedPrices(results) {
   results.forEach(d => { if (d?.sym) priceData[d.sym] = d; });
