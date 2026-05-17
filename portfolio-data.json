@@ -74,9 +74,15 @@
     },
     "SNSE": {
       "shares": 167
+    },
+    "RHM": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
-  "buySet": [],
+  "buySet": [
+    "RHM"
+  ],
   "prices": {
     "S0LR": {
       "sym": "S0LR",
@@ -2301,5 +2307,5 @@
       "chgytd": -58.61707568055879
     }
   },
-  "lastUpdated": "2026-05-17T19:15:15.065Z"
+  "lastUpdated": "2026-05-17T19:18:42.402Z"
 }
