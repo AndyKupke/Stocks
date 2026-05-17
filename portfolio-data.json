@@ -13,7 +13,7 @@
       "shares": 0
     },
     "HOOD": {
-      "shares": 0
+      "shares": 32
     },
     "PATH": {
       "shares": 0
@@ -78,5 +78,5 @@
   },
   "buySet": [],
   "prices": {},
-  "lastUpdated": "2026-05-17T18:47:19.414Z"
+  "lastUpdated": "2026-05-17T18:47:24.172Z"
 }
