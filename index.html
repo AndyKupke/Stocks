@@ -457,6 +457,12 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 .fs-tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--txt3); font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 8px 14px; cursor: pointer; transition: all .12s; }
 .fs-tab.active { color: var(--acc); border-bottom-color: var(--acc); }
 .fs-tab:hover { color: var(--txt); }
+.sync-bar{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bdr);border-radius:4px;padding:6px 14px;margin-bottom:8px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--txt2);}
+.sync-cfg-btn{background:transparent;border:1px solid var(--bdr);color:var(--txt2);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 8px;border-radius:3px;cursor:pointer;margin-left:auto;}
+.sync-cfg-btn:hover{border-color:var(--acc);color:var(--txt);}
+.sync-pat-row{display:none;align-items:center;gap:8px;width:100%;padding-top:6px;border-top:1px solid var(--bdr);margin-top:2px;}
+.sync-pat-row input{background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 8px;border-radius:4px;outline:none;flex:1;min-width:0;}
+.sync-pat-row input:focus{border-color:var(--acc);}
 </style>
 </head>
 <body>
@@ -522,6 +528,19 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     </div>
   </div>
   <div class="ver">v1.2 &middot; MAY 2026</div>
+</div>
+<!-- GITHUB SYNC BAR -->
+<div class="sync-bar" id="sync-bar">
+  <span>&#9729; GitHub Sync:</span>
+  <span id="gh-sync-status">Connecting…</span>
+  <button class="sync-cfg-btn" onclick="togglePatPanel()">&#9881; Token</button>
+  <div class="sync-pat-row" id="gh-pat-panel">
+    <span style="white-space:nowrap;color:var(--txt2);font-size:10px;">PAT:</span>
+    <input type="password" id="gh-pat-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+    <button class="fetch-btn" onclick="savePatFromInput()">Save</button>
+    <button class="fetch-btn" style="background:transparent;border-color:var(--bdr);color:var(--txt2);" onclick="clearPat()">Clear</button>
+    <a href="https://github.com/settings/tokens/new?description=Stocks+App&scopes=public_repo" target="_blank" style="font-size:10px;color:var(--acc);white-space:nowrap;text-decoration:none;">&#43; New token</a>
+  </div>
 </div>
 <!-- PORTFOLIO TAB -->
 <div class="sec active" id="sec-portfolio">
@@ -1383,7 +1402,7 @@ function loadPortfolio(){
     return out;
   }catch(e){ return {}; }
 }
-function savePortfolio(p){ try{localStorage.setItem(LS_KEY,JSON.stringify(p));}catch(e){} }
+function savePortfolio(p){ try{localStorage.setItem(LS_KEY,JSON.stringify(p));}catch(e){} scheduleSave(); }
 
 function loadBuySet(){
   try{
@@ -1391,7 +1410,7 @@ function loadBuySet(){
     return r ? new Set(JSON.parse(r)) : new Set();
   }catch(e){ return new Set(); }
 }
-function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BUY_SET]));}catch(e){} }
+function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BUY_SET]));}catch(e){} scheduleSave(); }
 
 let PORTFOLIO = loadPortfolio();
 let BUY_SET   = loadBuySet();
@@ -2416,9 +2435,131 @@ function loadPriceData(){
 }
 function savePriceData(){
   try { localStorage.setItem(LS_PRICES_KEY, JSON.stringify(priceData)); } catch(e) {}
+  scheduleSave();
 }
 
 let priceData = loadPriceData();
+
+// ── GITHUB SYNC ──────────────────────────────────────────────────────────────
+const GH_OWNER = 'AndyKupke';
+const GH_REPO  = 'Stocks';
+const GH_FILE  = 'portfolio-data.json';
+const GH_RAW   = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${GH_FILE}`;
+const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+const LS_PAT   = 'gh_pat_v1';
+
+let ghSha       = null;
+let ghSaveTimer = null;
+let ghSyncing   = false;
+
+function getPat(){ return localStorage.getItem(LS_PAT) || ''; }
+function setPat(p){ if(p) localStorage.setItem(LS_PAT,p); else localStorage.removeItem(LS_PAT); }
+
+function setSyncStatus(msg, color){
+  const el = document.getElementById('gh-sync-status');
+  if(el){ el.textContent = msg; el.style.color = color || 'var(--txt2)'; }
+}
+
+async function ghLoad(){
+  try {
+    const res = await fetch(GH_RAW + '?_=' + Date.now());
+    if(!res.ok) return null;
+    return await res.json();
+  } catch(e){ return null; }
+}
+
+async function ghGetSha(){
+  const pat = getPat();
+  if(!pat) return null;
+  try {
+    const res = await fetch(GH_API, {
+      headers:{ 'Authorization':`token ${pat}`, 'Accept':'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) return null;
+    const d = await res.json();
+    return d.sha || null;
+  } catch(e){ return null; }
+}
+
+function scheduleSave(){
+  clearTimeout(ghSaveTimer);
+  ghSaveTimer = setTimeout(syncToGitHub, 2000);
+  setSyncStatus('Unsaved changes…', 'var(--org)');
+}
+
+async function syncToGitHub(){
+  const pat = getPat();
+  if(!pat){ setSyncStatus('No token — saved locally only', 'var(--txt3)'); return; }
+  if(ghSyncing){ scheduleSave(); return; }
+  ghSyncing = true;
+  setSyncStatus('Syncing…', 'var(--txt2)');
+  const data = {
+    portfolio: PORTFOLIO,
+    buySet: [...BUY_SET],
+    prices: priceData,
+    lastUpdated: new Date().toISOString()
+  };
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  if(!ghSha) ghSha = await ghGetSha();
+  const body = { message:'Update portfolio data', content };
+  if(ghSha) body.sha = ghSha;
+  try {
+    const res = await fetch(GH_API, {
+      method:'PUT',
+      headers:{
+        'Authorization':`token ${pat}`,
+        'Content-Type':'application/json',
+        'Accept':'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify(body)
+    });
+    if(res.ok){
+      const d = await res.json();
+      ghSha = d.content.sha;
+      const now = new Date();
+      setSyncStatus(`Synced ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`, 'var(--grn)');
+    } else if(res.status === 409){
+      ghSha = null; scheduleSave();
+    } else if(res.status === 401 || res.status === 403){
+      setSyncStatus('Token invalid or expired', 'var(--red)');
+    } else {
+      setSyncStatus('Sync failed — will retry', 'var(--red)'); scheduleSave();
+    }
+  } catch(e){
+    setSyncStatus('Sync error — will retry', 'var(--red)'); scheduleSave();
+  }
+  ghSyncing = false;
+}
+
+function togglePatPanel(){
+  const p = document.getElementById('gh-pat-panel');
+  if(!p) return;
+  const show = p.style.display !== 'flex';
+  p.style.display = show ? 'flex' : 'none';
+  if(show){
+    const inp = document.getElementById('gh-pat-input');
+    if(inp){ inp.value = getPat(); inp.focus(); }
+  }
+}
+
+function savePatFromInput(){
+  const inp = document.getElementById('gh-pat-input');
+  if(!inp) return;
+  const v = inp.value.trim();
+  setPat(v);
+  document.getElementById('gh-pat-panel').style.display = 'none';
+  if(v){ ghSha = null; syncToGitHub(); }
+  else { setSyncStatus('Token removed — saved locally only', 'var(--txt3)'); }
+}
+
+function clearPat(){
+  setPat('');
+  const inp = document.getElementById('gh-pat-input');
+  if(inp) inp.value = '';
+  document.getElementById('gh-pat-panel').style.display = 'none';
+  setSyncStatus('Token removed — saved locally only', 'var(--txt3)');
+}
+// ─────────────────────────────────────────────────────────────────────────────
 let priceFetching = false;
 
 function getLastTradingDate() {
@@ -4039,42 +4180,69 @@ function fsRender() {
 }
 
 // ── INIT ──
-const STEPS=['Loading 10 thesis definitions...','Processing '+ST.length+' long list stocks...','Loading portfolio from browser storage...','Computing thesis coverage...','Rendering all tabs...'];
 async function init(){
   const el=document.getElementById('ltx');
-  for(const s of STEPS){el.textContent=s;await new Promise(r=>setTimeout(r,200));}
+  el.textContent='Loading from GitHub…';
+
+  // Kick off GitHub fetch immediately, fall back to localStorage after 6s
+  const ghPromise = ghLoad();
+  await new Promise(r=>setTimeout(r,200));
+  el.textContent='Processing '+ST.length+' stocks…';
+  await new Promise(r=>setTimeout(r,200));
+
+  const ghData = await Promise.race([
+    ghPromise,
+    new Promise(r=>setTimeout(()=>r(null),6000))
+  ]);
+
+  if(ghData){
+    if(ghData.portfolio) PORTFOLIO = ghData.portfolio;
+    if(ghData.buySet)    BUY_SET   = new Set(ghData.buySet);
+    if(ghData.prices)    priceData = ghData.prices;
+    // Update local cache
+    try{ localStorage.setItem(LS_KEY,      JSON.stringify(PORTFOLIO));   }catch(e){}
+    try{ localStorage.setItem(LS_BUY_KEY,  JSON.stringify([...BUY_SET]));}catch(e){}
+    try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));  }catch(e){}
+    setSyncStatus('Loaded from GitHub', 'var(--grn)');
+  } else {
+    setSyncStatus(getPat() ? 'GitHub unavailable — using local cache' : 'No token — using local cache', 'var(--txt3)');
+  }
+
+  el.textContent='Rendering tabs…';
+  await new Promise(r=>setTimeout(r,200));
+
   ST.forEach((s,i)=>{s.id=i+1;});
-  // Auto-add any stock tagged dp:true that is not already in PORTFOLIO.
-  // This seeds the Portfolio tab with all depot holdings on first load,
-  // and preserves existing shares/buy data for stocks already tracked.
   let changed = false;
   ST.filter(s=>s.dp).forEach(s=>{
-    if(!PORTFOLIO[s.t]){
-      PORTFOLIO[s.t]={shares:0};
-      changed=true;
-    }
+    if(!PORTFOLIO[s.t]){ PORTFOLIO[s.t]={shares:0}; changed=true; }
   });
-  if(changed) savePortfolio(PORTFOLIO);
-  // Sync dp flag: any ticker already in PORTFOLIO gets the Depot badge
-  ST.forEach(s=>{
-    if(PORTFOLIO[s.t]) s.dp = true;
-  });
+  // Only save (and sync) if we actually added stocks; suppress the spurious sync on first load
+  if(changed){ try{localStorage.setItem(LS_KEY,JSON.stringify(PORTFOLIO));}catch(e){} }
+  ST.forEach(s=>{ if(PORTFOLIO[s.t]) s.dp = true; });
+
   wlFilter();
   renderPortfolioTab();
   renderThesesTab();
   renderFw();
   bvpInit();
-  // Show cached price age if we have saved prices
+
   const cachedCount = Object.keys(priceData).length;
-  if (cachedCount > 0) {
+  if(cachedCount > 0){
+    const msg = `${cachedCount} cached prices loaded — click Fetch to refresh`;
     const st1 = document.getElementById('fetch-status-port');
     const st2 = document.getElementById('fetch-status-ll');
-    const msg = `${cachedCount} cached prices loaded — click Fetch to refresh`;
-    if (st1) st1.textContent = msg;
-    if (st2) st2.textContent = msg;
+    if(st1) st1.textContent = msg;
+    if(st2) st2.textContent = msg;
   }
+
   document.getElementById('lov').style.display='none';
   document.getElementById('app').style.display='block';
+
+  // Auto-show token panel if not configured yet
+  if(!getPat()){
+    document.getElementById('gh-pat-panel').style.display='flex';
+    setSyncStatus('Enter a GitHub token to enable sync', 'var(--org)');
+  }
 }
 init();
 </script>
