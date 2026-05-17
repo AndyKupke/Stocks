@@ -7,7 +7,7 @@
       "shares": 647510
     },
     "VVV3": {
-      "shares": 20
+      "shares": 120
     },
     "TSLA": {
       "shares": 0
@@ -78,5 +78,5 @@
   },
   "buySet": [],
   "prices": {},
-  "lastUpdated": "2026-05-17T18:47:15.000Z"
+  "lastUpdated": "2026-05-17T18:47:19.414Z"
 }
