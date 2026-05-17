@@ -1,10 +1,10 @@
 {
   "portfolio": {
     "MULT": {
-      "shares": 4225
+      "shares": 10
     },
     "CYR": {
-      "shares": 6475
+      "shares": 10
     },
     "VVV3": {
       "shares": 20
@@ -22,13 +22,13 @@
       "shares": 0
     },
     "CHG": {
-      "shares": 125
+      "shares": 0
     },
     "TNIE": {
       "shares": 0
     },
     "HTG": {
-      "shares": 11397
+      "shares": 0
     },
     "NVO": {
       "shares": 0
@@ -40,7 +40,7 @@
       "shares": 0
     },
     "BILL": {
-      "shares": 90
+      "shares": 0
     },
     "N4G0": {
       "shares": 0
@@ -49,7 +49,7 @@
       "shares": 0
     },
     "SATS": {
-      "shares": 130
+      "shares": 0
     },
     "TSAT": {
       "shares": 0
@@ -58,7 +58,7 @@
       "shares": 4225
     },
     "CMPS": {
-      "shares": 400
+      "shares": 0
     },
     "TDOC": {
       "shares": 0
@@ -2301,5 +2301,5 @@
       "chgytd": -58.61707568055879
     }
   },
-  "lastUpdated": "2026-05-17T18:52:05.734Z"
+  "lastUpdated": "2026-05-17T18:54:04.312Z"
 }
