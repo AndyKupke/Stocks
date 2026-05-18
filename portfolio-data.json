@@ -174,6 +174,10 @@
     "BE": {
       "shares": 0,
       "_portChecked": false
+    },
+    "CLSK": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -201,7 +205,8 @@
     "TEAM",
     "CRM",
     "OKTA",
-    "BE"
+    "BE",
+    "CLSK"
   ],
   "prices": {
     "S0LR": {
@@ -2717,7 +2722,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -2744,5 +2749,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-18T20:33:35.482Z"
+  "lastUpdated": "2026-05-18T20:33:40.816Z"
 }
