@@ -165,6 +165,12 @@ tfoot td{padding:7px 9px;font-family:'IBM Plex Mono',monospace;font-size:9px;col
 /* ── SHARES INPUT ── */
 .shares-input{background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 6px;border-radius:3px;outline:none;width:72px;text-align:right;}
 .shares-input:focus{border-color:var(--acc);}
+.addl-input{background:var(--surf2);border:1px solid var(--bdr);color:var(--ylw);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 6px;border-radius:3px;outline:none;width:72px;text-align:right;}
+.addl-input:focus{border-color:var(--ylw);}
+.addl-input::-webkit-inner-spin-button,.addl-input::-webkit-outer-spin-button{opacity:.4;}
+.pc-addl-sh{min-width:88px;text-align:right;}
+.pc-addl-inv{min-width:100px;text-align:right;}
+.pc-total-hold{min-width:110px;text-align:right;}
 tbody tr.rbuy{background:rgba(210,153,34,.04);}
 tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 .pc-v.ylw{color:var(--ylw);}
@@ -1416,11 +1422,23 @@ function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BU
 let PORTFOLIO       = loadPortfolio();
 let BUY_SET         = loadBuySet();
 let DELETED_TICKERS = new Set();
-let CUSTOM_STOCKS   = {}; // ticker → full stock object for user-added or user-edited stocks
+let CUSTOM_STOCKS      = {}; // ticker → full stock object for user-added or user-edited stocks
+let ADDITIONAL_SHARES  = {}; // ticker → delta shares (positive=buy more, negative=sell)
 
 function isInPort(t){ return !!PORTFOLIO[t]; }
 function isBuy(t)   { return BUY_SET.has(t); }
 function getShares(t){ return PORTFOLIO[t]?.shares||0; }
+function getAddlShares(t){ return ADDITIONAL_SHARES[t]||0; }
+function updateAddlShares(t, v){
+  const n = parseInt(v, 10);
+  if(!n){ delete ADDITIONAL_SHARES[t]; } else { ADDITIONAL_SHARES[t] = n; }
+  scheduleSave();
+  renderPortfolioTab(
+    document.getElementById('port-q')?.value?.toLowerCase()||'',
+    document.getElementById('port-th')?.value||'',
+    document.getElementById('port-view')?.value||'all'
+  );
+}
 
 // Portfolio checkbox — independent of Buy.
 // Uses _portChecked flag so toggleBuy knows not to remove it on Buy-uncheck.
@@ -1599,29 +1617,46 @@ function renderPortfolioTab(q='',th='',view='all'){
     const sharesCell = buyFlag
       ? `<td class="pc-shares" style="opacity:.35;text-align:right"><input type="number" class="shares-input" disabled placeholder="—" style="cursor:not-allowed"></td>`
       : `<td class="pc-shares"><input type="number" class="shares-input" min="0" value="${sh||''}" placeholder="shares" oninput="updateShares('${s.t}',this.value)" title="Number of shares held"></td>`;
+    const EUR_EX = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
+    const GBP_EX = new Set(['LSE']); const CHF_EX = new Set(['SIX']); const KRW_EX = new Set(['KRX']);
+    const currSym = EUR_EX.has(s.ex)?'€':GBP_EX.has(s.ex)?'£':CHF_EX.has(s.ex)?'CHF':KRW_EX.has(s.ex)?'₩':'$';
     const posValCell = buyFlag
       ? `<td class="pc-posval price-cell" style="opacity:.35;color:var(--ylw)">€ 25.000,00</td>`
       : (()=>{
           if(!sh||!pd.price) return `<td class="pc-posval price-cell" style="color:var(--txt3)">—</td>`;
           const raw = sh * pd.price;
-          const formatted = raw.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
-          const sym = (() => {
-            const EUR_EX = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
-            const GBP_EX = new Set(['LSE']); const CHF_EX = new Set(['SIX']); const KRW_EX = new Set(['KRX']);
-            if (EUR_EX.has(s.ex)) return '€';
-            if (GBP_EX.has(s.ex)) return '£';
-            if (CHF_EX.has(s.ex)) return 'CHF';
-            if (KRW_EX.has(s.ex)) return '₩';
-            return '$';
-          })();
-          return `<td class="pc-posval price-cell" style="color:var(--grn)">${sym} ${formatted}</td>`;
+          return `<td class="pc-posval price-cell" style="color:var(--grn)">${currSym} ${raw.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
         })();
+    // Additional shares / investment / total holding cells
+    const addl = getAddlShares(s.t);
+    const addlSharesCell = buyFlag
+      ? `<td class="pc-addl-sh" style="opacity:.25;text-align:right">—</td>`
+      : `<td class="pc-addl-sh"><input type="number" class="addl-input" value="${addl||''}" placeholder="±shares"
+           oninput="updateAddlShares('${s.t}',this.value)" title="Enter shares to buy (+) or sell (−)"></td>`;
+    const addlInvCell = (()=>{
+      if(buyFlag) return `<td class="pc-addl-inv price-cell" style="opacity:.25;text-align:right">—</td>`;
+      if(!addl||!pd.price) return `<td class="pc-addl-inv price-cell" style="color:var(--txt3);text-align:right">—</td>`;
+      const val = addl * pd.price;
+      const clr = val>=0?'var(--grn)':'var(--red)';
+      const sign = val>=0?'+':'';
+      return `<td class="pc-addl-inv price-cell" style="color:${clr};text-align:right">${sign}${currSym} ${val.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+    })();
+    const totalHoldCell = (()=>{
+      if(buyFlag) return `<td class="pc-total-hold price-cell" style="color:var(--ylw);text-align:right">€ 25.000,00</td>`;
+      const totalSh = (sh||0) + addl;
+      if(!totalSh||!pd.price) return `<td class="pc-total-hold price-cell" style="color:var(--txt3);text-align:right">—</td>`;
+      const val = totalSh * pd.price;
+      return `<td class="pc-total-hold price-cell" style="color:var(--grn);text-align:right">${currSym} ${val.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+    })();
     return `<tr class="rport${buyFlag?' rbuy':''}">
       <td class="pc-ticker"><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
       <td class="pc-company"><span class="nm" title="${s.n}">${s.n}</span></td>
       <td class="pc-price price-cell">${fmtPrice(pd.price,s.ex)}</td>
       ${sharesCell}
       ${posValCell}
+      ${addlSharesCell}
+      ${addlInvCell}
+      ${totalHoldCell}
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('port','details')"></td>
       <td class="pc-grpcell cgrp-cell port-details${detH}">${tp(s.th)}</td>
       <td class="pc-grpcell cgrp-cell port-details${detH}"><span style="font-size:10px;color:var(--txt2)">${s.ind}</span></td>
@@ -1645,21 +1680,32 @@ function renderPortfolioTab(q='',th='',view='all'){
   // ── Totals row ──────────────────────────────────────────────────────────
   // Sum positions and EUR volume across ALL portfolio stocks (not just filtered)
   let totalPositions = 0, totalBuyPositions = 0, totalEurVolume = 0, totalBuyVolume = 0;
+  let totalAddlInv = 0, totalHoldVolume = 0;
   filtered.forEach(s => {
     const pd = priceData[s.t] || {};
     if (isBuy(s.t)) {
       totalBuyPositions++;
       totalBuyVolume += 25000;
+      totalHoldVolume += 25000;
     } else {
       const sh = getShares(s.t);
+      const addl = getAddlShares(s.t);
       if (sh && pd.price) totalEurVolume += sh * pd.price;
+      if (addl && pd.price) totalAddlInv += addl * pd.price;
+      const totalSh = (sh||0) + addl;
+      if (totalSh && pd.price) totalHoldVolume += totalSh * pd.price;
     }
     totalPositions++;
   });
   const grandVolume = totalEurVolume + totalBuyVolume;
-  const grandFmt = grandVolume > 0
-    ? '€ ' + grandVolume.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2})
+  const fmtEur = v => v !== 0
+    ? '€ ' + v.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2})
     : '—';
+  const grandFmt = grandVolume > 0 ? fmtEur(grandVolume) : '—';
+  const addlInvFmt = totalAddlInv !== 0
+    ? (totalAddlInv>=0?'+':'') + '€ ' + totalAddlInv.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})
+    : '—';
+  const totalHoldFmt = totalHoldVolume > 0 ? fmtEur(totalHoldVolume) : '—';
   const isFiltered = filtered.length < all.length;
   tf.innerHTML = `<tr style="background:var(--surf2);border-top:2px solid var(--bdr2);font-family:'IBM Plex Mono',monospace;font-size:10px;">
     <td style="padding:7px 9px;font-weight:600;color:var(--txt)">${isFiltered ? 'FILTERED' : 'TOTAL'}</td>
@@ -1670,7 +1716,10 @@ function renderPortfolioTab(q='',th='',view='all'){
     <td style="padding:7px 9px;"></td>
     <td style="padding:7px 9px;text-align:right;color:var(--txt3);">—</td>
     <td style="padding:7px 9px;text-align:right;font-weight:700;color:var(--grn);">${grandFmt}</td>
-    <td colspan="16" style="padding:7px 9px;"></td>
+    <td style="padding:7px 9px;"></td>
+    <td style="padding:7px 9px;text-align:right;font-weight:600;color:${totalAddlInv>=0?'var(--grn)':'var(--red)'};">${addlInvFmt}</td>
+    <td style="padding:7px 9px;text-align:right;font-weight:700;color:var(--grn);">${totalHoldFmt}</td>
+    <td colspan="14" style="padding:7px 9px;"></td>
   </tr>`;
 
   // ── Dimension analysis below table ──────────────────────────────────────
@@ -2533,6 +2582,7 @@ async function syncToGitHub(){
     prices: priceData,
     deletedTickers: [...DELETED_TICKERS],
     customStocks: CUSTOM_STOCKS,
+        additionalShares: ADDITIONAL_SHARES,
     lastUpdated: new Date().toISOString()
   };
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
@@ -3551,6 +3601,9 @@ function buildPortThead() {
     <th class="pc-price" onclick="portSort('price')">Price</th>
     <th class="pc-shares" title="Number of shares held">Shares</th>
     <th class="pc-posval" title="shares × price">Pos. Value</th>
+    <th class="pc-addl-sh" title="Additional shares to buy (positive) or sell (negative) — depot positions only">Add'l Shares</th>
+    <th class="pc-addl-inv" title="Additional investment (buy) or divestment (sell) = add'l shares × price">Add'l Inv.</th>
+    <th class="pc-total-hold" title="Total holding value: (current + add'l shares) × price, or €25K for Buy positions">Total Holding</th>
     <th class="pc-grptog cgrp-toggle" onclick="toggleColGroup('port','details')" style="${dClr}" title="Thesis, Industry, Region, Exchange, Conviction, Risk">${dLbl}</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('thesis')">Thesis</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('industry')">Industry</th>
@@ -4293,15 +4346,18 @@ async function init(){
     if(ghData.portfolio)       PORTFOLIO       = ghData.portfolio;
     if(ghData.buySet)          BUY_SET         = new Set(ghData.buySet);
     if(ghData.prices)          priceData       = ghData.prices;
-    if(ghData.deletedTickers)  DELETED_TICKERS = new Set(ghData.deletedTickers);
-    if(ghData.customStocks)    CUSTOM_STOCKS   = ghData.customStocks;
+    if(ghData.deletedTickers)   DELETED_TICKERS   = new Set(ghData.deletedTickers);
+    if(ghData.customStocks)     CUSTOM_STOCKS     = ghData.customStocks;
+    if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
     try{ localStorage.setItem(LS_KEY,       JSON.stringify(PORTFOLIO));   }catch(e){}
     try{ localStorage.setItem(LS_BUY_KEY,   JSON.stringify([...BUY_SET]));}catch(e){}
     try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));   }catch(e){}
     setSyncStatus('Loaded from GitHub', 'var(--grn)');
   } else if(ghData && dirtyTs > ghTs){
     // Local changes are newer than GitHub — keep local data and push it up
-    if(ghData.deletedTickers) DELETED_TICKERS = new Set(ghData.deletedTickers);
+    if(ghData.deletedTickers)   DELETED_TICKERS   = new Set(ghData.deletedTickers);
+    if(ghData.customStocks)     CUSTOM_STOCKS     = ghData.customStocks;
+    if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
     setSyncStatus('Local changes detected — syncing…', 'var(--org)');
     setTimeout(syncToGitHub, 500);
   } else {
