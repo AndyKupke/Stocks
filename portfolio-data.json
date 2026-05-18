@@ -2696,7 +2696,8 @@
   },
   "deletedTickers": [
     "FRVO",
-    "SPACEX"
+    "SPACEX",
+    "LTHM"
   ],
   "customStocks": {
     "CRM": {
@@ -2714,7 +2715,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 223
+      "id": 222
     },
     "OKTA": {
       "t": "OKTA",
@@ -2731,7 +2732,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 224
+      "id": 223
     },
     "CLSK": {
       "t": "CLSK",
@@ -2748,7 +2749,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 225
+      "id": 224
     },
     "RIOT": {
       "t": "RIOT",
@@ -2765,7 +2766,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 226
+      "id": 225
     },
     "IREN": {
       "t": "IREN",
@@ -2782,7 +2783,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 227
+      "id": 226
     },
     "CORZ": {
       "t": "CORZ",
@@ -2816,7 +2817,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 229
+      "id": 228
     }
   },
   "additionalShares": {
@@ -2837,5 +2838,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-18T20:36:52.816Z"
+  "lastUpdated": "2026-05-18T20:37:51.195Z"
 }
