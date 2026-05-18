@@ -162,6 +162,10 @@
     "TEAM": {
       "shares": 0,
       "_portChecked": false
+    },
+    "CRM": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -186,7 +190,8 @@
     "RKLB",
     "000660.KS",
     "SMCI",
-    "TEAM"
+    "TEAM",
+    "CRM"
   ],
   "prices": {
     "S0LR": {
@@ -2646,7 +2651,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -2655,5 +2660,5 @@
       "id": 223
     }
   },
-  "lastUpdated": "2026-05-18T07:14:08.494Z"
+  "lastUpdated": "2026-05-18T07:14:48.031Z"
 }
