@@ -1630,17 +1630,17 @@ function renderPortfolioTab(q='',th='',view='all'){
     const sharesCell = buyFlag
       ? `<td class="pc-shares" style="opacity:.35;text-align:right"><input type="number" class="shares-input" disabled placeholder="—" style="cursor:not-allowed"></td>`
       : `<td class="pc-shares"><input type="number" class="shares-input" min="0" value="${sh||''}" placeholder="shares" oninput="updateShares('${s.t}',this.value)" title="Number of shares held"></td>`;
-    const EUR_EX = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
-    const GBP_EX = new Set(['LSE']); const CHF_EX = new Set(['SIX']); const KRW_EX = new Set(['KRX']);
-    const currSym = EUR_EX.has(s.ex)?'€':GBP_EX.has(s.ex)?'£':CHF_EX.has(s.ex)?'CHF':KRW_EX.has(s.ex)?'₩':'$';
-    const posValCell = buyFlag
-      ? `<td class="pc-posval price-cell" style="opacity:.35;color:var(--ylw)">€ 25.000,00</td>`
-      : (()=>{
-          if(!sh||!pd.price) return `<td class="pc-posval price-cell" style="color:var(--txt3)">—</td>`;
-          const raw = sh * pd.price;
-          return `<td class="pc-posval price-cell" style="color:var(--grn)">${currSym} ${raw.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
-        })();
-    // Additional shares / investment / total holding cells
+    const posValCell = (()=>{
+      if(buyFlag) {
+        const eurVal = toEur(25000, 'EURONEXT'); // already EUR
+        return `<td class="pc-posval price-cell" style="opacity:.35;color:var(--ylw)">€ 25.000,00</td>`;
+      }
+      if(!sh||!pd.price) return `<td class="pc-posval price-cell" style="color:var(--txt3)">—</td>`;
+      const eur = toEur(sh * pd.price, s.ex);
+      if(eur == null) return `<td class="pc-posval price-cell" style="color:var(--txt3)" title="FX rate unavailable">—</td>`;
+      return `<td class="pc-posval price-cell" style="color:var(--grn)">€ ${eur.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+    })();
+    // Additional shares / investment / total holding cells (all in €)
     const addl = getAddlShares(s.t);
     const addlSharesCell = buyFlag
       ? `<td class="pc-addl-sh" style="opacity:.25;text-align:right">—</td>`
@@ -1649,17 +1649,19 @@ function renderPortfolioTab(q='',th='',view='all'){
     const addlInvCell = (()=>{
       if(buyFlag) return `<td class="pc-addl-inv price-cell" style="opacity:.25;text-align:right">—</td>`;
       if(!addl||!pd.price) return `<td class="pc-addl-inv price-cell" style="color:var(--txt3);text-align:right">—</td>`;
-      const val = addl * pd.price;
-      const clr = val>=0?'var(--grn)':'var(--red)';
-      const sign = val>=0?'+':'';
-      return `<td class="pc-addl-inv price-cell" style="color:${clr};text-align:right">${sign}${currSym} ${val.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+      const eur = toEur(addl * pd.price, s.ex);
+      if(eur == null) return `<td class="pc-addl-inv price-cell" style="color:var(--txt3);text-align:right" title="FX rate unavailable">—</td>`;
+      const clr = eur>=0?'var(--grn)':'var(--red)';
+      const sign = eur>=0?'+':'';
+      return `<td class="pc-addl-inv price-cell" style="color:${clr};text-align:right">${sign}€ ${eur.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
     })();
     const totalHoldCell = (()=>{
       if(buyFlag) return `<td class="pc-total-hold price-cell" style="color:var(--ylw);text-align:right">€ 25.000,00</td>`;
       const totalSh = (sh||0) + addl;
       if(!totalSh||!pd.price) return `<td class="pc-total-hold price-cell" style="color:var(--txt3);text-align:right">—</td>`;
-      const val = totalSh * pd.price;
-      return `<td class="pc-total-hold price-cell" style="color:var(--grn);text-align:right">${currSym} ${val.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+      const eur = toEur(totalSh * pd.price, s.ex);
+      if(eur == null) return `<td class="pc-total-hold price-cell" style="color:var(--txt3);text-align:right" title="FX rate unavailable">—</td>`;
+      return `<td class="pc-total-hold price-cell" style="color:var(--grn);text-align:right">€ ${eur.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
     })();
     return `<tr class="rport${buyFlag?' rbuy':''}">
       <td class="pc-ticker"><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
@@ -1694,6 +1696,7 @@ function renderPortfolioTab(q='',th='',view='all'){
   // Sum positions and EUR volume across ALL portfolio stocks (not just filtered)
   let totalPositions = 0, totalBuyPositions = 0, totalEurVolume = 0, totalBuyVolume = 0;
   let totalAddlInv = 0, totalHoldVolume = 0;
+  let totalAddlInvKnown = true, totalHoldKnown = true;
   filtered.forEach(s => {
     const pd = priceData[s.t] || {};
     if (isBuy(s.t)) {
@@ -1703,10 +1706,19 @@ function renderPortfolioTab(q='',th='',view='all'){
     } else {
       const sh = getShares(s.t);
       const addl = getAddlShares(s.t);
-      if (sh && pd.price) totalEurVolume += sh * pd.price;
-      if (addl && pd.price) totalAddlInv += addl * pd.price;
+      if (sh && pd.price) {
+        const eur = toEur(sh * pd.price, s.ex);
+        if (eur != null) totalEurVolume += eur; // already EUR
+      }
+      if (addl && pd.price) {
+        const eur = toEur(addl * pd.price, s.ex);
+        if (eur != null) totalAddlInv += eur; else totalAddlInvKnown = false;
+      }
       const totalSh = (sh||0) + addl;
-      if (totalSh && pd.price) totalHoldVolume += totalSh * pd.price;
+      if (totalSh && pd.price) {
+        const eur = toEur(totalSh * pd.price, s.ex);
+        if (eur != null) totalHoldVolume += eur; else totalHoldKnown = false;
+      }
     }
     totalPositions++;
   });
@@ -2517,6 +2529,25 @@ function savePriceData(){
 
 let priceData = loadPriceData();
 
+const LS_FX_KEY = 'investment_fx_v1';
+function loadFxRates(){ try { const r=localStorage.getItem(LS_FX_KEY); return r?JSON.parse(r):{}; } catch(e){return{};} }
+function saveFxRates(){ try { localStorage.setItem(LS_FX_KEY, JSON.stringify(fxRates)); } catch(e){} }
+let fxRates = loadFxRates(); // { USD: 0.924, GBP: 1.17, CHF: 1.06, KRW: 0.00068 }
+
+const EUR_EX_SET = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
+const GBP_EX_SET = new Set(['LSE']);
+const CHF_EX_SET = new Set(['SIX']);
+const KRW_EX_SET = new Set(['KRX']);
+function toEur(amount, ex) {
+  if (amount == null || !isFinite(amount)) return null;
+  if (EUR_EX_SET.has(ex)) return amount;
+  const rate = GBP_EX_SET.has(ex) ? fxRates.GBP
+             : CHF_EX_SET.has(ex) ? fxRates.CHF
+             : KRW_EX_SET.has(ex) ? fxRates.KRW
+             : fxRates.USD;
+  return rate ? amount * rate : null;
+}
+
 // ── GITHUB SYNC ──────────────────────────────────────────────────────────────
 const GH_OWNER = 'AndyKupke';
 const GH_REPO  = 'Stocks';
@@ -2596,6 +2627,7 @@ async function syncToGitHub(){
     deletedTickers: [...DELETED_TICKERS],
     customStocks: CUSTOM_STOCKS,
         additionalShares: ADDITIONAL_SHARES,
+    fxRates,
     lastUpdated: new Date().toISOString()
   };
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
@@ -3034,9 +3066,36 @@ function applyFetchedPrices(results) {
   // fsInit() called on-demand when stock tab is opened
 }
 
+async function fetchFxRates() {
+  // Fetch EUR conversion rates from Yahoo Finance FX tickers
+  const pairs = [
+    { sym: 'EURUSD=X', store: p => { fxRates.USD = 1 / p; } },  // EUR/USD → invert for USD→EUR
+    { sym: 'GBPEUR=X', store: p => { fxRates.GBP = p; } },
+    { sym: 'CHFEUR=X', store: p => { fxRates.CHF = p; } },
+    { sym: 'KRWEUR=X', store: p => { fxRates.KRW = p; } },
+  ];
+  await Promise.all(pairs.map(async ({ sym, store }) => {
+    try {
+      const result = await yahooFetchOne(sym);
+      if (!result) return;
+      let price;
+      if (result._quoteOnly) {
+        price = result.quote.regularMarketPrice;
+      } else {
+        const d = processYahooCandles(sym, result);
+        if (d) price = d.price;
+      }
+      if (price && price > 0) store(price);
+    } catch(e) {}
+  }));
+  saveFxRates();
+}
+
 async function fetchAllPrices() {
   if (priceFetching) return;
   priceFetching = true;
+
+  await fetchFxRates();
 
   const btn1 = document.getElementById('fetch-btn-port');
   const btn2 = document.getElementById('fetch-btn-ll');
@@ -3613,10 +3672,10 @@ function buildPortThead() {
     <th class="pc-company" onclick="portSort('name')">Company</th>
     <th class="pc-price" onclick="portSort('price')">Price</th>
     <th class="pc-shares" title="Number of shares held">Shares</th>
-    <th class="pc-posval" title="shares × price">Pos. Value</th>
+    <th class="pc-posval" title="shares × price, converted to €">Pos. Value (€)</th>
     <th class="pc-addl-sh" title="Additional shares to buy (positive) or sell (negative) — depot positions only">Add'l Shares</th>
-    <th class="pc-addl-inv" title="Additional investment (buy) or divestment (sell) = add'l shares × price">Add'l Inv.</th>
-    <th class="pc-total-hold" title="Total holding value: (current + add'l shares) × price, or €25K for Buy positions">Total Holding</th>
+    <th class="pc-addl-inv" title="Additional investment or divestment = add'l shares × price, converted to €">Add'l Inv. (€)</th>
+    <th class="pc-total-hold" title="Total holding = (current + add'l shares) × price, converted to €; or €25K for Buy positions">Total Holding (€)</th>
     <th class="pc-grptog cgrp-toggle" onclick="toggleColGroup('port','details')" style="${dClr}" title="Thesis, Industry, Region, Exchange, Conviction, Risk">${dLbl}</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('thesis')">Thesis</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('industry')">Industry</th>
@@ -4362,6 +4421,7 @@ async function init(){
     if(ghData.deletedTickers)   DELETED_TICKERS   = new Set(ghData.deletedTickers);
     if(ghData.customStocks)     CUSTOM_STOCKS     = ghData.customStocks;
     if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
+    if(ghData.fxRates)          fxRates           = ghData.fxRates;
     try{ localStorage.setItem(LS_KEY,       JSON.stringify(PORTFOLIO));   }catch(e){}
     try{ localStorage.setItem(LS_BUY_KEY,   JSON.stringify([...BUY_SET]));}catch(e){}
     try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));   }catch(e){}
@@ -4371,6 +4431,7 @@ async function init(){
     if(ghData.deletedTickers)   DELETED_TICKERS   = new Set(ghData.deletedTickers);
     if(ghData.customStocks)     CUSTOM_STOCKS     = ghData.customStocks;
     if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
+    if(ghData.fxRates)          fxRates           = ghData.fxRates;
     setSyncStatus('Local changes detected — syncing…', 'var(--org)');
     setTimeout(syncToGitHub, 500);
   } else {
