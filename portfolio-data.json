@@ -2636,6 +2636,24 @@
     "FRVO",
     "SPACEX"
   ],
-  "customStocks": {},
-  "lastUpdated": "2026-05-18T07:13:40.041Z"
+  "customStocks": {
+    "CRM": {
+      "t": "CRM",
+      "n": "Salesforce",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 223
+    }
+  },
+  "lastUpdated": "2026-05-18T07:14:08.494Z"
 }
