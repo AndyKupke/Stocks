@@ -2577,7 +2577,9 @@
       "chgytd": 40.14466739460933
     }
   },
-  "deletedTickers": [],
+  "deletedTickers": [
+    "FRVO"
+  ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:07:57.636Z"
+  "lastUpdated": "2026-05-18T07:08:19.806Z"
 }
