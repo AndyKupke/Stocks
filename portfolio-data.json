@@ -2623,8 +2623,9 @@
     }
   },
   "deletedTickers": [
-    "FRVO"
+    "FRVO",
+    "SPACEX"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:11:45.696Z"
+  "lastUpdated": "2026-05-18T07:11:57.789Z"
 }
