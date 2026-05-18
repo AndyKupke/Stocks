@@ -1439,6 +1439,19 @@ function updateAddlShares(t, v){
     document.getElementById('port-view')?.value||'all'
   );
 }
+const _addlTimers = {};
+function scheduleAddlUpdate(t, input){
+  clearTimeout(_addlTimers[t]);
+  _addlTimers[t] = setTimeout(() => {
+    delete _addlTimers[t];
+    updateAddlShares(t, input.value);
+  }, 800);
+}
+function flushAddlUpdate(t, input){
+  clearTimeout(_addlTimers[t]);
+  delete _addlTimers[t];
+  updateAddlShares(t, input.value);
+}
 
 // Portfolio checkbox — independent of Buy.
 // Uses _portChecked flag so toggleBuy knows not to remove it on Buy-uncheck.
@@ -1632,7 +1645,7 @@ function renderPortfolioTab(q='',th='',view='all'){
     const addlSharesCell = buyFlag
       ? `<td class="pc-addl-sh" style="opacity:.25;text-align:right">—</td>`
       : `<td class="pc-addl-sh"><input type="number" class="addl-input" value="${addl||''}" placeholder="±shares"
-           oninput="updateAddlShares('${s.t}',this.value)" title="Enter shares to buy (+) or sell (−)"></td>`;
+           oninput="scheduleAddlUpdate('${s.t}',this)" onblur="flushAddlUpdate('${s.t}',this)" title="Enter shares to buy (+) or sell (−)"></td>`;
     const addlInvCell = (()=>{
       if(buyFlag) return `<td class="pc-addl-inv price-cell" style="opacity:.25;text-align:right">—</td>`;
       if(!addl||!pd.price) return `<td class="pc-addl-inv price-cell" style="color:var(--txt3);text-align:right">—</td>`;
@@ -1697,7 +1710,7 @@ function renderPortfolioTab(q='',th='',view='all'){
     }
     totalPositions++;
   });
-  const grandVolume = totalEurVolume + totalBuyVolume;
+  const grandVolume = totalEurVolume; // BUY positions excluded from Pos. Value total
   const fmtEur = v => v !== 0
     ? '€ ' + v.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2})
     : '—';
