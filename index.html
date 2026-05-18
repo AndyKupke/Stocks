@@ -508,6 +508,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="menu-nav-btn" onclick="menuNav('monthly')">
       <span class="menu-nav-icon">&#9998;</span>Monthly Process
     </button>
+    <button class="menu-nav-btn" onclick="menuNav('fx')">
+      <span class="menu-nav-icon">&#8652;</span>FX Rates
+    </button>
   </div>
   <div style="padding:12px 18px;border-top:1px solid var(--bdr);font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--txt3);letter-spacing:.5px;">
     v1.2 &middot; MAY 2026
@@ -810,6 +813,31 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
   </div>
 
 </div>
+</div>
+
+<div class="sec" id="sec-fx">
+  <div style="max-width:520px;margin:32px auto;font-family:'IBM Plex Mono',monospace;">
+    <h2 style="font-size:15px;font-weight:700;color:var(--txt);margin-bottom:6px;letter-spacing:.5px;">FX CONVERSION RATES</h2>
+    <p style="font-size:11px;color:var(--txt3);margin-bottom:24px;">Enter the conversion rate to Euro for each currency. These are used in the Portfolio tab to convert Pos. Value, Add&#39;l Inv. and Total Holding into &euro;.</p>
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--bdr2);">
+          <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.5px;">CURRENCY</th>
+          <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.5px;">DESCRIPTION</th>
+          <th style="text-align:right;padding:8px 12px;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.5px;">1 UNIT = ? EUR</th>
+        </tr>
+      </thead>
+      <tbody id="fx-tbody"></tbody>
+    </table>
+    <div style="margin-top:20px;display:flex;gap:10px;align-items:center;">
+      <button class="fbtn pri" onclick="saveFxRatesManual()">Save Rates</button>
+      <span id="fx-save-status" style="font-size:11px;color:var(--txt3);"></span>
+    </div>
+    <p style="margin-top:24px;font-size:10px;color:var(--txt3);line-height:1.6;">
+      EUR positions (XETRA, EPA, BIT, EURONEXT, AMS, NASDAQ OMX, OSE, WSE, CPH, BME) are not converted.<br>
+      Changes take effect immediately in the Portfolio tab after saving.
+    </p>
+  </div>
 </div>
 
 
@@ -2532,6 +2560,44 @@ let priceData = loadPriceData();
 const LS_FX_KEY = 'investment_fx_v1';
 function loadFxRates(){ try { const r=localStorage.getItem(LS_FX_KEY); return r?JSON.parse(r):{}; } catch(e){return{};} }
 function saveFxRates(){ try { localStorage.setItem(LS_FX_KEY, JSON.stringify(fxRates)); } catch(e){} }
+
+function renderFxTab() {
+  const tbody = document.getElementById('fx-tbody');
+  if (!tbody) return;
+  const pairs = [
+    { key: 'USD', label: 'US Dollar',        desc: 'NYSE, NASDAQ' },
+    { key: 'GBP', label: 'British Pound',     desc: 'LSE' },
+    { key: 'CHF', label: 'Swiss Franc',       desc: 'SIX' },
+    { key: 'KRW', label: 'Korean Won',        desc: 'KRX' },
+  ];
+  tbody.innerHTML = pairs.map(p => `
+    <tr style="border-bottom:1px solid var(--bdr);">
+      <td style="padding:10px 12px;font-weight:700;color:var(--txt);font-size:13px;">${p.key}</td>
+      <td style="padding:10px 12px;color:var(--txt2);font-size:11px;">${p.label}<br><span style="color:var(--txt3);font-size:9px;">${p.desc}</span></td>
+      <td style="padding:10px 12px;text-align:right;">
+        <input type="number" id="fx-input-${p.key}" class="shares-input" style="width:100px;"
+          step="0.0001" min="0" value="${fxRates[p.key] != null ? fxRates[p.key] : ''}"
+          placeholder="e.g. 0.8900">
+      </td>
+    </tr>`).join('');
+}
+
+function saveFxRatesManual() {
+  const keys = ['USD','GBP','CHF','KRW'];
+  keys.forEach(k => {
+    const v = parseFloat(document.getElementById('fx-input-' + k)?.value);
+    if (v > 0) fxRates[k] = v; else delete fxRates[k];
+  });
+  saveFxRates();
+  scheduleSave();
+  const el = document.getElementById('fx-save-status');
+  if (el) { el.textContent = 'Saved ✓'; el.style.color = 'var(--grn)'; setTimeout(() => { el.textContent=''; }, 2000); }
+  renderPortfolioTab(
+    document.getElementById('port-q')?.value?.toLowerCase()||'',
+    document.getElementById('port-th')?.value||'',
+    document.getElementById('port-view')?.value||'all'
+  );
+}
 let fxRates = loadFxRates(); // { USD: 0.924, GBP: 1.17, CHF: 1.06, KRW: 0.00068 }
 
 const EUR_EX_SET = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
@@ -3066,36 +3132,9 @@ function applyFetchedPrices(results) {
   // fsInit() called on-demand when stock tab is opened
 }
 
-async function fetchFxRates() {
-  // Fetch EUR conversion rates from Yahoo Finance FX tickers
-  const pairs = [
-    { sym: 'EURUSD=X', store: p => { fxRates.USD = 1 / p; } },  // EUR/USD → invert for USD→EUR
-    { sym: 'GBPEUR=X', store: p => { fxRates.GBP = p; } },
-    { sym: 'CHFEUR=X', store: p => { fxRates.CHF = p; } },
-    { sym: 'KRWEUR=X', store: p => { fxRates.KRW = p; } },
-  ];
-  await Promise.all(pairs.map(async ({ sym, store }) => {
-    try {
-      const result = await yahooFetchOne(sym);
-      if (!result) return;
-      let price;
-      if (result._quoteOnly) {
-        price = result.quote.regularMarketPrice;
-      } else {
-        const d = processYahooCandles(sym, result);
-        if (d) price = d.price;
-      }
-      if (price && price > 0) store(price);
-    } catch(e) {}
-  }));
-  saveFxRates();
-}
-
 async function fetchAllPrices() {
   if (priceFetching) return;
   priceFetching = true;
-
-  await fetchFxRates();
 
   const btn1 = document.getElementById('fetch-btn-port');
   const btn2 = document.getElementById('fetch-btn-ll');
@@ -3272,6 +3311,7 @@ function menuNav(tabId) {
   }
   closeMenu();
   showTab(tabId, null);   // no tab bar buttons — null is safe
+  if (tabId === 'fx') renderFxTab();
   syncMenuActive();
 }
 function syncMenuActive() {
