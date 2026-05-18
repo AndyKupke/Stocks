@@ -166,6 +166,10 @@
     "CRM": {
       "shares": 0,
       "_portChecked": false
+    },
+    "OKTA": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -191,7 +195,8 @@
     "000660.KS",
     "SMCI",
     "TEAM",
-    "CRM"
+    "CRM",
+    "OKTA"
   ],
   "prices": {
     "S0LR": {
@@ -2679,7 +2684,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -2688,5 +2693,5 @@
       "id": 224
     }
   },
-  "lastUpdated": "2026-05-18T07:16:02.003Z"
+  "lastUpdated": "2026-05-18T07:16:09.974Z"
 }
