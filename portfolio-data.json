@@ -110,6 +110,10 @@
     "ASML": {
       "shares": 0,
       "_portChecked": false
+    },
+    "CRWV": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -121,7 +125,8 @@
     "GOOGL",
     "AMZN",
     "AAPL",
-    "ASML"
+    "ASML",
+    "CRWV"
   ],
   "prices": {
     "S0LR": {
@@ -2569,5 +2574,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:07:18.279Z"
+  "lastUpdated": "2026-05-18T07:07:31.478Z"
 }
