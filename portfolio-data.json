@@ -150,6 +150,10 @@
     "RKLB": {
       "shares": 0,
       "_portChecked": false
+    },
+    "000660.KS": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -171,7 +175,8 @@
     "NVDA",
     "PLTR",
     "QCOM",
-    "RKLB"
+    "RKLB",
+    "000660.KS"
   ],
   "prices": {
     "S0LR": {
@@ -2621,5 +2626,5 @@
     "FRVO"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:11:31.144Z"
+  "lastUpdated": "2026-05-18T07:11:45.696Z"
 }
