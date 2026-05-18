@@ -186,6 +186,10 @@
     "IREN": {
       "shares": 0,
       "_portChecked": false
+    },
+    "APLD": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -216,7 +220,8 @@
     "BE",
     "CLSK",
     "RIOT",
-    "IREN"
+    "IREN",
+    "APLD"
   ],
   "prices": {
     "S0LR": {
@@ -2800,7 +2805,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -2827,5 +2832,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-18T20:36:16.332Z"
+  "lastUpdated": "2026-05-18T20:36:23.338Z"
 }
