@@ -122,6 +122,10 @@
     "URA": {
       "shares": 0,
       "_portChecked": false
+    },
+    "META": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -136,7 +140,8 @@
     "ASML",
     "CRWV",
     "CRWD",
-    "URA"
+    "URA",
+    "META"
   ],
   "prices": {
     "S0LR": {
@@ -2586,5 +2591,5 @@
     "FRVO"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:10:05.992Z"
+  "lastUpdated": "2026-05-18T07:11:06.532Z"
 }
