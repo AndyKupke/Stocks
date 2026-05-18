@@ -98,6 +98,10 @@
     "GOOGL": {
       "shares": 0,
       "_portChecked": false
+    },
+    "AMZN": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -106,7 +110,8 @@
     "ASTS",
     "BKSY",
     "RHM",
-    "GOOGL"
+    "GOOGL",
+    "AMZN"
   ],
   "prices": {
     "S0LR": {
@@ -2554,5 +2559,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T05:35:28.397Z"
+  "lastUpdated": "2026-05-18T05:35:32.138Z"
 }
