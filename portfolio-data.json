@@ -134,6 +134,10 @@
     "MNDY": {
       "shares": 0,
       "_portChecked": false
+    },
+    "NVDA": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -151,7 +155,8 @@
     "URA",
     "META",
     "MSFT",
-    "MNDY"
+    "MNDY",
+    "NVDA"
   ],
   "prices": {
     "S0LR": {
@@ -2601,5 +2606,5 @@
     "FRVO"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:11:10.572Z"
+  "lastUpdated": "2026-05-18T07:11:16.572Z"
 }
