@@ -118,6 +118,10 @@
     "CRWD": {
       "shares": 0,
       "_portChecked": false
+    },
+    "URA": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -131,7 +135,8 @@
     "AAPL",
     "ASML",
     "CRWV",
-    "CRWD"
+    "CRWD",
+    "URA"
   ],
   "prices": {
     "S0LR": {
@@ -2581,5 +2586,5 @@
     "FRVO"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:08:19.806Z"
+  "lastUpdated": "2026-05-18T07:10:05.992Z"
 }
