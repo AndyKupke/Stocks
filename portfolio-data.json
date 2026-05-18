@@ -102,6 +102,10 @@
     "AMZN": {
       "shares": 0,
       "_portChecked": false
+    },
+    "AAPL": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -111,7 +115,8 @@
     "BKSY",
     "RHM",
     "GOOGL",
-    "AMZN"
+    "AMZN",
+    "AAPL"
   ],
   "prices": {
     "S0LR": {
@@ -2559,5 +2564,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T05:35:32.138Z"
+  "lastUpdated": "2026-05-18T05:35:34.483Z"
 }
