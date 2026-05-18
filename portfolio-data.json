@@ -2669,7 +2669,24 @@
       "ipo": false,
       "note": "",
       "id": 223
+    },
+    "OKTA": {
+      "t": "OKTA",
+      "n": "Okta",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 224
     }
   },
-  "lastUpdated": "2026-05-18T07:15:01.325Z"
+  "lastUpdated": "2026-05-18T07:16:02.003Z"
 }
