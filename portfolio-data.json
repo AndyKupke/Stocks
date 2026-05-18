@@ -90,13 +90,18 @@
     "BKSY": {
       "shares": 0,
       "_portChecked": false
+    },
+    "RHM": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
     "SPIR",
     "PL",
     "ASTS",
-    "BKSY"
+    "BKSY",
+    "RHM"
   ],
   "prices": {
     "S0LR": {
@@ -2544,5 +2549,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T05:34:39.367Z"
+  "lastUpdated": "2026-05-18T05:34:44.996Z"
 }
