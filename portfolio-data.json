@@ -2707,5 +2707,11 @@
   "additionalShares": {
     "MULT": 1000
   },
-  "lastUpdated": "2026-05-18T07:52:14.535Z"
+  "fxRates": {
+    "USD": 0.86,
+    "GBP": 1.15,
+    "CHF": 1.09,
+    "KRW": 0.00057
+  },
+  "lastUpdated": "2026-05-18T09:08:52.646Z"
 }
