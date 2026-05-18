@@ -75,10 +75,6 @@
     "SNSE": {
       "shares": 167
     },
-    "RHM": {
-      "shares": 0,
-      "_portChecked": false
-    },
     "SPIR": {
       "shares": 0,
       "_portChecked": false
@@ -97,7 +93,6 @@
     }
   },
   "buySet": [
-    "RHM",
     "SPIR",
     "PL",
     "ASTS",
@@ -2547,5 +2542,7 @@
       "chgytd": 40.14466739460933
     }
   },
-  "lastUpdated": "2026-05-17T19:51:08.658Z"
+  "deletedTickers": [],
+  "customStocks": {},
+  "lastUpdated": "2026-05-18T05:34:39.367Z"
 }
