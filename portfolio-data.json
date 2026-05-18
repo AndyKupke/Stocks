@@ -2773,6 +2773,23 @@
       "ipo": false,
       "note": "",
       "id": 227
+    },
+    "CORZ": {
+      "t": "CORZ",
+      "n": "Corz",
+      "th": "T8",
+      "ind": "Energy",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 228
     }
   },
   "additionalShares": {
@@ -2793,5 +2810,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-18T20:35:09.915Z"
+  "lastUpdated": "2026-05-18T20:35:43.217Z"
 }
