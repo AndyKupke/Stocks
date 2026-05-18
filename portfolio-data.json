@@ -118,6 +118,10 @@
     "CRWD": {
       "shares": 0,
       "_portChecked": false
+    },
+    "DOCU": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -131,7 +135,8 @@
     "AAPL",
     "ASML",
     "CRWV",
-    "CRWD"
+    "CRWD",
+    "DOCU"
   ],
   "prices": {
     "S0LR": {
@@ -2579,5 +2584,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:07:33.509Z"
+  "lastUpdated": "2026-05-18T07:07:51.835Z"
 }
