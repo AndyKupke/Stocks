@@ -2751,6 +2751,23 @@
       "ipo": false,
       "note": "",
       "id": 226
+    },
+    "IREN": {
+      "t": "IREN",
+      "n": "Iren",
+      "th": "T8",
+      "ind": "Energy",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 227
     }
   },
   "additionalShares": {
@@ -2771,5 +2788,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-18T20:34:41.098Z"
+  "lastUpdated": "2026-05-18T20:34:57.845Z"
 }
