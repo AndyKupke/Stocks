@@ -2706,7 +2706,7 @@
   },
   "additionalShares": {
     "MULT": 2000,
-    "TSLA": 53
+    "TSLA": 63
   },
   "fxRates": {
     "USD": 0.86,
@@ -2714,5 +2714,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-18T09:12:05.544Z"
+  "lastUpdated": "2026-05-18T09:12:08.413Z"
 }
