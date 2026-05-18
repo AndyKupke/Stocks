@@ -130,6 +130,10 @@
     "MSFT": {
       "shares": 0,
       "_portChecked": false
+    },
+    "MNDY": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -146,7 +150,8 @@
     "CRWD",
     "URA",
     "META",
-    "MSFT"
+    "MSFT",
+    "MNDY"
   ],
   "prices": {
     "S0LR": {
@@ -2596,5 +2601,5 @@
     "FRVO"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:11:08.555Z"
+  "lastUpdated": "2026-05-18T07:11:10.572Z"
 }
