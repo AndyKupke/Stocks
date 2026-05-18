@@ -95,7 +95,7 @@
       "shares": 0,
       "_portChecked": false
     },
-    "BABA": {
+    "GOOGL": {
       "shares": 0,
       "_portChecked": false
     }
@@ -106,7 +106,7 @@
     "ASTS",
     "BKSY",
     "RHM",
-    "BABA"
+    "GOOGL"
   ],
   "prices": {
     "S0LR": {
@@ -2554,5 +2554,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T05:35:20.584Z"
+  "lastUpdated": "2026-05-18T05:35:28.397Z"
 }
