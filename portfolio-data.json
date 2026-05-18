@@ -138,6 +138,10 @@
     "NVDA": {
       "shares": 0,
       "_portChecked": false
+    },
+    "PLTR": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -156,7 +160,8 @@
     "META",
     "MSFT",
     "MNDY",
-    "NVDA"
+    "NVDA",
+    "PLTR"
   ],
   "prices": {
     "S0LR": {
@@ -2606,5 +2611,5 @@
     "FRVO"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:11:16.572Z"
+  "lastUpdated": "2026-05-18T07:11:21.651Z"
 }
