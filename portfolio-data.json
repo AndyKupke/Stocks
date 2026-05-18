@@ -106,6 +106,10 @@
     "AAPL": {
       "shares": 0,
       "_portChecked": false
+    },
+    "ASML": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -116,7 +120,8 @@
     "RHM",
     "GOOGL",
     "AMZN",
-    "AAPL"
+    "AAPL",
+    "ASML"
   ],
   "prices": {
     "S0LR": {
@@ -2564,5 +2569,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T05:35:34.483Z"
+  "lastUpdated": "2026-05-18T07:07:18.279Z"
 }
