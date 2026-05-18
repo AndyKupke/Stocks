@@ -154,6 +154,10 @@
     "000660.KS": {
       "shares": 0,
       "_portChecked": false
+    },
+    "SMCI": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -176,7 +180,8 @@
     "PLTR",
     "QCOM",
     "RKLB",
-    "000660.KS"
+    "000660.KS",
+    "SMCI"
   ],
   "prices": {
     "S0LR": {
@@ -2627,5 +2632,5 @@
     "SPACEX"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:11:57.789Z"
+  "lastUpdated": "2026-05-18T07:12:03.949Z"
 }
