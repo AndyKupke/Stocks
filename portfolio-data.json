@@ -142,6 +142,10 @@
     "PLTR": {
       "shares": 0,
       "_portChecked": false
+    },
+    "QCOM": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -161,7 +165,8 @@
     "MSFT",
     "MNDY",
     "NVDA",
-    "PLTR"
+    "PLTR",
+    "QCOM"
   ],
   "prices": {
     "S0LR": {
@@ -2611,5 +2616,5 @@
     "FRVO"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:11:21.651Z"
+  "lastUpdated": "2026-05-18T07:11:25.149Z"
 }
