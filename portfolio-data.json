@@ -158,6 +158,10 @@
     "SMCI": {
       "shares": 0,
       "_portChecked": false
+    },
+    "TEAM": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -181,7 +185,8 @@
     "QCOM",
     "RKLB",
     "000660.KS",
-    "SMCI"
+    "SMCI",
+    "TEAM"
   ],
   "prices": {
     "S0LR": {
@@ -2632,5 +2637,5 @@
     "SPACEX"
   ],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T07:12:03.949Z"
+  "lastUpdated": "2026-05-18T07:13:40.041Z"
 }
