@@ -94,6 +94,10 @@
     "RHM": {
       "shares": 0,
       "_portChecked": false
+    },
+    "BABA": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -101,7 +105,8 @@
     "PL",
     "ASTS",
     "BKSY",
-    "RHM"
+    "RHM",
+    "BABA"
   ],
   "prices": {
     "S0LR": {
@@ -2549,5 +2554,5 @@
   },
   "deletedTickers": [],
   "customStocks": {},
-  "lastUpdated": "2026-05-18T05:34:44.996Z"
+  "lastUpdated": "2026-05-18T05:35:20.584Z"
 }
