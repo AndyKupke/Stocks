@@ -190,6 +190,10 @@
     "APLD": {
       "shares": 0,
       "_portChecked": false
+    },
+    "CORZ": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -221,7 +225,8 @@
     "CLSK",
     "RIOT",
     "IREN",
-    "APLD"
+    "APLD",
+    "CORZ"
   ],
   "prices": {
     "S0LR": {
@@ -2788,7 +2793,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -2832,5 +2837,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-18T20:36:23.338Z"
+  "lastUpdated": "2026-05-18T20:36:39.645Z"
 }
