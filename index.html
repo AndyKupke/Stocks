@@ -3336,6 +3336,39 @@ function closeMenu() {
 }
 // ── FINANCIAL ANALYSIS ────────────────────────────────────────────────────────
 
+// Cache the Yahoo crumb for 30 min — avoids re-fetching on every ticker
+let _yahooCrumb = null, _yahooCrumbExpiry = 0;
+
+async function getYahooCrumb() {
+  if (_yahooCrumb && Date.now() < _yahooCrumbExpiry) return _yahooCrumb;
+  const url = 'https://query2.finance.yahoo.com/v1/test/getcrumb';
+  const hdrs = {
+    'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Accept':'*/*',
+    'Accept-Language':'en-US,en;q=0.9',
+  };
+  const proxies = [
+    url,                                                           // direct — browser sends Yahoo cookies
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://thingproxy.freeboard.io/fetch/${url}`,
+  ];
+  for (const u of proxies) {
+    try {
+      const r = await fetch(u, { signal: AbortSignal.timeout(8000), headers: u === url ? hdrs : {} });
+      if (!r.ok) continue;
+      const t = (await r.text()).trim();
+      // A valid crumb is a short alphanumeric string, not HTML/JSON
+      if (t && t.length < 60 && !t.startsWith('<') && !t.startsWith('{')) {
+        _yahooCrumb = t;
+        _yahooCrumbExpiry = Date.now() + 30 * 60 * 1000;
+        return _yahooCrumb;
+      }
+    } catch(e) {}
+  }
+  return null;
+}
+
 async function yahooFetchFinancials(ticker) {
   const ySym = toYahooSym(ticker);
   const modules = [
@@ -3343,22 +3376,31 @@ async function yahooFetchFinancials(ticker) {
     'cashflowStatementHistory','cashflowStatementHistoryQuarterly',
     'financialData'
   ].join(',');
-  const base1 = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=${modules}`;
+
+  // Crumb is required for quoteSummary since Yahoo locked it down
+  const crumb = await getYahooCrumb();
+  const crumbSuffix = crumb ? `&crumb=${encodeURIComponent(crumb)}` : '';
+
+  const base1 = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=${modules}${crumbSuffix}`;
   const base2 = base1.replace('query1','query2');
   const hdrs  = {
     'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     'Accept':'application/json, text/plain, */*',
     'Accept-Language':'en-US,en;q=0.9',
   };
+
+  // Direct requests first (browser sends Yahoo cookies → crumb validated), then proxies
   const attempts = [
     { url: base1, h: hdrs },
     { url: base2, h: hdrs },
-    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base1)}`, h: {} },
     { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base2)}`, h: {} },
-    { url: `https://corsproxy.io/?${encodeURIComponent(base1)}`, h: {} },
-    { url: `https://corsproxy.io/?${encodeURIComponent(base2)}`, h: {} },
+    { url: `https://corsproxy.io/?${encodeURIComponent(base2)}`,              h: {} },
+    { url: `https://thingproxy.freeboard.io/fetch/${base2}`,                  h: {} },
+    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base1)}`, h: {} },
+    { url: `https://corsproxy.io/?${encodeURIComponent(base1)}`,              h: {} },
     { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base2)}`, h: {} },
   ];
+
   for (const { url, h } of attempts) {
     try {
       const r = await fetch(url, { signal: AbortSignal.timeout(15000), headers: h });
@@ -3371,6 +3413,10 @@ async function yahooFetchFinancials(ticker) {
       if (result) return result;
     } catch(e) { continue; }
   }
+
+  // Last resort: invalidate the cached crumb and signal caller to retry once
+  _yahooCrumb = null;
+  _yahooCrumbExpiry = 0;
   return null;
 }
 
@@ -3423,17 +3469,18 @@ async function fetchFinancialData() {
   const meta= document.getElementById('fin-meta');
   btn.disabled = true;
   btn.textContent = '⏳ Fetching…';
-  st.textContent = `Fetching financials for ${finSelectedTicker}…`;
+  st.textContent = `Getting session crumb…`;
   st.style.color = 'var(--txt3)';
 
   const raw = await yahooFetchFinancials(finSelectedTicker);
   if (!raw) {
     btn.disabled = false;
     btn.textContent = '⚡ Update Financial Data';
-    st.textContent = '⚠ Could not fetch — try again or check ticker';
+    st.textContent = '⚠ Yahoo Finance unreachable — disable privacy extensions or VPN and retry';
     st.style.color = 'var(--red)';
     return;
   }
+  st.textContent = `Parsing data…`;
 
   const existingEntry = financialData[finSelectedTicker] || {};
   const annualIS   = finParseStatements(raw.incomeStatementHistory?.incomeStatementHistory);
