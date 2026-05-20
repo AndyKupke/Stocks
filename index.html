@@ -3572,8 +3572,7 @@ async function fetchFinancialData() {
     const body = document.getElementById('fin-body');
     if (body) body.innerHTML = `
       <p style="color:var(--red);font-size:12px;margin:16px 0 8px;">All fetch attempts failed. Diagnostics (also in browser console):</p>
-      <pre style="font-size:9px;color:var(--txt3);line-height:1.6;white-space:pre-wrap;word-break:break-all;background:var(--surf2);padding:10px;border-radius:4px;max-height:260px;overflow-y:auto;">${log.map(l=>l.replace(/&/g,'&amp;').replace(/</g,'&lt;')).join('
-')}</pre>
+      <pre style="font-size:9px;color:var(--txt3);line-height:1.6;white-space:pre-wrap;word-break:break-all;background:var(--surf2);padding:10px;border-radius:4px;max-height:260px;overflow-y:auto;">${log.map(l=>l.replace(/&/g,'&amp;').replace(/</g,'&lt;')).join('<br>')}</pre>
       <p style="font-size:11px;color:var(--txt3);margin-top:8px;">Open browser DevTools → Console tab for the full log. Then retry — proxy IPs rotate.</p>`;
     return;
   }
