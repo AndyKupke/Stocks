@@ -4176,11 +4176,23 @@ function finBuildEvMultiples(entry) {
     </div>`;
 }
 
+function finFmtColHeader(endDate) {
+  if (!endDate) return '—';
+  if (finPeriod === 'annual') {
+    return endDate.slice(0, 4); // "2024"
+  } else {
+    // Quarterly: derive quarter number from month
+    const month = parseInt(endDate.slice(5, 7), 10);
+    const q = month <= 3 ? 'Q1' : month <= 6 ? 'Q2' : month <= 9 ? 'Q3' : 'Q4';
+    return endDate.slice(0, 4) + '-' + q; // "2024-Q3"
+  }
+}
+
 function finBuildTable(title, rows, periods) {
   if (!periods.length) return '';
   const maxCols = Math.min(periods.length, 8);
   const cols = periods.slice(0, maxCols);
-  const thCells = cols.map(p => `<th style="text-align:right;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.3px;white-space:nowrap;">${p.endDate||'—'}</th>`).join('');
+  const thCells = cols.map(p => `<th style="text-align:right;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.3px;white-space:nowrap;">${finFmtColHeader(p.endDate)}</th>`).join('');
   const bodyRows = rows.map(({ label, key, fmt, indent }) => {
     const td = cols.map(p => {
       const v = p[key];
