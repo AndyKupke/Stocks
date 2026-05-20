@@ -3395,14 +3395,21 @@ async function fmpFetchFinancials(ticker) {
     } catch(e) { return null; }
   };
 
-  // Fetch all 6 endpoints in parallel (free tier: limit max 5)
-  const [aIS, qIS, aCF, qCF, ratios, keyMetrics] = await Promise.all([
-    get('income-statement',    { period: 'annual',  limit: 5 }),
-    get('income-statement',    { period: 'quarter', limit: 5 }),
-    get('cash-flow-statement', { period: 'annual',  limit: 5 }),
-    get('cash-flow-statement', { period: 'quarter', limit: 5 }),
-    get('ratios',              { period: 'annual',  limit: 1 }),
-    get('key-metrics',         { period: 'annual',  limit: 1 }),
+  // Fetch annual + ratios + balance sheet in parallel; try limit=8 for quarterly (paid),
+  // fall back to limit=5 (free tier cap) if those come back null.
+  const [aIS, aCF, ratios, keyMetrics, bs, qIS8, qCF8] = await Promise.all([
+    get('income-statement',       { period: 'annual',  limit: 5 }),
+    get('cash-flow-statement',    { period: 'annual',  limit: 5 }),
+    get('ratios',                 { period: 'annual',  limit: 1 }),
+    get('key-metrics',            { period: 'annual',  limit: 1 }),
+    get('balance-sheet-statement',{ period: 'annual',  limit: 1 }),
+    get('income-statement',       { period: 'quarter', limit: 8 }),
+    get('cash-flow-statement',    { period: 'quarter', limit: 8 }),
+  ]);
+  // If limit=8 was rejected by free tier, fall back to limit=5
+  const [qIS, qCF] = await Promise.all([
+    qIS8 || get('income-statement',    { period: 'quarter', limit: 5 }),
+    qCF8 || get('cash-flow-statement', { period: 'quarter', limit: 5 }),
   ]);
 
   if (!aIS && !qIS) return null; // complete failure
@@ -3433,6 +3440,11 @@ async function fmpFetchFinancials(ticker) {
 
   const r0 = ratios?.[0]     || {};
   const km = keyMetrics?.[0] || {};
+  const bs0 = bs?.[0]        || {};
+
+  // Net debt and shares outstanding for EV multiples
+  const netDebt          = bs0.netDebt                   ?? null;
+  const sharesOutstanding= aIS?.[0]?.weightedAverageShsOutDil ?? null;
 
   // Calculate EBITDA margin from latest annual statement
   const latestA = aIS?.[0];
@@ -3462,11 +3474,13 @@ async function fmpFetchFinancials(ticker) {
 
   return {
     _source: 'fmp',
-    annualIS:    parseIS(aIS),
-    quarterlyIS: parseIS(qIS),
-    annualCF:    parseCF(aCF),
-    quarterlyCF: parseCF(qCF),
+    annualIS:       parseIS(aIS),
+    quarterlyIS:    parseIS(qIS),
+    annualCF:       parseCF(aCF),
+    quarterlyCF:    parseCF(qCF),
     kpis,
+    netDebt,
+    sharesOutstanding,
   };
 }
 
@@ -3717,6 +3731,8 @@ async function fetchFinancialData() {
         financialData: Object.fromEntries(
           Object.entries(fmpResult.kpis).map(([k,v]) => [k, typeof v === 'string' ? v : {raw:v}])
         ),
+        _netDebt:           fmpResult.netDebt,
+        _sharesOutstanding: fmpResult.sharesOutstanding,
       };
     }
   }
@@ -3758,8 +3774,10 @@ async function fetchFinancialData() {
   const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
 
   financialData[finSelectedTicker] = {
-    annual:    finMergeByDate(existingEntry.annual, newAnnual),
-    quarterly: finMergeByDate(existingEntry.quarterly, newQuarterly),
+    annual:           finMergeByDate(existingEntry.annual, newAnnual),
+    quarterly:        finMergeByDate(existingEntry.quarterly, newQuarterly),
+    netDebt:          raw._netDebt          ?? existingEntry.netDebt          ?? null,
+    sharesOutstanding:raw._sharesOutstanding ?? existingEntry.sharesOutstanding ?? null,
     kpis: {
       grossMargins:            fd.grossMargins?.raw ?? null,
       operatingMargins:        fd.operatingMargins?.raw ?? null,
@@ -3854,6 +3872,94 @@ function fmtPctFin(v) {
 function fmtRatioFin(v, decimals=2) {
   if (v == null) return '<span style="color:var(--txt3)">—</span>';
   return `<span>${v.toFixed(decimals)}x</span>`;
+}
+
+function finBuildEvMultiples(entry) {
+  const annual    = (entry.annual    || []);
+  const quarterly = (entry.quarterly || []);
+  if (!annual.length && !quarterly.length) return '';
+
+  // Current price from live price data
+  const pd    = priceData[finSelectedTicker] || {};
+  const price = pd.price ?? null;
+  const netDebt          = entry.netDebt          ?? null;
+  const sharesOutstanding= entry.sharesOutstanding ?? null;
+
+  // Market cap = current price × shares outstanding
+  const mktCap = (price != null && sharesOutstanding != null)
+    ? price * sharesOutstanding : null;
+  // Enterprise Value = Market Cap + Net Debt (Net Debt can be negative = net cash)
+  const ev = (mktCap != null && netDebt != null) ? mktCap + netDebt : null;
+
+  // Last Full Year (LFY) — annual[0] is most recent
+  const lfy = annual[0] || null;
+  // Latest Quarter (LQ) — quarterly[0] is most recent
+  const lq  = quarterly[0] || null;
+
+  const fmtMult = v => {
+    if (v == null || !isFinite(v) || v <= 0 || v > 9999) return '<span style="color:var(--txt3)">—</span>';
+    return `<span style="color:var(--txt);font-weight:600;">${v.toFixed(1)} x</span>`;
+  };
+  const mult = (ev, base) => (ev != null && base != null && base > 0) ? ev / base : null;
+  const annualize = v => v != null ? v * 4 : null;
+
+  const evSalesLFY  = mult(ev, lfy?.totalRevenue);
+  const evEbitdaLFY = mult(ev, lfy?.ebitda);
+  const evFcfLFY    = mult(ev, lfy?.freeCashflow);
+
+  const evSalesLQ   = mult(ev, annualize(lq?.totalRevenue));
+  const evEbitdaLQ  = mult(ev, annualize(lq?.ebitda));
+  const evFcfLQ     = mult(ev, annualize(lq?.freeCashflow));
+
+  const fmtB = v => {
+    if (v == null) return '<span style="color:var(--txt3)">—</span>';
+    const abs = Math.abs(v), s = v < 0 ? '-' : '';
+    if (abs >= 1e12) return `${s}${(abs/1e12).toFixed(2)}T`;
+    if (abs >= 1e9)  return `${s}${(abs/1e9).toFixed(1)}B`;
+    if (abs >= 1e6)  return `${s}${(abs/1e6).toFixed(0)}M`;
+    return `${s}${abs.toFixed(0)}`;
+  };
+
+  const lfyDate = lfy?.endDate || '—';
+  const lqDate  = lq?.endDate  || '—';
+
+  return `
+    <div style="margin-bottom:24px;">
+      <h3 style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--txt3);margin:0 0 10px;text-transform:uppercase;padding:0 4px;">EV MULTIPLES</h3>
+      <div style="font-size:10px;color:var(--txt3);margin-bottom:8px;padding:0 4px;">
+        Market Cap: <span style="color:var(--txt2)">${fmtB(mktCap)}</span> &nbsp;·&nbsp;
+        Net Debt: <span style="color:var(--txt2)">${fmtB(netDebt)}</span> &nbsp;·&nbsp;
+        EV: <span style="color:var(--txt2)">${fmtB(ev)}</span> &nbsp;·&nbsp;
+        Price: <span style="color:var(--txt2)">${price != null ? price.toFixed(2) : '—'}</span>
+        ${mktCap == null ? ' &nbsp;<span style="color:var(--ylw)">⚠ Fetch financial data to populate shares outstanding</span>' : ''}
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="border-collapse:collapse;min-width:420px;">
+          <thead><tr style="border-bottom:2px solid var(--bdr2);">
+            <th style="text-align:left;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;min-width:180px;">MULTIPLE</th>
+            <th style="text-align:right;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;white-space:nowrap;">LFY (${lfyDate})</th>
+            <th style="text-align:right;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;white-space:nowrap;">LTM-Q ×4 (${lqDate})</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--bdr);">
+              <td style="padding:5px 12px;font-size:11px;color:var(--txt);font-weight:600;">EV / Sales</td>
+              <td style="padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-align:right;">${fmtMult(evSalesLFY)}</td>
+              <td style="padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-align:right;">${fmtMult(evSalesLQ)}</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--bdr);">
+              <td style="padding:5px 12px;font-size:11px;color:var(--txt);font-weight:600;">EV / EBITDA</td>
+              <td style="padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-align:right;">${fmtMult(evEbitdaLFY)}</td>
+              <td style="padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-align:right;">${fmtMult(evEbitdaLQ)}</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--bdr);">
+              <td style="padding:5px 12px;font-size:11px;color:var(--txt);font-weight:600;">EV / Free Cash Flow</td>
+              <td style="padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-align:right;">${fmtMult(evFcfLFY)}</td>
+              <td style="padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-align:right;">${fmtMult(evFcfLQ)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`;
 }
 
 function finBuildTable(title, rows, periods) {
@@ -3977,9 +4083,13 @@ function renderFinancialBody() {
     { label:'Depreciation & Amort.',  key:'depreciation',        fmt: v => fmtFin(v), indent:true },
   ];
 
+  // For quarterly view show up to 8 periods; annual show all (usually 5)
+  const displayPeriods = finPeriod === 'quarterly' ? periods.slice(0, 8) : periods;
+
   body.innerHTML =
-    finBuildTable('P&L Statement', plRows, periods) +
-    finBuildTable('Cash Flow Statement', cfRows, periods) +
+    finBuildEvMultiples(entry) +
+    finBuildTable('P&L Statement', plRows, displayPeriods) +
+    finBuildTable('Cash Flow Statement', cfRows, displayPeriods) +
     finBuildKpiTable(entry.kpis);
 }
 
