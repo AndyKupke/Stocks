@@ -2713,7 +2713,7 @@ async function ghLoad(){
   // Use the API (not raw CDN) so we always get fresh data and pick up the SHA in one call.
   // Raw CDN caches up to 5 min and ignores query-string cache-busters.
   try {
-    const headers = { 'Accept':'application/vnd.github.v3+json', 'Cache-Control':'no-cache' };
+    const headers = { 'Accept':'application/vnd.github.v3+json' };
     const pat = getPat();
     if(pat) headers['Authorization'] = `token ${pat}`;
     const res = await fetch(GH_API + '?t=' + Date.now(), { headers });
