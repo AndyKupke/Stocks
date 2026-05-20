@@ -194,6 +194,10 @@
     "CORZ": {
       "shares": 0,
       "_portChecked": false
+    },
+    "HUBS": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -226,7 +230,8 @@
     "RIOT",
     "IREN",
     "APLD",
-    "CORZ"
+    "CORZ",
+    "HUBS"
   ],
   "prices": {
     "S0LR": {
@@ -2893,5 +2898,5 @@
     "CHF": 1.09,
     "KRW": 0.00057
   },
-  "lastUpdated": "2026-05-20T11:59:56.074Z"
+  "lastUpdated": "2026-05-20T12:00:00.689Z"
 }
