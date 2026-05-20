@@ -861,20 +861,34 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     </p>
 
     <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--bdr);">
-      <h2 style="font-size:15px;font-weight:700;color:var(--txt);margin-bottom:6px;letter-spacing:.5px;">FINANCIAL DATA — API KEY</h2>
-      <p style="font-size:11px;color:var(--txt3);margin-bottom:16px;line-height:1.6;">
-        Financial Analysis uses <strong style="color:var(--txt)">Financial Modeling Prep</strong> to fetch revenue, EBITDA, FCF and other financial data.<br>
-        Get a free API key (250 calls/day) at
-        <a href="https://financialmodelingprep.com/developer/docs" target="_blank" style="color:var(--acc);">financialmodelingprep.com</a>
-        — registration takes about 2 minutes.
+      <h2 style="font-size:15px;font-weight:700;color:var(--txt);margin-bottom:6px;letter-spacing:.5px;">FINANCIAL DATA — API KEYS</h2>
+      <p style="font-size:11px;color:var(--txt3);margin-bottom:20px;line-height:1.7;">
+        Financial Analysis fetches data in order: <strong style="color:var(--txt)">Alpha Vantage → FMP → Yahoo</strong>.<br>
+        Alpha Vantage covers all US stocks for free (25 calls/day — ~8 stock updates/day).<br>
+        Get a free key at <a href="https://www.alphavantage.co/support/#api-key" target="_blank" style="color:var(--acc);">alphavantage.co</a> — instant, no credit card.
       </p>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <input type="text" id="fmp-key-input" class="shares-input" style="width:280px;font-size:11px;"
-          placeholder="Paste FMP API key here…" oninput="">
-        <button class="fbtn pri" onclick="saveFmpKey()">Save Key</button>
-        <span id="fmp-key-status" style="font-size:11px;color:var(--txt3);"></span>
+
+      <div style="margin-bottom:18px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Alpha Vantage <span style="color:var(--grn);margin-left:6px;">● Primary</span></div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="av-key-input" class="shares-input" style="width:280px;font-size:11px;"
+            placeholder="Paste Alpha Vantage key here…">
+          <button class="fbtn pri" onclick="saveAvKey()">Save Key</button>
+          <span id="av-key-status" style="font-size:11px;color:var(--txt3);"></span>
+        </div>
+        <p id="av-key-hint" style="font-size:10px;color:var(--txt3);margin-top:6px;"></p>
       </div>
-      <p id="fmp-key-hint" style="font-size:10px;color:var(--txt3);margin-top:10px;"></p>
+
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Financial Modeling Prep <span style="color:var(--txt3);margin-left:6px;">● Fallback (mega-caps only on free tier)</span></div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="fmp-key-input" class="shares-input" style="width:280px;font-size:11px;"
+            placeholder="Paste FMP API key here…" oninput="">
+          <button class="fbtn" onclick="saveFmpKey()">Save Key</button>
+          <span id="fmp-key-status" style="font-size:11px;color:var(--txt3);"></span>
+        </div>
+        <p id="fmp-key-hint" style="font-size:10px;color:var(--txt3);margin-top:6px;"></p>
+      </div>
     </div>
   </div>
 </div>
@@ -2601,6 +2615,20 @@ function loadFxRates(){ try { const r=localStorage.getItem(LS_FX_KEY); return r?
 function saveFxRates(){ try { localStorage.setItem(LS_FX_KEY, JSON.stringify(fxRates)); } catch(e){} }
 
 // ── FMP API KEY ───────────────────────────────────────────────────────────────
+// ── Alpha Vantage API key ─────────────────────────────────────────────────────
+const LS_AV_KEY = 'investment_av_key_v1';
+function getAvKey(){ return localStorage.getItem(LS_AV_KEY) || ''; }
+function saveAvKey(){
+  const input = document.getElementById('av-key-input');
+  const val = input?.value?.trim() || '';
+  if (val) localStorage.setItem(LS_AV_KEY, val);
+  else localStorage.removeItem(LS_AV_KEY);
+  const st   = document.getElementById('av-key-status');
+  const hint = document.getElementById('av-key-hint');
+  if (st)   { st.textContent = val ? 'Saved ✓' : 'Key cleared'; st.style.color = val ? 'var(--grn)' : 'var(--txt3)'; setTimeout(()=>{ st.textContent=''; },3000); }
+  if (hint) hint.textContent = val ? 'Key stored in browser localStorage only — never sent to GitHub.' : '';
+}
+
 const LS_FMP_KEY = 'investment_fmp_key_v1';
 function getFmpKey(){ return localStorage.getItem(LS_FMP_KEY) || ''; }
 function saveFmpKey(){
@@ -2633,6 +2661,14 @@ function renderFxTab() {
           placeholder="e.g. 0.8900">
       </td>
     </tr>`).join('');
+  // Populate AV key input
+  const avInput = document.getElementById('av-key-input');
+  if (avInput) {
+    const k = getAvKey();
+    avInput.value = k ? k.slice(0,6) + '...' + k.slice(-4) : '';
+    const hint = document.getElementById('av-key-hint');
+    if (hint) hint.textContent = k ? 'Key stored in browser localStorage only — never sent to GitHub.' : '';
+  }
   // Populate FMP key input
   const fmpInput = document.getElementById('fmp-key-input');
   if (fmpInput) {
@@ -3376,6 +3412,108 @@ function closeMenu() {
 // ── FINANCIAL ANALYSIS ────────────────────────────────────────────────────────
 
 // ── Financial Modeling Prep ──────────────────────────────────────────────────
+// ── Alpha Vantage financial data fetcher ─────────────────────────────────────
+async function avFetchFinancials(ticker) {
+  const apiKey = getAvKey();
+  if (!apiKey) return null;
+  // AV uses plain US tickers; for non-US stocks it won't have data — return null gracefully
+  const sym = ticker.includes('.') ? null : ticker.replace('-', '.');
+  if (!sym) return null;
+
+  const BASE = 'https://www.alphavantage.co/query';
+  const get = async (fn) => {
+    try {
+      const url = `${BASE}?function=${fn}&symbol=${encodeURIComponent(sym)}&apikey=${encodeURIComponent(apiKey)}`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      if (!r.ok) return null;
+      const d = await r.json();
+      // AV returns { Information: "..." } when rate-limited or key invalid
+      if (d.Information || d.Note) return null;
+      return d;
+    } catch(e) { return null; }
+  };
+
+  const [isData, cfData, bsData] = await Promise.all([
+    get('INCOME_STATEMENT'),
+    get('CASH_FLOW'),
+    get('BALANCE_SHEET'),
+  ]);
+
+  if (!isData?.annualReports?.length) return null;
+
+  // AV returns all values as strings; "None" → null
+  const n = v => { const x = parseFloat(v); return isFinite(x) ? x : null; };
+
+  const parseIS = reports => reports.map(r => ({
+    endDate:               r.fiscalDateEnding || null,
+    totalRevenue:          n(r.totalRevenue),
+    grossProfit:           n(r.grossProfit),
+    operatingIncome:       n(r.operatingIncome),
+    ebitda:                n(r.ebitda),
+    netIncome:             n(r.netIncome),
+    researchDevelopment:   n(r.researchAndDevelopment),
+    sellingGeneralAdmin:   n(r.sellingGeneralAndAdministrative),
+    totalOperatingExpenses:n(r.totalOperatingExpense),
+    interestExpense:       n(r.interestExpense) != null ? -Math.abs(n(r.interestExpense)) : null,
+    incomeTaxExpense:      n(r.incomeTaxExpense),
+  })).filter(r => r.endDate);
+
+  const parseCF = reports => reports.map(r => {
+    const ocf = n(r.operatingCashflow);
+    const capRaw = n(r.capitalExpenditures);
+    const cap = capRaw != null ? -Math.abs(capRaw) : null; // AV reports as positive
+    const dna = n(r.depreciationDepletionAndAmortization);
+    return {
+      endDate:             r.fiscalDateEnding || null,
+      operatingCashflow:   ocf,
+      capitalExpenditures: cap,
+      freeCashflow:        (ocf != null && cap != null) ? ocf + cap : null,
+      investingCashflow:   n(r.cashflowFromInvestment),
+      financingCashflow:   n(r.cashflowFromFinancing),
+      depreciation:        dna,
+    };
+  }).filter(r => r.endDate);
+
+  // Merge IS + CF by date
+  const merge = (isArr, cfArr) => {
+    const map = {};
+    isArr.forEach(r => { if (r.endDate) map[r.endDate] = {...r}; });
+    cfArr.forEach(r => { if (r.endDate) map[r.endDate] = { ...(map[r.endDate]||{}), ...r }; });
+    return Object.values(map).sort((a,b) => b.endDate.localeCompare(a.endDate));
+  };
+
+  const annualIS    = parseIS(isData.annualReports    || []);
+  const quarterlyIS = parseIS(isData.quarterlyReports || []);
+  const annualCF    = parseCF(cfData?.annualReports    || []);
+  const quarterlyCF = parseCF(cfData?.quarterlyReports || []);
+
+  const annualPeriods    = merge(annualIS,    annualCF);
+  const quarterlyPeriods = merge(quarterlyIS, quarterlyCF);
+
+  // Balance sheet for EV (net debt + shares outstanding)
+  const bs = bsData?.annualReports?.[0] || {};
+  const cash = n(bs.cashAndShortTermInvestments) ?? n(bs.cashAndCashEquivalentsAtCarryingValue);
+  const debt = n(bs.shortLongTermDebtTotal) ?? n(bs.longTermDebt);
+  const netDebt = (cash != null && debt != null) ? debt - cash : null;
+  const sharesOutstanding = n(bs.commonStockSharesOutstanding);
+
+  // KPIs: calculate margins from latest annual
+  const la = annualPeriods[0] || {};
+  const kpis = {
+    grossMargins:     (la.grossProfit    && la.totalRevenue) ? la.grossProfit    / la.totalRevenue : null,
+    operatingMargins: (la.operatingIncome && la.totalRevenue) ? la.operatingIncome / la.totalRevenue : null,
+    ebitdaMargins:    (la.ebitda         && la.totalRevenue) ? la.ebitda         / la.totalRevenue : null,
+    profitMargins:    (la.netIncome      && la.totalRevenue) ? la.netIncome      / la.totalRevenue : null,
+    revenueGrowth: null, earningsGrowth: null, returnOnEquity: null, returnOnAssets: null,
+    debtToEquity: null, currentRatio: null, quickRatio: null,
+    totalCash: cash, totalDebt: debt,
+    freeCashflow: null, operatingCashflow: null,
+    targetMeanPrice: null, numberOfAnalystOpinions: null, recommendationKey: null,
+  };
+
+  return { _source: 'alphavantage', annualPeriods, quarterlyPeriods, kpis, netDebt, sharesOutstanding };
+}
+
 async function fmpFetchFinancials(ticker) {
   const apiKey = getFmpKey();
   if (!apiKey) return null;
@@ -3888,8 +4026,41 @@ async function fetchFinancialData() {
   st.textContent = `Getting session crumb…`;
   st.style.color = 'var(--txt3)';
 
-  // Try FMP first (reliable, no CORS issues); fall back to Yahoo
+  // ── 1. Alpha Vantage (primary — all US stocks, open CORS, free key) ──────────
   let raw = null;
+  const avKey = getAvKey();
+  if (avKey) {
+    st.textContent = 'Fetching from Alpha Vantage…';
+    const avResult = await avFetchFinancials(finSelectedTicker);
+    if (avResult) {
+      const existingEntry = financialData[finSelectedTicker] || {};
+      const prevAnnualCount    = (existingEntry.annual||[]).length;
+      const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
+      financialData[finSelectedTicker] = {
+        annual:           finMergeByDate(existingEntry.annual,    avResult.annualPeriods),
+        quarterly:        finMergeByDate(existingEntry.quarterly, avResult.quarterlyPeriods),
+        netDebt:          avResult.netDebt          ?? existingEntry.netDebt          ?? null,
+        sharesOutstanding:avResult.sharesOutstanding ?? existingEntry.sharesOutstanding ?? null,
+        kpis:             avResult.kpis,
+        lastUpdated:      new Date().toISOString(),
+      };
+      saveFinancialData(); scheduleSave(); finNeedsRefetch = false;
+      const entry  = financialData[finSelectedTicker];
+      const addedA = entry.annual.length    - prevAnnualCount;
+      const addedQ = entry.quarterly.length - prevQuarterlyCount;
+      const addMsg = (addedA > 0 || addedQ > 0)
+        ? ` · +${addedA} annual, +${addedQ} quarterly periods`
+        : ' · no new periods (data up to date)';
+      st.textContent = `✓ Updated via Alpha Vantage${addMsg}`;
+      st.style.color = 'var(--grn)';
+      btn.disabled = false; btn.textContent = '⚡ Update Financial Data';
+      renderFinancialBody();
+      return;
+    }
+    st.textContent = 'Alpha Vantage failed (rate limit or non-US ticker) — trying FMP…';
+  }
+
+  // ── 2. Financial Modeling Prep (mega-caps on free tier) ───────────────────
   const fmpKey = getFmpKey();
   if (fmpKey) {
     st.textContent = 'Fetching from Financial Modeling Prep…';
