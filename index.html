@@ -859,6 +859,23 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       EUR positions (XETRA, EPA, BIT, EURONEXT, AMS, NASDAQ OMX, OSE, WSE, CPH, BME) are not converted.<br>
       Changes take effect immediately in the Portfolio tab after saving.
     </p>
+
+    <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--bdr);">
+      <h2 style="font-size:15px;font-weight:700;color:var(--txt);margin-bottom:6px;letter-spacing:.5px;">FINANCIAL DATA — API KEY</h2>
+      <p style="font-size:11px;color:var(--txt3);margin-bottom:16px;line-height:1.6;">
+        Financial Analysis uses <strong style="color:var(--txt)">Financial Modeling Prep</strong> to fetch revenue, EBITDA, FCF and other financial data.<br>
+        Get a free API key (250 calls/day) at
+        <a href="https://financialmodelingprep.com/developer/docs" target="_blank" style="color:var(--acc);">financialmodelingprep.com</a>
+        — registration takes about 2 minutes.
+      </p>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="fmp-key-input" class="shares-input" style="width:280px;font-size:11px;"
+          placeholder="Paste FMP API key here…" oninput="">
+        <button class="fbtn pri" onclick="saveFmpKey()">Save Key</button>
+        <span id="fmp-key-status" style="font-size:11px;color:var(--txt3);"></span>
+      </div>
+      <p id="fmp-key-hint" style="font-size:10px;color:var(--txt3);margin-top:10px;"></p>
+    </div>
   </div>
 </div>
 
@@ -2583,6 +2600,20 @@ const LS_FX_KEY = 'investment_fx_v1';
 function loadFxRates(){ try { const r=localStorage.getItem(LS_FX_KEY); return r?JSON.parse(r):{}; } catch(e){return{};} }
 function saveFxRates(){ try { localStorage.setItem(LS_FX_KEY, JSON.stringify(fxRates)); } catch(e){} }
 
+// ── FMP API KEY ───────────────────────────────────────────────────────────────
+const LS_FMP_KEY = 'investment_fmp_key_v1';
+function getFmpKey(){ return localStorage.getItem(LS_FMP_KEY) || ''; }
+function saveFmpKey(){
+  const input = document.getElementById('fmp-key-input');
+  const val = input?.value?.trim() || '';
+  if (val) localStorage.setItem(LS_FMP_KEY, val);
+  else localStorage.removeItem(LS_FMP_KEY);
+  const st = document.getElementById('fmp-key-status');
+  const hint = document.getElementById('fmp-key-hint');
+  if (st) { st.textContent = val ? 'Saved ✓' : 'Key cleared'; st.style.color = val ? 'var(--grn)' : 'var(--txt3)'; setTimeout(()=>{ st.textContent=''; },3000); }
+  if (hint) hint.textContent = val ? 'Key stored in browser localStorage only — never sent to GitHub.' : '';
+}
+
 function renderFxTab() {
   const tbody = document.getElementById('fx-tbody');
   if (!tbody) return;
@@ -2602,6 +2633,14 @@ function renderFxTab() {
           placeholder="e.g. 0.8900">
       </td>
     </tr>`).join('');
+  // Populate FMP key input
+  const fmpInput = document.getElementById('fmp-key-input');
+  if (fmpInput) {
+    const k = getFmpKey();
+    fmpInput.value = k ? k.slice(0,6) + '...' + k.slice(-4) : '';
+    const hint = document.getElementById('fmp-key-hint');
+    if (hint) hint.textContent = k ? 'Key stored in browser localStorage only — never sent to GitHub.' : '';
+  }
 }
 
 function saveFxRatesManual() {
@@ -3336,6 +3375,98 @@ function closeMenu() {
 }
 // ── FINANCIAL ANALYSIS ────────────────────────────────────────────────────────
 
+// ── Financial Modeling Prep ──────────────────────────────────────────────────
+async function fmpFetchFinancials(ticker) {
+  const apiKey = getFmpKey();
+  if (!apiKey) return null;
+
+  // FMP uses the same Yahoo-style exchange suffixes (.DE, .PA, .L, etc.)
+  const sym = toYahooSym(ticker);
+  const BASE = 'https://financialmodelingprep.com/api/v3';
+  const get = async (path) => {
+    try {
+      const url = `${BASE}${path}&apikey=${encodeURIComponent(apiKey)}`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) return null;
+      const d = await r.json();
+      return Array.isArray(d) && d.length ? d : null;
+    } catch(e) { return null; }
+  };
+
+  // Fetch all 4 endpoints in parallel (5 API calls total)
+  const [aIS, qIS, aCF, qCF, ratios] = await Promise.all([
+    get(`/income-statement/${encodeURIComponent(sym)}?period=annual&limit=5`),
+    get(`/income-statement/${encodeURIComponent(sym)}?period=quarter&limit=8`),
+    get(`/cash-flow-statement/${encodeURIComponent(sym)}?period=annual&limit=5`),
+    get(`/cash-flow-statement/${encodeURIComponent(sym)}?period=quarter&limit=8`),
+    get(`/ratios/${encodeURIComponent(sym)}?period=annual&limit=1`),
+  ]);
+
+  if (!aIS && !qIS) return null; // complete failure
+
+  const parseIS = arr => (arr||[]).map(s => ({
+    endDate:               s.date?.slice(0,10) || null,
+    totalRevenue:          s.revenue                              ?? null,
+    grossProfit:           s.grossProfit                          ?? null,
+    operatingIncome:       s.operatingIncome                      ?? null,
+    ebitda:                s.ebitda                               ?? null,
+    netIncome:             s.netIncome                            ?? null,
+    researchDevelopment:   s.researchAndDevelopmentExpenses       ?? null,
+    sellingGeneralAdmin:   s.sellingAndMarketingExpenses != null
+                           ? (s.sellingAndMarketingExpenses + (s.generalAndAdministrativeExpenses||0))
+                           : (s.generalAndAdministrativeExpenses  ?? null),
+    totalOperatingExpenses:s.totalOperatingExpenses               ?? null,
+    interestExpense:       s.interestExpense                      ?? null,
+    incomeTaxExpense:      s.incomeTaxExpense                     ?? null,
+  })).filter(s => s.endDate);
+
+  const parseCF = arr => (arr||[]).map(s => ({
+    endDate:             s.date?.slice(0,10) || null,
+    operatingCashflow:   s.operatingCashFlow                           ?? null,
+    capitalExpenditures: s.capitalExpenditure                          ?? null,
+    freeCashflow:        s.freeCashFlow                                ?? null,
+    investingCashflow:   s.netCashUsedForInvestingActivities           ?? null,
+    financingCashflow:   s.netCashUsedProvidedByFinancingActivities    ?? null,
+    depreciation:        s.depreciationAndAmortization                 ?? null,
+  })).filter(s => s.endDate);
+
+  const r0 = ratios?.[0] || {};
+  // Calculate EBITDA margin from latest annual statement if not in ratios
+  const latestA = aIS?.[0];
+  const ebitdaMargin = (latestA?.ebitda && latestA?.revenue)
+    ? latestA.ebitda / latestA.revenue : null;
+
+  const kpis = {
+    grossMargins:            r0.grossProfitMargin      ?? null,
+    operatingMargins:        r0.operatingProfitMargin  ?? null,
+    ebitdaMargins:           ebitdaMargin,
+    profitMargins:           r0.netProfitMargin        ?? null,
+    revenueGrowth:           null, // not in FMP ratios endpoint
+    earningsGrowth:          null,
+    returnOnEquity:          r0.returnOnEquity         ?? null,
+    returnOnAssets:          r0.returnOnAssets         ?? null,
+    debtToEquity:            r0.debtEquityRatio        ?? null,
+    currentRatio:            r0.currentRatio           ?? null,
+    quickRatio:              r0.quickRatio             ?? null,
+    totalCash:               null,
+    totalDebt:               null,
+    freeCashflow:            null,
+    operatingCashflow:       null,
+    targetMeanPrice:         null,
+    numberOfAnalystOpinions: null,
+    recommendationKey:       null,
+  };
+
+  return {
+    _source: 'fmp',
+    annualIS:    parseIS(aIS),
+    quarterlyIS: parseIS(qIS),
+    annualCF:    parseCF(aCF),
+    quarterlyCF: parseCF(qCF),
+    kpis,
+  };
+}
+
 // ── Yahoo Finance crumb cache (30 min TTL) ───────────────────────────────────
 let _yahooCrumb = null, _yahooCrumbExpiry = 0;
 
@@ -3558,7 +3689,38 @@ async function fetchFinancialData() {
   st.textContent = `Getting session crumb…`;
   st.style.color = 'var(--txt3)';
 
-  const raw = await yahooFetchFinancials(finSelectedTicker);
+  // Try FMP first (reliable, no CORS issues); fall back to Yahoo
+  let raw = null;
+  const fmpKey = getFmpKey();
+  if (fmpKey) {
+    st.textContent = 'Fetching from Financial Modeling Prep…';
+    const fmpResult = await fmpFetchFinancials(finSelectedTicker);
+    if (fmpResult) {
+      // Convert FMP structure to the same shape fetchFinancialData expects
+      raw = {
+        _source: 'fmp',
+        incomeStatementHistory:            { incomeStatementHistory: fmpResult.annualIS.map(s => ({
+          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
+        })) },
+        incomeStatementHistoryQuarterly:   { incomeStatementHistory: fmpResult.quarterlyIS.map(s => ({
+          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
+        })) },
+        cashflowStatementHistory:          { cashflowStatements: fmpResult.annualCF.map(s => ({
+          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
+        })) },
+        cashflowStatementHistoryQuarterly: { cashflowStatements: fmpResult.quarterlyCF.map(s => ({
+          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
+        })) },
+        financialData: Object.fromEntries(
+          Object.entries(fmpResult.kpis).map(([k,v]) => [k, typeof v === 'string' ? v : {raw:v}])
+        ),
+      };
+    }
+  }
+  if (!raw) {
+    st.textContent = fmpKey ? 'FMP failed — trying Yahoo…' : 'Fetching from Yahoo Finance…';
+    raw = await yahooFetchFinancials(finSelectedTicker);
+  }
   if (!raw || raw._failed) {
     btn.disabled = false;
     btn.textContent = '⚡ Update Financial Data';
