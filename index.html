@@ -511,6 +511,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="menu-nav-btn" onclick="menuNav('fx')">
       <span class="menu-nav-icon">&#8652;</span>FX Rates
     </button>
+    <button class="menu-nav-btn" onclick="menuNav('financial-analysis')">
+      <span class="menu-nav-icon">&#9783;</span>Financial Analysis
+    </button>
   </div>
   <div style="padding:12px 18px;border-top:1px solid var(--bdr);font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--txt3);letter-spacing:.5px;">
     v1.2 &middot; MAY 2026
@@ -815,6 +818,25 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 </div>
 </div>
 
+<div class="sec" id="sec-financial-analysis">
+  <div style="padding:16px 20px 8px;">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+      <select id="fin-stock-select" onchange="finOnStockChange()" style="background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:5px 8px;border-radius:4px;outline:none;min-width:220px;">
+        <option value="">— select a stock —</option>
+      </select>
+      <div style="display:flex;border:1px solid var(--bdr);border-radius:4px;overflow:hidden;">
+        <button id="fin-btn-annual" onclick="finSetPeriod('annual')" style="padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;border:none;cursor:pointer;background:var(--acc);color:#fff;">Annual</button>
+        <button id="fin-btn-quarterly" onclick="finSetPeriod('quarterly')" style="padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;border:none;cursor:pointer;background:var(--surf2);color:var(--txt2);">Quarterly</button>
+      </div>
+      <button id="fin-fetch-btn" onclick="fetchFinancialData()" disabled style="background:var(--surf2);border:1px solid var(--bdr);color:var(--txt3);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 12px;border-radius:4px;cursor:not-allowed;">&#9889; Update Financial Data</button>
+      <span id="fin-status" style="font-size:11px;color:var(--txt3);"></span>
+    </div>
+    <div id="fin-meta" style="font-size:10px;color:var(--txt3);min-height:16px;"></div>
+  </div>
+  <div id="fin-body" style="padding:0 20px 32px;">
+    <p style="color:var(--txt3);font-size:12px;margin-top:24px;">Select a stock above, then click ⚡ Update Financial Data.</p>
+  </div>
+</div>
 <div class="sec" id="sec-fx">
   <div style="max-width:520px;margin:32px auto;font-family:'IBM Plex Mono',monospace;">
     <h2 style="font-size:15px;font-weight:700;color:var(--txt);margin-bottom:6px;letter-spacing:.5px;">FX CONVERSION RATES</h2>
@@ -2614,6 +2636,15 @@ function toEur(amount, ex) {
   return rate ? amount * rate : null;
 }
 
+
+const LS_FIN_KEY = 'investment_fin_v1';
+function loadFinancialData(){ try { const r=localStorage.getItem(LS_FIN_KEY); return r?JSON.parse(r):{}; } catch(e){return{};} }
+function saveFinancialData(){ try { localStorage.setItem(LS_FIN_KEY, JSON.stringify(financialData)); } catch(e){} }
+let financialData = loadFinancialData(); // { [ticker]: { annual:[...], quarterly:[...], kpis:{}, lastUpdated:'' } }
+let finSelectedTicker = null;
+let finPeriod = 'annual'; // 'annual' | 'quarterly'
+let finNeedsRefetch = false; // true after stock change, cleared after fetch
+
 // ── GITHUB SYNC ──────────────────────────────────────────────────────────────
 const GH_OWNER = 'AndyKupke';
 const GH_REPO  = 'Stocks';
@@ -2694,6 +2725,7 @@ async function syncToGitHub(){
     customStocks: CUSTOM_STOCKS,
         additionalShares: ADDITIONAL_SHARES,
     fxRates,
+    financialData,
     lastUpdated: new Date().toISOString()
   };
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
@@ -3302,6 +3334,356 @@ function closeMenu() {
   document.getElementById('menu-drawer').classList.remove('open');
   document.getElementById('menu-overlay').style.display = 'none';
 }
+// ── FINANCIAL ANALYSIS ────────────────────────────────────────────────────────
+
+async function yahooFetchFinancials(ticker) {
+  const ySym = toYahooSym(ticker);
+  const modules = [
+    'incomeStatementHistory','incomeStatementHistoryQuarterly',
+    'cashflowStatementHistory','cashflowStatementHistoryQuarterly',
+    'financialData'
+  ].join(',');
+  const base1 = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=${modules}`;
+  const base2 = base1.replace('query1','query2');
+  const hdrs  = {
+    'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Accept':'application/json, text/plain, */*',
+    'Accept-Language':'en-US,en;q=0.9',
+  };
+  const attempts = [
+    { url: base1, h: hdrs },
+    { url: base2, h: hdrs },
+    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base1)}`, h: {} },
+    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base2)}`, h: {} },
+    { url: `https://corsproxy.io/?${encodeURIComponent(base1)}`, h: {} },
+    { url: `https://corsproxy.io/?${encodeURIComponent(base2)}`, h: {} },
+    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base2)}`, h: {} },
+  ];
+  for (const { url, h } of attempts) {
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000), headers: h });
+      if (!r.ok) continue;
+      const text = await r.text();
+      if (!text || text.length < 100) continue;
+      let json;
+      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e) { continue; }
+      const result = json?.quoteSummary?.result?.[0];
+      if (result) return result;
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+function finParseStatements(arr) {
+  return (arr||[]).map(s => ({
+    endDate:                   s.endDate?.fmt || null,
+    totalRevenue:              s.totalRevenue?.raw ?? null,
+    grossProfit:               s.grossProfit?.raw ?? null,
+    operatingIncome:           s.operatingIncome?.raw ?? null,
+    ebitda:                    s.ebitda?.raw ?? null,
+    netIncome:                 (s.netIncome?.raw ?? s.netIncomeApplicableToCommonShares?.raw) ?? null,
+    researchDevelopment:       s.researchDevelopment?.raw ?? null,
+    sellingGeneralAdmin:       s.sellingGeneralAdministrative?.raw ?? null,
+    totalOperatingExpenses:    s.totalOperatingExpenses?.raw ?? null,
+    interestExpense:           s.interestExpense?.raw ?? null,
+    incomeTaxExpense:          s.incomeTaxExpense?.raw ?? null,
+  })).filter(s => s.endDate);
+}
+
+function finParseCashflows(arr) {
+  return (arr||[]).map(s => ({
+    endDate:            s.endDate?.fmt || null,
+    operatingCashflow:  s.totalCashFromOperatingActivities?.raw ?? null,
+    capitalExpenditures:s.capitalExpenditures?.raw ?? null,
+    freeCashflow:       s.freeCashflow?.raw ?? null,
+    investingCashflow:  s.totalCashFromInvestingActivities?.raw ?? null,
+    financingCashflow:  s.totalCashFromFinancingActivities?.raw ?? null,
+    depreciation:       s.depreciation?.raw ?? null,
+  })).filter(s => s.endDate);
+}
+
+function finMergeByDate(existing, incoming) {
+  const map = {};
+  (existing||[]).forEach(r => { if(r.endDate) map[r.endDate] = {...r}; });
+  incoming.forEach(r => { if(r.endDate) map[r.endDate] = { ...(map[r.endDate]||{}), ...r }; });
+  return Object.values(map).sort((a,b) => b.endDate.localeCompare(a.endDate));
+}
+
+function finMergeISCF(isArr, cfArr) {
+  const map = {};
+  isArr.forEach(r => { if(r.endDate) map[r.endDate] = {...r}; });
+  cfArr.forEach(r => { if(r.endDate) map[r.endDate] = { ...(map[r.endDate]||{}), ...r }; });
+  return Object.values(map).sort((a,b) => b.endDate.localeCompare(a.endDate));
+}
+
+async function fetchFinancialData() {
+  if (!finSelectedTicker) return;
+  const btn = document.getElementById('fin-fetch-btn');
+  const st  = document.getElementById('fin-status');
+  const meta= document.getElementById('fin-meta');
+  btn.disabled = true;
+  btn.textContent = '⏳ Fetching…';
+  st.textContent = `Fetching financials for ${finSelectedTicker}…`;
+  st.style.color = 'var(--txt3)';
+
+  const raw = await yahooFetchFinancials(finSelectedTicker);
+  if (!raw) {
+    btn.disabled = false;
+    btn.textContent = '⚡ Update Financial Data';
+    st.textContent = '⚠ Could not fetch — try again or check ticker';
+    st.style.color = 'var(--red)';
+    return;
+  }
+
+  const existingEntry = financialData[finSelectedTicker] || {};
+  const annualIS   = finParseStatements(raw.incomeStatementHistory?.incomeStatementHistory);
+  const quarterlyIS= finParseStatements(raw.incomeStatementHistoryQuarterly?.incomeStatementHistory);
+  const annualCF   = finParseCashflows(raw.cashflowStatementHistory?.cashflowStatements);
+  const quarterlyCF= finParseCashflows(raw.cashflowStatementHistoryQuarterly?.cashflowStatements);
+  const fd = raw.financialData || {};
+
+  const newAnnual    = finMergeISCF(annualIS, annualCF);
+  const newQuarterly = finMergeISCF(quarterlyIS, quarterlyCF);
+
+  const prevAnnualCount    = (existingEntry.annual||[]).length;
+  const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
+
+  financialData[finSelectedTicker] = {
+    annual:    finMergeByDate(existingEntry.annual, newAnnual),
+    quarterly: finMergeByDate(existingEntry.quarterly, newQuarterly),
+    kpis: {
+      grossMargins:            fd.grossMargins?.raw ?? null,
+      operatingMargins:        fd.operatingMargins?.raw ?? null,
+      ebitdaMargins:           fd.ebitdaMargins?.raw ?? null,
+      profitMargins:           fd.profitMargins?.raw ?? null,
+      revenueGrowth:           fd.revenueGrowth?.raw ?? null,
+      earningsGrowth:          fd.earningsGrowth?.raw ?? null,
+      returnOnEquity:          fd.returnOnEquity?.raw ?? null,
+      returnOnAssets:          fd.returnOnAssets?.raw ?? null,
+      debtToEquity:            fd.debtToEquity?.raw ?? null,
+      currentRatio:            fd.currentRatio?.raw ?? null,
+      quickRatio:              fd.quickRatio?.raw ?? null,
+      totalCash:               fd.totalCash?.raw ?? null,
+      totalDebt:               fd.totalDebt?.raw ?? null,
+      freeCashflow:            fd.freeCashflow?.raw ?? null,
+      operatingCashflow:       fd.operatingCashflow?.raw ?? null,
+      targetMeanPrice:         fd.targetMeanPrice?.raw ?? null,
+      numberOfAnalystOpinions: fd.numberOfAnalystOpinions?.raw ?? null,
+      recommendationKey:       fd.recommendationKey ?? null,
+    },
+    lastUpdated: new Date().toISOString()
+  };
+
+  saveFinancialData();
+  scheduleSave();
+  finNeedsRefetch = false;
+
+  const entry = financialData[finSelectedTicker];
+  const addedA = entry.annual.length    - prevAnnualCount;
+  const addedQ = entry.quarterly.length - prevQuarterlyCount;
+  const addedMsg = (addedA > 0 || addedQ > 0)
+    ? ` · +${addedA} annual, +${addedQ} quarterly periods`
+    : ' · data refreshed';
+
+  btn.disabled = false;
+  btn.textContent = '⚡ Update Financial Data';
+  st.textContent = `✓ Updated${addedMsg}`;
+  st.style.color = 'var(--grn)';
+  setTimeout(() => { st.textContent = ''; }, 4000);
+
+  renderFinancialBody();
+}
+
+function finOnStockChange() {
+  const sel = document.getElementById('fin-stock-select');
+  finSelectedTicker = sel.value || null;
+  finNeedsRefetch = true;
+  const btn = document.getElementById('fin-fetch-btn');
+  if (btn) {
+    btn.disabled = !finSelectedTicker;
+    btn.style.background = finSelectedTicker ? 'var(--acc)' : 'var(--surf2)';
+    btn.style.color       = finSelectedTicker ? '#fff'       : 'var(--txt3)';
+    btn.style.cursor      = finSelectedTicker ? 'pointer'    : 'not-allowed';
+    btn.style.borderColor = finSelectedTicker ? 'var(--acc)' : 'var(--bdr)';
+  }
+  renderFinancialBody();
+}
+
+function finSetPeriod(p) {
+  finPeriod = p;
+  const aBtn = document.getElementById('fin-btn-annual');
+  const qBtn = document.getElementById('fin-btn-quarterly');
+  if (aBtn) { aBtn.style.background = p==='annual'    ? 'var(--acc)' : 'var(--surf2)'; aBtn.style.color = p==='annual'    ? '#fff' : 'var(--txt2)'; }
+  if (qBtn) { qBtn.style.background = p==='quarterly' ? 'var(--acc)' : 'var(--surf2)'; qBtn.style.color = p==='quarterly' ? '#fff' : 'var(--txt2)'; }
+  renderFinancialBody();
+}
+
+function fmtFin(v) {
+  if (v == null) return '<span style="color:var(--txt3)">—</span>';
+  const abs = Math.abs(v), s = v < 0 ? '-' : '';
+  if (abs >= 1e12) return `<span>${s}${(abs/1e12).toFixed(2)}T</span>`;
+  if (abs >= 1e9)  return `<span>${s}${(abs/1e9).toFixed(2)}B</span>`;
+  if (abs >= 1e6)  return `<span>${s}${(abs/1e6).toFixed(0)}M</span>`;
+  return `<span>${s}${abs.toFixed(0)}</span>`;
+}
+function fmtFinColor(v) {
+  if (v == null) return '<span style="color:var(--txt3)">—</span>';
+  const col = v >= 0 ? 'var(--grn)' : 'var(--red)';
+  const abs = Math.abs(v), s = v < 0 ? '-' : '+';
+  if (abs >= 1e9)  return `<span style="color:${col}">${s}${(abs/1e9).toFixed(2)}B</span>`;
+  if (abs >= 1e6)  return `<span style="color:${col}">${s}${(abs/1e6).toFixed(0)}M</span>`;
+  return `<span style="color:${col}">${s}${abs.toFixed(0)}</span>`;
+}
+function fmtPctFin(v) {
+  if (v == null) return '<span style="color:var(--txt3)">—</span>';
+  const pct = (v*100).toFixed(1);
+  const col = v >= 0 ? 'var(--grn)' : 'var(--red)';
+  return `<span style="color:${col}">${pct}%</span>`;
+}
+function fmtRatioFin(v, decimals=2) {
+  if (v == null) return '<span style="color:var(--txt3)">—</span>';
+  return `<span>${v.toFixed(decimals)}x</span>`;
+}
+
+function finBuildTable(title, rows, periods) {
+  if (!periods.length) return '';
+  const maxCols = Math.min(periods.length, 8);
+  const cols = periods.slice(0, maxCols);
+  const thCells = cols.map(p => `<th style="text-align:right;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.3px;white-space:nowrap;">${p.endDate||'—'}</th>`).join('');
+  const bodyRows = rows.map(({ label, key, fmt, indent }) => {
+    const td = cols.map(p => {
+      const v = p[key];
+      const formatted = fmt ? fmt(v) : fmtFin(v);
+      return `<td style="text-align:right;padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;">${formatted}</td>`;
+    }).join('');
+    const labelStyle = indent
+      ? 'padding:5px 12px 5px 24px;font-size:11px;color:var(--txt2);'
+      : 'padding:5px 12px;font-size:11px;color:var(--txt);font-weight:600;';
+    return `<tr style="border-bottom:1px solid var(--bdr);">
+      <td style="${labelStyle}white-space:nowrap;">${label}</td>${td}</tr>`;
+  }).join('');
+  return `
+    <div style="margin-bottom:28px;">
+      <h3 style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--txt3);margin:0 0 8px;text-transform:uppercase;padding:0 4px;">${title}</h3>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:500px;">
+          <thead><tr style="border-bottom:2px solid var(--bdr2);">
+            <th style="text-align:left;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;min-width:180px;">ITEM</th>
+            ${thCells}
+          </tr></thead>
+          <tbody>${bodyRows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function finBuildKpiTable(kpis) {
+  if (!kpis) return '';
+  const rows = [
+    { label:'Gross Margin',         v: fmtPctFin(kpis.grossMargins) },
+    { label:'Operating Margin',     v: fmtPctFin(kpis.operatingMargins) },
+    { label:'EBITDA Margin',        v: fmtPctFin(kpis.ebitdaMargins) },
+    { label:'Net Margin',           v: fmtPctFin(kpis.profitMargins) },
+    { label:'Revenue Growth (YoY)', v: fmtPctFin(kpis.revenueGrowth) },
+    { label:'Earnings Growth',      v: fmtPctFin(kpis.earningsGrowth) },
+    { label:'Return on Equity',     v: fmtPctFin(kpis.returnOnEquity) },
+    { label:'Return on Assets',     v: fmtPctFin(kpis.returnOnAssets) },
+    { label:'Debt / Equity',        v: kpis.debtToEquity != null ? `<span>${kpis.debtToEquity.toFixed(2)}x</span>` : '<span style="color:var(--txt3)">—</span>' },
+    { label:'Current Ratio',        v: kpis.currentRatio  != null ? `<span>${kpis.currentRatio.toFixed(2)}x</span>`  : '<span style="color:var(--txt3)">—</span>' },
+    { label:'Quick Ratio',          v: kpis.quickRatio    != null ? `<span>${kpis.quickRatio.toFixed(2)}x</span>`    : '<span style="color:var(--txt3)">—</span>' },
+    { label:'Total Cash',           v: fmtFin(kpis.totalCash) },
+    { label:'Total Debt',           v: fmtFin(kpis.totalDebt) },
+    { label:'Free Cash Flow (TTM)', v: fmtFin(kpis.freeCashflow) },
+    { label:'Operating CF (TTM)',   v: fmtFin(kpis.operatingCashflow) },
+    { label:'Analyst Target Price', v: kpis.targetMeanPrice != null ? `<span>${kpis.targetMeanPrice.toFixed(2)}</span>` : '<span style="color:var(--txt3)">—</span>' },
+    { label:'Analyst Recommendation',v:kpis.recommendationKey ? `<span style="text-transform:uppercase;letter-spacing:.5px;">${kpis.recommendationKey}</span>` : '<span style="color:var(--txt3)">—</span>' },
+  ];
+  const halfway = Math.ceil(rows.length / 2);
+  const col1 = rows.slice(0, halfway);
+  const col2 = rows.slice(halfway);
+  const makeRows = arr => arr.map(r =>
+    `<tr style="border-bottom:1px solid var(--bdr);">
+       <td style="padding:5px 12px;font-size:11px;color:var(--txt2);white-space:nowrap;">${r.label}</td>
+       <td style="padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-align:right;">${r.v}</td>
+     </tr>`).join('');
+  return `
+    <div style="margin-bottom:28px;">
+      <h3 style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--txt3);margin:0 0 8px;text-transform:uppercase;padding:0 4px;">KEY METRICS &amp; RATIOS (TTM / CURRENT)</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;overflow-x:auto;">
+        <table style="border-collapse:collapse;"><tbody>${makeRows(col1)}</tbody></table>
+        <table style="border-collapse:collapse;"><tbody>${makeRows(col2)}</tbody></table>
+      </div>
+    </div>`;
+}
+
+function renderFinancialBody() {
+  const body = document.getElementById('fin-body');
+  const meta = document.getElementById('fin-meta');
+  if (!body) return;
+
+  if (!finSelectedTicker) {
+    body.innerHTML = '<p style="color:var(--txt3);font-size:12px;margin-top:24px;">Select a stock above, then click ⚡ Update Financial Data.</p>';
+    if (meta) meta.textContent = '';
+    return;
+  }
+
+  const entry = financialData[finSelectedTicker];
+  if (!entry) {
+    body.innerHTML = `<p style="color:var(--txt3);font-size:12px;margin-top:24px;">No data yet for <strong>${finSelectedTicker}</strong>. Click ⚡ Update Financial Data to fetch.</p>`;
+    if (meta) meta.textContent = '';
+    return;
+  }
+
+  const periods = finPeriod === 'annual' ? (entry.annual||[]) : (entry.quarterly||[]);
+  const annualCount    = (entry.annual||[]).length;
+  const quarterlyCount = (entry.quarterly||[]).length;
+  const updStr = entry.lastUpdated ? new Date(entry.lastUpdated).toLocaleString([],{dateStyle:'medium',timeStyle:'short'}) : '—';
+  if (meta) meta.textContent = `Last updated: ${updStr}  ·  ${annualCount} annual periods  ·  ${quarterlyCount} quarterly periods`;
+
+  if (!periods.length) {
+    body.innerHTML = `<p style="color:var(--txt3);font-size:12px;margin-top:24px;">No ${finPeriod} data available. Try fetching.</p>`;
+    return;
+  }
+
+  const plRows = [
+    { label:'Revenue',                key:'totalRevenue',           fmt: fmtFin },
+    { label:'Gross Profit',           key:'grossProfit',             fmt: fmtFin },
+    { label:'Operating Income',       key:'operatingIncome',         fmt: fmtFin },
+    { label:'EBITDA',                 key:'ebitda',                  fmt: fmtFin },
+    { label:'Net Income',             key:'netIncome',               fmt: fmtFin },
+    { label:'R&D Expenses',           key:'researchDevelopment',     fmt: v => fmtFin(v), indent:true },
+    { label:'SG&A Expenses',          key:'sellingGeneralAdmin',     fmt: v => fmtFin(v), indent:true },
+    { label:'Interest Expense',       key:'interestExpense',         fmt: v => fmtFin(v), indent:true },
+    { label:'Income Tax',             key:'incomeTaxExpense',        fmt: v => fmtFin(v), indent:true },
+  ];
+
+  const cfRows = [
+    { label:'Operating Cash Flow',    key:'operatingCashflow',   fmt: fmtFin },
+    { label:'Capital Expenditures',   key:'capitalExpenditures', fmt: fmtFin },
+    { label:'Free Cash Flow',         key:'freeCashflow',        fmt: fmtFin },
+    { label:'Investing Cash Flow',    key:'investingCashflow',   fmt: v => fmtFin(v), indent:true },
+    { label:'Financing Cash Flow',    key:'financingCashflow',   fmt: v => fmtFin(v), indent:true },
+    { label:'Depreciation & Amort.',  key:'depreciation',        fmt: v => fmtFin(v), indent:true },
+  ];
+
+  body.innerHTML =
+    finBuildTable('P&L Statement', plRows, periods) +
+    finBuildTable('Cash Flow Statement', cfRows, periods) +
+    finBuildKpiTable(entry.kpis);
+}
+
+function renderFinancialTab() {
+  // Populate stock selector
+  const sel = document.getElementById('fin-stock-select');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— select a stock —</option>' +
+    [...ST].sort((a,b)=>a.n.localeCompare(b.n)).map(s =>
+      `<option value="${s.t}" ${s.t===prev?'selected':''}>${s.n} (${s.t})</option>`
+    ).join('');
+  if (prev && finSelectedTicker === prev) renderFinancialBody();
+}
+
 function menuNav(tabId) {
   if (tabId === 'plan') {
     requestAnimationFrame(() => renderPlan());
@@ -3312,6 +3694,7 @@ function menuNav(tabId) {
   closeMenu();
   showTab(tabId, null);   // no tab bar buttons — null is safe
   if (tabId === 'fx') renderFxTab();
+  if (tabId === 'financial-analysis') renderFinancialTab();
   syncMenuActive();
 }
 function syncMenuActive() {
@@ -4462,6 +4845,7 @@ async function init(){
     if(ghData.customStocks)     CUSTOM_STOCKS     = ghData.customStocks;
     if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
     if(ghData.fxRates)          fxRates           = ghData.fxRates;
+    if(ghData.financialData)    financialData     = ghData.financialData;
     try{ localStorage.setItem(LS_KEY,       JSON.stringify(PORTFOLIO));   }catch(e){}
     try{ localStorage.setItem(LS_BUY_KEY,   JSON.stringify([...BUY_SET]));}catch(e){}
     try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));   }catch(e){}
@@ -4472,6 +4856,7 @@ async function init(){
     if(ghData.customStocks)     CUSTOM_STOCKS     = ghData.customStocks;
     if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
     if(ghData.fxRates)          fxRates           = ghData.fxRates;
+    if(ghData.financialData)    financialData     = ghData.financialData;
     setSyncStatus('Local changes detected — syncing…', 'var(--org)');
     setTimeout(syncToGitHub, 500);
   } else {
