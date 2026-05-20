@@ -3369,7 +3369,7 @@ async function getYahooCrumb() {
 }
 
 // ── Core fetcher: try quoteSummary v10 with/without crumb via 6 proxies ───────
-async function _tryQuoteSummary(ySym, modules, crumb) {
+async function _tryQuoteSummary(ySym, modules, crumb, log=[]) {
   const cs   = crumb ? `&crumb=${encodeURIComponent(crumb)}` : '';
   const base  = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=${modules}${cs}`;
   const base1 = base.replace('query2','query1');
@@ -3390,42 +3390,55 @@ async function _tryQuoteSummary(ySym, modules, crumb) {
   for (const { url, h } of attempts) {
     try {
       const r = await fetch(url, { signal: AbortSignal.timeout(15000), headers: h });
+      const label = (crumb?'crumb':'noauth')+' '+url.slice(0,55);
+      log.push(`${label}: HTTP ${r.status}`);
       if (!r.ok) continue;
       const text = await r.text();
-      if (!text || text.length < 100) continue;
+      if (!text || text.length < 100) { log.push(label+': empty body'); continue; }
       let json;
-      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e){ continue; }
-      // Check for Yahoo auth errors — these are "successful" HTTP responses with error bodies
-      if (json?.quoteSummary?.error?.code) continue;
+      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e){ log.push(label+': JSON err'); continue; }
+      const errCode = json?.quoteSummary?.error?.code;
+      if (errCode) { log.push(label+': Yahoo error: '+errCode); continue; }
       const result = json?.quoteSummary?.result?.[0];
-      if (result) return result;
-    } catch(e) { continue; }
+      if (result) { log.push(label+': SUCCESS'); return result; }
+      log.push(label+': no result');
+    } catch(e) { log.push((crumb?'crumb':'noauth')+' '+url.slice(0,50)+': '+( e.message||e)); continue; }
   }
   return null;
 }
 
-// ── v7/quote fallback: builds a synthetic quoteSummary result with TTM KPIs only ─
-async function _tryQuoteV7Fallback(ySym) {
-  const qUrl = `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}&fields=grossMargins,operatingMargins,profitMargins,ebitdaMargins,revenueGrowth,earningsGrowth,returnOnEquity,returnOnAssets,debtToEquity,currentRatio,quickRatio,totalCash,totalDebt,freeCashflow,operatingCashflow,targetMeanPrice,numberOfAnalystOpinions,recommendationKey,ebitda,totalRevenue,revenuePerShare,grossProfits`;
-  const proxies = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(qUrl)}`,
-    `https://corsproxy.io/?${encodeURIComponent(qUrl)}`,
-    `https://thingproxy.freeboard.io/fetch/${qUrl}`,
+// ── v7/quote fallback — same endpoint the price fetcher already uses successfully ─
+async function _tryQuoteV7Fallback(ySym, log) {
+  // Use EXACT same URL format as the working price fetcher (no custom fields param)
+  const qUrl1 = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}`;
+  const qUrl2 = qUrl1.replace('query1','query2');
+  const hdrs  = {
+    'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Accept':'application/json, text/plain, */*',
+  };
+  const attempts = [
+    { u: qUrl1, h: hdrs },
+    { u: qUrl2, h: hdrs },
+    { u: `https://api.allorigins.win/raw?url=${encodeURIComponent(qUrl2)}`, h: {} },
+    { u: `https://corsproxy.io/?${encodeURIComponent(qUrl2)}`,              h: {} },
+    { u: `https://thingproxy.freeboard.io/fetch/${qUrl2}`,                  h: {} },
   ];
-  for (const u of proxies) {
+  for (const { u, h } of attempts) {
     try {
-      const r = await fetch(u, { signal: AbortSignal.timeout(10000) });
+      const r = await fetch(u, { signal: AbortSignal.timeout(10000), headers: h });
+      log.push(`v7 ${u.slice(0,60)}: HTTP ${r.status}`);
       if (!r.ok) continue;
       const text = await r.text();
-      if (!text || text.length < 50) continue;
+      if (!text || text.length < 50) { log.push('v7: empty body'); continue; }
       let json;
-      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e){ continue; }
+      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e){ log.push('v7: JSON parse error'); continue; }
       const q = json?.quoteResponse?.result?.[0];
-      if (!q) continue;
-      // Wrap into a minimal quoteSummary-shaped object so existing parse code works
+      if (!q) { log.push('v7: no quoteResponse result'); continue; }
+      log.push('v7: SUCCESS');
       return {
         _v7only: true,
         financialData: {
+          // v7/quote returns these financial fields in its default response
           grossMargins:            { raw: q.grossMargins            ?? null },
           operatingMargins:        { raw: q.operatingMargins        ?? null },
           ebitdaMargins:           { raw: q.ebitdaMargins           ?? null },
@@ -3446,13 +3459,19 @@ async function _tryQuoteV7Fallback(ySym) {
           recommendationKey:           q.recommendationKey          ?? null,
           ebitda:                  { raw: q.ebitda                  ?? null },
           totalRevenue:            { raw: q.totalRevenue            ?? null },
+          marketCap:               { raw: q.marketCap               ?? null },
+          trailingPE:              { raw: q.trailingPE              ?? null },
+          forwardPE:               { raw: q.forwardPE               ?? null },
+          priceToBook:             { raw: q.priceToBook             ?? null },
+          trailingEps:             { raw: q.trailingEps             ?? null },
+          forwardEps:              { raw: q.forwardEps              ?? null },
         },
-        incomeStatementHistory:            { incomeStatementHistory:   [] },
-        incomeStatementHistoryQuarterly:   { incomeStatementHistory:   [] },
-        cashflowStatementHistory:          { cashflowStatements:       [] },
-        cashflowStatementHistoryQuarterly: { cashflowStatements:       [] },
+        incomeStatementHistory:            { incomeStatementHistory: [] },
+        incomeStatementHistoryQuarterly:   { incomeStatementHistory: [] },
+        cashflowStatementHistory:          { cashflowStatements:     [] },
+        cashflowStatementHistoryQuarterly: { cashflowStatements:     [] },
       };
-    } catch(e) { continue; }
+    } catch(e) { log.push(`v7 ${u.slice(0,60)}: ${e.message||e}`); continue; }
   }
   return null;
 }
@@ -3464,21 +3483,27 @@ async function yahooFetchFinancials(ticker) {
     'cashflowStatementHistory','cashflowStatementHistoryQuarterly',
     'financialData'
   ].join(',');
+  const log = []; // collects per-attempt diagnostics shown on total failure
 
   // Pass 1 — no crumb (works when proxy IPs are not rate-limited by Yahoo)
-  let result = await _tryQuoteSummary(ySym, modules, null);
+  let result = await _tryQuoteSummary(ySym, modules, null, log);
   if (result) return result;
 
-  // Pass 2 — get a crumb and retry (crumb + browser cookie pair)
+  // Pass 2 — with crumb (browser cookie + crumb pair)
   const crumb = await getYahooCrumb();
+  log.push(`crumb: ${crumb ? crumb.slice(0,8)+'…' : 'none'}`);
   if (crumb) {
-    result = await _tryQuoteSummary(ySym, modules, crumb);
+    result = await _tryQuoteSummary(ySym, modules, crumb, log);
     if (result) return result;
-    _yahooCrumb = null; _yahooCrumbExpiry = 0; // invalidate stale crumb
+    _yahooCrumb = null; _yahooCrumbExpiry = 0;
   }
 
-  // Pass 3 — v7/quote fallback: TTM KPIs only, no historical statements
-  return await _tryQuoteV7Fallback(ySym);
+  // Pass 3 — v7/quote: same endpoint price fetcher uses; gives TTM KPIs
+  result = await _tryQuoteV7Fallback(ySym, log);
+  if (result) return result;
+
+  // Return log so caller can show diagnostics
+  return { _failed: true, _log: log };
 }
 
 function finParseStatements(arr) {
@@ -3534,11 +3559,22 @@ async function fetchFinancialData() {
   st.style.color = 'var(--txt3)';
 
   const raw = await yahooFetchFinancials(finSelectedTicker);
-  if (!raw) {
+  if (!raw || raw._failed) {
     btn.disabled = false;
     btn.textContent = '⚡ Update Financial Data';
-    st.textContent = '⚠ Yahoo Finance unreachable — disable privacy extensions or VPN and retry';
+    st.textContent = '⚠ All fetch attempts failed — see console for details';
     st.style.color = 'var(--red)';
+    const log = raw?._log || [];
+    console.group('Financial data fetch diagnostics for ' + finSelectedTicker);
+    log.forEach(l => console.log(l));
+    console.groupEnd();
+    // Show compact log in the body so user can report it
+    const body = document.getElementById('fin-body');
+    if (body) body.innerHTML = `
+      <p style="color:var(--red);font-size:12px;margin:16px 0 8px;">All fetch attempts failed. Diagnostics (also in browser console):</p>
+      <pre style="font-size:9px;color:var(--txt3);line-height:1.6;white-space:pre-wrap;word-break:break-all;background:var(--surf2);padding:10px;border-radius:4px;max-height:260px;overflow-y:auto;">${log.map(l=>l.replace(/&/g,'&amp;').replace(/</g,'&lt;')).join('
+')}</pre>
+      <p style="font-size:11px;color:var(--txt3);margin-top:8px;">Open browser DevTools → Console tab for the full log. Then retry — proxy IPs rotate.</p>`;
     return;
   }
   st.textContent = `Parsing data…`;
