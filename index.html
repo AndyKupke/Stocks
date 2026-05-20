@@ -3336,7 +3336,7 @@ function closeMenu() {
 }
 // ── FINANCIAL ANALYSIS ────────────────────────────────────────────────────────
 
-// Cache the Yahoo crumb for 30 min — avoids re-fetching on every ticker
+// ── Yahoo Finance crumb cache (30 min TTL) ───────────────────────────────────
 let _yahooCrumb = null, _yahooCrumbExpiry = 0;
 
 async function getYahooCrumb() {
@@ -3344,22 +3344,21 @@ async function getYahooCrumb() {
   const url = 'https://query2.finance.yahoo.com/v1/test/getcrumb';
   const hdrs = {
     'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    'Accept':'*/*',
-    'Accept-Language':'en-US,en;q=0.9',
+    'Accept':'*/*', 'Accept-Language':'en-US,en;q=0.9',
   };
-  const proxies = [
-    url,                                                           // direct — browser sends Yahoo cookies
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    `https://thingproxy.freeboard.io/fetch/${url}`,
+  const tries = [
+    { u: url,                                                            h: hdrs },
+    { u: `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, h: {} },
+    { u: `https://corsproxy.io/?${encodeURIComponent(url)}`,              h: {} },
+    { u: `https://thingproxy.freeboard.io/fetch/${url}`,                  h: {} },
+    { u: url.replace('query2','query1'),                                   h: hdrs },
   ];
-  for (const u of proxies) {
+  for (const { u, h } of tries) {
     try {
-      const r = await fetch(u, { signal: AbortSignal.timeout(8000), headers: u === url ? hdrs : {} });
+      const r = await fetch(u, { signal: AbortSignal.timeout(8000), headers: h });
       if (!r.ok) continue;
       const t = (await r.text()).trim();
-      // A valid crumb is a short alphanumeric string, not HTML/JSON
-      if (t && t.length < 60 && !t.startsWith('<') && !t.startsWith('{')) {
+      if (t && t.length < 60 && !t.startsWith('<') && !t.startsWith('{') && !t.includes(' ')) {
         _yahooCrumb = t;
         _yahooCrumbExpiry = Date.now() + 30 * 60 * 1000;
         return _yahooCrumb;
@@ -3369,38 +3368,25 @@ async function getYahooCrumb() {
   return null;
 }
 
-async function yahooFetchFinancials(ticker) {
-  const ySym = toYahooSym(ticker);
-  const modules = [
-    'incomeStatementHistory','incomeStatementHistoryQuarterly',
-    'cashflowStatementHistory','cashflowStatementHistoryQuarterly',
-    'financialData'
-  ].join(',');
-
-  // Crumb is required for quoteSummary since Yahoo locked it down
-  const crumb = await getYahooCrumb();
-  const crumbSuffix = crumb ? `&crumb=${encodeURIComponent(crumb)}` : '';
-
-  const base1 = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=${modules}${crumbSuffix}`;
-  const base2 = base1.replace('query1','query2');
+// ── Core fetcher: try quoteSummary v10 with/without crumb via 6 proxies ───────
+async function _tryQuoteSummary(ySym, modules, crumb) {
+  const cs   = crumb ? `&crumb=${encodeURIComponent(crumb)}` : '';
+  const base  = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=${modules}${cs}`;
+  const base1 = base.replace('query2','query1');
   const hdrs  = {
     'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    'Accept':'application/json, text/plain, */*',
-    'Accept-Language':'en-US,en;q=0.9',
+    'Accept':'application/json, text/plain, */*', 'Accept-Language':'en-US,en;q=0.9',
   };
-
-  // Direct requests first (browser sends Yahoo cookies → crumb validated), then proxies
   const attempts = [
+    { url: base,  h: hdrs },
     { url: base1, h: hdrs },
-    { url: base2, h: hdrs },
-    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base2)}`, h: {} },
-    { url: `https://corsproxy.io/?${encodeURIComponent(base2)}`,              h: {} },
-    { url: `https://thingproxy.freeboard.io/fetch/${base2}`,                  h: {} },
+    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`,  h: {} },
+    { url: `https://corsproxy.io/?${encodeURIComponent(base)}`,               h: {} },
+    { url: `https://thingproxy.freeboard.io/fetch/${base}`,                   h: {} },
     { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base1)}`, h: {} },
     { url: `https://corsproxy.io/?${encodeURIComponent(base1)}`,              h: {} },
-    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base2)}`, h: {} },
+    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`, h: {} },
   ];
-
   for (const { url, h } of attempts) {
     try {
       const r = await fetch(url, { signal: AbortSignal.timeout(15000), headers: h });
@@ -3408,16 +3394,91 @@ async function yahooFetchFinancials(ticker) {
       const text = await r.text();
       if (!text || text.length < 100) continue;
       let json;
-      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e) { continue; }
+      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e){ continue; }
+      // Check for Yahoo auth errors — these are "successful" HTTP responses with error bodies
+      if (json?.quoteSummary?.error?.code) continue;
       const result = json?.quoteSummary?.result?.[0];
       if (result) return result;
     } catch(e) { continue; }
   }
-
-  // Last resort: invalidate the cached crumb and signal caller to retry once
-  _yahooCrumb = null;
-  _yahooCrumbExpiry = 0;
   return null;
+}
+
+// ── v7/quote fallback: builds a synthetic quoteSummary result with TTM KPIs only ─
+async function _tryQuoteV7Fallback(ySym) {
+  const qUrl = `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}&fields=grossMargins,operatingMargins,profitMargins,ebitdaMargins,revenueGrowth,earningsGrowth,returnOnEquity,returnOnAssets,debtToEquity,currentRatio,quickRatio,totalCash,totalDebt,freeCashflow,operatingCashflow,targetMeanPrice,numberOfAnalystOpinions,recommendationKey,ebitda,totalRevenue,revenuePerShare,grossProfits`;
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(qUrl)}`,
+    `https://corsproxy.io/?${encodeURIComponent(qUrl)}`,
+    `https://thingproxy.freeboard.io/fetch/${qUrl}`,
+  ];
+  for (const u of proxies) {
+    try {
+      const r = await fetch(u, { signal: AbortSignal.timeout(10000) });
+      if (!r.ok) continue;
+      const text = await r.text();
+      if (!text || text.length < 50) continue;
+      let json;
+      try { const w = JSON.parse(text); json = w.contents ? JSON.parse(w.contents) : w; } catch(e){ continue; }
+      const q = json?.quoteResponse?.result?.[0];
+      if (!q) continue;
+      // Wrap into a minimal quoteSummary-shaped object so existing parse code works
+      return {
+        _v7only: true,
+        financialData: {
+          grossMargins:            { raw: q.grossMargins            ?? null },
+          operatingMargins:        { raw: q.operatingMargins        ?? null },
+          ebitdaMargins:           { raw: q.ebitdaMargins           ?? null },
+          profitMargins:           { raw: q.profitMargins           ?? null },
+          revenueGrowth:           { raw: q.revenueGrowth           ?? null },
+          earningsGrowth:          { raw: q.earningsGrowth          ?? null },
+          returnOnEquity:          { raw: q.returnOnEquity          ?? null },
+          returnOnAssets:          { raw: q.returnOnAssets          ?? null },
+          debtToEquity:            { raw: q.debtToEquity            ?? null },
+          currentRatio:            { raw: q.currentRatio            ?? null },
+          quickRatio:              { raw: q.quickRatio              ?? null },
+          totalCash:               { raw: q.totalCash               ?? null },
+          totalDebt:               { raw: q.totalDebt               ?? null },
+          freeCashflow:            { raw: q.freeCashflow            ?? null },
+          operatingCashflow:       { raw: q.operatingCashflow       ?? null },
+          targetMeanPrice:         { raw: q.targetMeanPrice         ?? null },
+          numberOfAnalystOpinions: { raw: q.numberOfAnalystOpinions ?? null },
+          recommendationKey:           q.recommendationKey          ?? null,
+          ebitda:                  { raw: q.ebitda                  ?? null },
+          totalRevenue:            { raw: q.totalRevenue            ?? null },
+        },
+        incomeStatementHistory:            { incomeStatementHistory:   [] },
+        incomeStatementHistoryQuarterly:   { incomeStatementHistory:   [] },
+        cashflowStatementHistory:          { cashflowStatements:       [] },
+        cashflowStatementHistoryQuarterly: { cashflowStatements:       [] },
+      };
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+async function yahooFetchFinancials(ticker) {
+  const ySym    = toYahooSym(ticker);
+  const modules = [
+    'incomeStatementHistory','incomeStatementHistoryQuarterly',
+    'cashflowStatementHistory','cashflowStatementHistoryQuarterly',
+    'financialData'
+  ].join(',');
+
+  // Pass 1 — no crumb (works when proxy IPs are not rate-limited by Yahoo)
+  let result = await _tryQuoteSummary(ySym, modules, null);
+  if (result) return result;
+
+  // Pass 2 — get a crumb and retry (crumb + browser cookie pair)
+  const crumb = await getYahooCrumb();
+  if (crumb) {
+    result = await _tryQuoteSummary(ySym, modules, crumb);
+    if (result) return result;
+    _yahooCrumb = null; _yahooCrumbExpiry = 0; // invalidate stale crumb
+  }
+
+  // Pass 3 — v7/quote fallback: TTM KPIs only, no historical statements
+  return await _tryQuoteV7Fallback(ySym);
 }
 
 function finParseStatements(arr) {
@@ -3492,6 +3553,7 @@ async function fetchFinancialData() {
   const newAnnual    = finMergeISCF(annualIS, annualCF);
   const newQuarterly = finMergeISCF(quarterlyIS, quarterlyCF);
 
+  const v7only = !!raw._v7only; // true when only TTM KPIs were available (no historical)
   const prevAnnualCount    = (existingEntry.annual||[]).length;
   const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
 
@@ -3528,15 +3590,17 @@ async function fetchFinancialData() {
   const entry = financialData[finSelectedTicker];
   const addedA = entry.annual.length    - prevAnnualCount;
   const addedQ = entry.quarterly.length - prevQuarterlyCount;
-  const addedMsg = (addedA > 0 || addedQ > 0)
-    ? ` · +${addedA} annual, +${addedQ} quarterly periods`
-    : ' · data refreshed';
+  const addedMsg = v7only
+    ? ' · KPIs only (Yahoo blocked full history — try again later)'
+    : (addedA > 0 || addedQ > 0)
+      ? ` · +${addedA} annual, +${addedQ} quarterly periods`
+      : ' · data refreshed';
 
   btn.disabled = false;
   btn.textContent = '⚡ Update Financial Data';
   st.textContent = `✓ Updated${addedMsg}`;
-  st.style.color = 'var(--grn)';
-  setTimeout(() => { st.textContent = ''; }, 4000);
+  st.style.color = v7only ? 'var(--ylw)' : 'var(--grn)';
+  setTimeout(() => { if (!v7only) st.textContent = ''; }, v7only ? 8000 : 4000);
 
   renderFinancialBody();
 }
