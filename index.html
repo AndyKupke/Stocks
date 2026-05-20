@@ -3382,10 +3382,12 @@ async function fmpFetchFinancials(ticker) {
 
   // FMP uses the same Yahoo-style exchange suffixes (.DE, .PA, .L, etc.)
   const sym = toYahooSym(ticker);
-  const BASE = 'https://financialmodelingprep.com/api/v3';
-  const get = async (path) => {
+  // FMP new stable API (post-Aug 2025): symbol is a query param, not path segment
+  const BASE = 'https://financialmodelingprep.com/stable';
+  const get = async (endpoint, params) => {
     try {
-      const url = `${BASE}${path}&apikey=${encodeURIComponent(apiKey)}`;
+      const qs = new URLSearchParams({ symbol: sym, ...params, apikey: apiKey }).toString();
+      const url = `${BASE}/${endpoint}?${qs}`;
       const r = await fetch(url, { signal: AbortSignal.timeout(12000) });
       if (!r.ok) return null;
       const d = await r.json();
@@ -3393,61 +3395,62 @@ async function fmpFetchFinancials(ticker) {
     } catch(e) { return null; }
   };
 
-  // Fetch all 4 endpoints in parallel (5 API calls total)
-  const [aIS, qIS, aCF, qCF, ratios] = await Promise.all([
-    get(`/income-statement/${encodeURIComponent(sym)}?period=annual&limit=5`),
-    get(`/income-statement/${encodeURIComponent(sym)}?period=quarter&limit=8`),
-    get(`/cash-flow-statement/${encodeURIComponent(sym)}?period=annual&limit=5`),
-    get(`/cash-flow-statement/${encodeURIComponent(sym)}?period=quarter&limit=8`),
-    get(`/ratios/${encodeURIComponent(sym)}?period=annual&limit=1`),
+  // Fetch all 6 endpoints in parallel (free tier: limit max 5)
+  const [aIS, qIS, aCF, qCF, ratios, keyMetrics] = await Promise.all([
+    get('income-statement',    { period: 'annual',  limit: 5 }),
+    get('income-statement',    { period: 'quarter', limit: 5 }),
+    get('cash-flow-statement', { period: 'annual',  limit: 5 }),
+    get('cash-flow-statement', { period: 'quarter', limit: 5 }),
+    get('ratios',              { period: 'annual',  limit: 1 }),
+    get('key-metrics',         { period: 'annual',  limit: 1 }),
   ]);
 
   if (!aIS && !qIS) return null; // complete failure
 
   const parseIS = arr => (arr||[]).map(s => ({
     endDate:               s.date?.slice(0,10) || null,
-    totalRevenue:          s.revenue                              ?? null,
-    grossProfit:           s.grossProfit                          ?? null,
-    operatingIncome:       s.operatingIncome                      ?? null,
-    ebitda:                s.ebitda                               ?? null,
-    netIncome:             s.netIncome                            ?? null,
-    researchDevelopment:   s.researchAndDevelopmentExpenses       ?? null,
-    sellingGeneralAdmin:   s.sellingAndMarketingExpenses != null
-                           ? (s.sellingAndMarketingExpenses + (s.generalAndAdministrativeExpenses||0))
-                           : (s.generalAndAdministrativeExpenses  ?? null),
-    totalOperatingExpenses:s.totalOperatingExpenses               ?? null,
-    interestExpense:       s.interestExpense                      ?? null,
-    incomeTaxExpense:      s.incomeTaxExpense                     ?? null,
+    totalRevenue:          s.revenue                                    ?? null,
+    grossProfit:           s.grossProfit                                ?? null,
+    operatingIncome:       s.operatingIncome                            ?? null,
+    ebitda:                s.ebitda                                     ?? null,
+    netIncome:             s.netIncome                                  ?? null,
+    researchDevelopment:   s.researchAndDevelopmentExpenses             ?? null,
+    sellingGeneralAdmin:   s.sellingGeneralAndAdministrativeExpenses    ?? null,
+    totalOperatingExpenses:s.operatingExpenses                          ?? null,
+    interestExpense:       s.interestExpense                            ?? null,
+    incomeTaxExpense:      s.incomeTaxExpense                           ?? null,
   })).filter(s => s.endDate);
 
   const parseCF = arr => (arr||[]).map(s => ({
     endDate:             s.date?.slice(0,10) || null,
-    operatingCashflow:   s.operatingCashFlow                           ?? null,
-    capitalExpenditures: s.capitalExpenditure                          ?? null,
-    freeCashflow:        s.freeCashFlow                                ?? null,
-    investingCashflow:   s.netCashUsedForInvestingActivities           ?? null,
-    financingCashflow:   s.netCashUsedProvidedByFinancingActivities    ?? null,
-    depreciation:        s.depreciationAndAmortization                 ?? null,
+    operatingCashflow:   s.operatingCashFlow                         ?? null,
+    capitalExpenditures: s.capitalExpenditure                        ?? null,
+    freeCashflow:        s.freeCashFlow                              ?? null,
+    investingCashflow:   s.netCashProvidedByInvestingActivities      ?? null,
+    financingCashflow:   s.netCashProvidedByFinancingActivities      ?? null,
+    depreciation:        s.depreciationAndAmortization               ?? null,
   })).filter(s => s.endDate);
 
-  const r0 = ratios?.[0] || {};
-  // Calculate EBITDA margin from latest annual statement if not in ratios
+  const r0 = ratios?.[0]     || {};
+  const km = keyMetrics?.[0] || {};
+
+  // Calculate EBITDA margin from latest annual statement
   const latestA = aIS?.[0];
   const ebitdaMargin = (latestA?.ebitda && latestA?.revenue)
-    ? latestA.ebitda / latestA.revenue : null;
+    ? latestA.ebitda / latestA.revenue : (r0.ebitdaMargin ?? null);
 
   const kpis = {
-    grossMargins:            r0.grossProfitMargin      ?? null,
-    operatingMargins:        r0.operatingProfitMargin  ?? null,
+    grossMargins:            r0.grossProfitMargin     ?? null,
+    operatingMargins:        r0.operatingProfitMargin ?? null,
     ebitdaMargins:           ebitdaMargin,
-    profitMargins:           r0.netProfitMargin        ?? null,
-    revenueGrowth:           null, // not in FMP ratios endpoint
+    profitMargins:           r0.netProfitMargin       ?? null,
+    revenueGrowth:           null,
     earningsGrowth:          null,
-    returnOnEquity:          r0.returnOnEquity         ?? null,
-    returnOnAssets:          r0.returnOnAssets         ?? null,
-    debtToEquity:            r0.debtEquityRatio        ?? null,
-    currentRatio:            r0.currentRatio           ?? null,
-    quickRatio:              r0.quickRatio             ?? null,
+    returnOnEquity:          km.returnOnEquity        ?? null,
+    returnOnAssets:          km.returnOnAssets        ?? null,
+    debtToEquity:            r0.debtToEquityRatio     ?? null,
+    currentRatio:            r0.currentRatio          ?? null,
+    quickRatio:              r0.quickRatio            ?? null,
     totalCash:               null,
     totalDebt:               null,
     freeCashflow:            null,
