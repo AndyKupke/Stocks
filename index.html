@@ -3433,10 +3433,11 @@ async function avFetchFinancials(ticker) {
     } catch(e) { return null; }
   };
 
-  const [isData, cfData, bsData] = await Promise.all([
+  const [isData, cfData, bsData, ovData] = await Promise.all([
     get('INCOME_STATEMENT'),
     get('CASH_FLOW'),
     get('BALANCE_SHEET'),
+    get('OVERVIEW'),           // reliable SharesOutstanding + richer KPIs
   ]);
 
   if (!isData?.annualReports?.length) return null;
@@ -3490,25 +3491,48 @@ async function avFetchFinancials(ticker) {
   const annualPeriods    = merge(annualIS,    annualCF);
   const quarterlyPeriods = merge(quarterlyIS, quarterlyCF);
 
-  // Balance sheet for EV (net debt + shares outstanding)
+  // Balance sheet for net debt
   const bs = bsData?.annualReports?.[0] || {};
   const cash = n(bs.cashAndShortTermInvestments) ?? n(bs.cashAndCashEquivalentsAtCarryingValue);
   const debt = n(bs.shortLongTermDebtTotal) ?? n(bs.longTermDebt);
   const netDebt = (cash != null && debt != null) ? debt - cash : null;
-  const sharesOutstanding = n(bs.commonStockSharesOutstanding);
 
-  // KPIs: calculate margins from latest annual
+  // Shares outstanding: OVERVIEW is more reliable than balance sheet field (often "None")
+  const ov = ovData || {};
+  const sharesOutstanding = n(ov.SharesOutstanding)
+                         ?? n(bs.commonStockSharesOutstanding)
+                         ?? null;
+
+  // KPIs: prefer OVERVIEW TTM values, fall back to calculated from latest annual
   const la = annualPeriods[0] || {};
+  const pct = v => { const x = n(v); return x != null ? x / 100 : null; }; // AV returns % as decimal strings like "0.1234" NOT "12.34"
+  // Note: AV OVERVIEW margin fields are already 0-1 decimals (e.g. "0.2691" = 26.91%)
   const kpis = {
-    grossMargins:     (la.grossProfit    && la.totalRevenue) ? la.grossProfit    / la.totalRevenue : null,
-    operatingMargins: (la.operatingIncome && la.totalRevenue) ? la.operatingIncome / la.totalRevenue : null,
-    ebitdaMargins:    (la.ebitda         && la.totalRevenue) ? la.ebitda         / la.totalRevenue : null,
-    profitMargins:    (la.netIncome      && la.totalRevenue) ? la.netIncome      / la.totalRevenue : null,
-    revenueGrowth: null, earningsGrowth: null, returnOnEquity: null, returnOnAssets: null,
-    debtToEquity: null, currentRatio: null, quickRatio: null,
-    totalCash: cash, totalDebt: debt,
-    freeCashflow: null, operatingCashflow: null,
-    targetMeanPrice: null, numberOfAnalystOpinions: null, recommendationKey: null,
+    grossMargins:     n(ov.GrossProfitTTM) && n(ov.RevenueTTM) ? n(ov.GrossProfitTTM) / n(ov.RevenueTTM)
+                    : (la.grossProfit && la.totalRevenue) ? la.grossProfit / la.totalRevenue : null,
+    operatingMargins: n(ov.OperatingMarginTTM)
+                    ?? ((la.operatingIncome && la.totalRevenue) ? la.operatingIncome / la.totalRevenue : null),
+    ebitdaMargins:    (la.ebitda && la.totalRevenue) ? la.ebitda / la.totalRevenue : null,
+    profitMargins:    n(ov.ProfitMargin)
+                    ?? ((la.netIncome && la.totalRevenue) ? la.netIncome / la.totalRevenue : null),
+    revenueGrowth:    n(ov.QuarterlyRevenueGrowthYOY),
+    earningsGrowth:   n(ov.QuarterlyEarningsGrowthYOY),
+    returnOnEquity:   n(ov.ReturnOnEquityTTM),
+    returnOnAssets:   n(ov.ReturnOnAssetsTTM),
+    debtToEquity:     n(ov.DebtToEquityRatioTTM) ?? n(ov.DebtToEquityRatio),
+    currentRatio:     null,
+    quickRatio:       null,
+    totalCash:        cash,
+    totalDebt:        debt,
+    freeCashflow:     null,
+    operatingCashflow:null,
+    targetMeanPrice:  n(ov.AnalystTargetPrice),
+    numberOfAnalystOpinions: n(ov.AnalystRatingStrongBuy) != null
+      ? (n(ov.AnalystRatingStrongBuy)||0) + (n(ov.AnalystRatingBuy)||0)
+        + (n(ov.AnalystRatingHold)||0) + (n(ov.AnalystRatingSell)||0)
+        + (n(ov.AnalystRatingStrongSell)||0)
+      : null,
+    recommendationKey: null,
   };
 
   return { _source: 'alphavantage', annualPeriods, quarterlyPeriods, kpis, netDebt, sharesOutstanding };
