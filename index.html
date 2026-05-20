@@ -3484,6 +3484,188 @@ async function fmpFetchFinancials(ticker) {
   };
 }
 
+// ── SEC EDGAR fallback (free, open CORS, all US-listed stocks) ───────────────
+// CIK map for all US portfolio tickers (pre-resolved from sec.gov/files/company_tickers.json)
+const EDGAR_CIK_MAP = {
+  'AAPL':'0000320193','ABNB':'0001559720','ADSK':'0000769397','ALAB':'0001736297',
+  'AMD':'0000002488','AMZN':'0001018724','ANET':'0001596532','APP':'0001751008',
+  'ARM':'0001973239','ASTS':'0001780312','ATAI':'0002081043','AVAV':'0001368622',
+  'AVGO':'0001730168','BABA':'0001577552','BE':'0001664703','BILL':'0001786352',
+  'BKNG':'0001075531','BRK.B':'0001067983','CAI':'0002019410','CCO':'0001334978',
+  'CEG':'0001868275','CIEN':'0000936395','CMPS':'0001816590','COIN':'0001679788',
+  'COST':'0000909832','CRH':'0000849395','CRWD':'0001535527','CRWV':'0001769628',
+  'DDOG':'0001561550','DLR':'0001297996','DOCU':'0001261333','DUOL':'0001562088',
+  'ENPH':'0001463101','EQIX':'0001101239','ETN':'0001551182','EXPE':'0001324424',
+  'FCX':'0000831259','FDS':'0001013237','FLY':'0001860160','FN':'0001408710',
+  'FNV':'0001456346','FRSH':'0001544522','FSLR':'0001274494','GD':'0000040533',
+  'GEV':'0001996810','GGAL':'0001114700','GLW':'0000024741','GOLD':'0001591588',
+  'GOOGL':'0001652044','GTLB':'0001653482','HASI':'0001561894','HHH':'0001981792',
+  'HIMS':'0001773751','HLT':'0001585689','HOOD':'0001783879','HUBS':'0001404655',
+  'JOBY':'0001819848','KO':'0000021344','LLY':'0000059478','LRCX':'0000707549',
+  'LUV':'0000092380','MA':'0001141391','MELI':'0001099590','META':'0001326801',
+  'MOD':'0000067347','MRVL':'0001835632','MSCI':'0001408198','MSFT':'0000789019',
+  'MU':'0000723125','NEE':'0000753308','NEM':'0001164727','NET':'0001477333',
+  'NFLX':'0001065280','NOC':'0001133421','NOW':'0001373715','NVDA':'0001045810',
+  'NVO':'0000353278','ORCL':'0001341439','PAAS':'0000771992','PATH':'0001734722',
+  'PCOR':'0001611052','PL':'0001836833','PLTR':'0001321655','PRME':'0001894562',
+  'PWR':'0001050915','QCOM':'0000804328','RBRK':'0001943896','RCL':'0000884887',
+  'RDW':'0001819810','RGLD':'0000085535','RKLB':'0001819994','RTX':'0000101829',
+  'RVMD':'0001628171','RXRX':'0001601830','SAP':'0001000184','SATS':'0001415404',
+  'SHEL':'0001306965','SHOP':'0001594805','SMCI':'0001375365','SNDK':'0002023554',
+  'SNOW':'0001640147','SOFI':'0001818874','SPGI':'0000064040','SPIR':'0001816017',
+  'SPOT':'0001639920','SQM':'0000909037','STNG':'0001483934','TDOC':'0001477449',
+  'TEAM':'0001650372','TECK':'0000886986','TEM':'0001717115','TLN':'0001622536',
+  'TOST':'0001650164','TSAT':'0001845840','TSLA':'0001318605','TSM':'0001046179',
+  'TTD':'0001671933','UBER':'0001543151','UNH':'0000731766','V':'0001403161',
+  'VALE':'0000917851','VEEV':'0001393052','VOYG':'0001788060','VRT':'0001674101',
+  'VST':'0001692819','WDAY':'0001327811','WMB':'0000107263','WMT':'0000104169',
+  'WPM':'0001323404','XOM':'0000034088','ZS':'0001713683',
+};
+
+async function edgarFetchFinancials(ticker) {
+  const cik = EDGAR_CIK_MAP[ticker];
+  if (!cik) return null;
+  try {
+    const url = `https://data.sec.gov/api/xbrl/companyfacts/${cik}.json`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(25000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    const gaap = d.facts?.['us-gaap'] || {};
+
+    // Get USD entries for a concept, null if missing
+    const getUSD = c => gaap[c]?.units?.USD || null;
+
+    // Build deduplicated map: endDate → val, filtered by form type
+    const annMap = concept => {
+      const entries = getUSD(concept); if (!entries) return {};
+      const m = {};
+      for (const e of entries) {
+        if (e.form !== '10-K' || e.fp !== 'FY') continue;
+        if (!m[e.end] || e.filed > m[e.end].f) m[e.end] = { v: e.val, f: e.filed };
+      }
+      return Object.fromEntries(Object.entries(m).map(([k,x])=>[k,x.v]));
+    };
+    const qMap = concept => {
+      const entries = getUSD(concept); if (!entries) return {};
+      const m = {};
+      for (const e of entries) {
+        if (e.form !== '10-Q' || !e.start) continue;
+        const days = (new Date(e.end) - new Date(e.start)) / 86400000;
+        if (days < 75 || days > 105) continue; // individual quarter ≈ 90 days
+        if (!m[e.end] || e.filed > m[e.end].f) m[e.end] = { v: e.val, f: e.filed };
+      }
+      return Object.fromEntries(Object.entries(m).map(([k,x])=>[k,x.v]));
+    };
+
+    // Revenue: try multiple GAAP tags in order of preference
+    const revConceptOrder = [
+      'RevenueFromContractWithCustomerExcludingAssessedTax',
+      'Revenues','SalesRevenueNet','RevenueFromContractWithCustomerIncludingAssessedTax',
+    ];
+    let aRevMap = {}, qRevMap = {};
+    for (const c of revConceptOrder) {
+      aRevMap = annMap(c); if (Object.keys(aRevMap).length) break;
+    }
+    for (const c of revConceptOrder) {
+      qRevMap = qMap(c); if (Object.keys(qRevMap).length) break;
+    }
+
+    const aDates = Object.keys(aRevMap).sort((a,b) => b.localeCompare(a)).slice(0,5);
+    const qDates = Object.keys(qRevMap).sort((a,b) => b.localeCompare(a)).slice(0,8);
+
+    if (!aDates.length && !qDates.length) return null;
+
+    // Precompute maps for all needed concepts
+    const preA = {}, preQ = {};
+    const concepts = [
+      'GrossProfit','OperatingIncomeLoss','NetIncomeLoss',
+      'ResearchAndDevelopmentExpense',
+      'SellingGeneralAndAdministrativeExpense',
+      'GeneralAndAdministrativeExpense','SellingAndMarketingExpense',
+      'InterestExpense','IncomeTaxExpense',
+      'DepreciationDepletionAndAmortization','DepreciationAndAmortization',
+      'NetCashProvidedByUsedInOperatingActivities',
+      'PaymentsToAcquirePropertyPlantAndEquipment',
+      'NetCashUsedInInvestingActivities','NetCashProvidedByUsedInInvestingActivities',
+      'NetCashProvidedByUsedInFinancingActivities',
+      'OperatingExpenses',
+    ];
+    for (const c of [...revConceptOrder, ...concepts]) {
+      preA[c] = annMap(c);
+      preQ[c] = qMap(c);
+    }
+
+    const av = (c, date) => preA[c]?.[date] ?? null;
+    const qv = (c, date) => preQ[c]?.[date] ?? null;
+
+    const buildPeriod = (date, vFn) => {
+      const rev = vFn('RevenueFromContractWithCustomerExcludingAssessedTax', date)
+               ?? vFn('Revenues', date) ?? vFn('SalesRevenueNet', date)
+               ?? vFn('RevenueFromContractWithCustomerIncludingAssessedTax', date);
+      const gp  = vFn('GrossProfit', date);
+      const oi  = vFn('OperatingIncomeLoss', date);
+      const ni  = vFn('NetIncomeLoss', date);
+      const rnd = vFn('ResearchAndDevelopmentExpense', date);
+      const _sgaDirect = vFn('SellingGeneralAndAdministrativeExpense', date);
+      const _ga = vFn('GeneralAndAdministrativeExpense', date);
+      const _sm = vFn('SellingAndMarketingExpense', date);
+      const sga = _sgaDirect ?? ((_ga != null || _sm != null) ? ((_ga||0) + (_sm||0)) : null);
+      const ie  = vFn('InterestExpense', date);
+      const it  = vFn('IncomeTaxExpense', date);
+      const dna = vFn('DepreciationDepletionAndAmortization', date)
+               ?? vFn('DepreciationAndAmortization', date);
+      const ocf = vFn('NetCashProvidedByUsedInOperatingActivities', date);
+      const capRaw = vFn('PaymentsToAcquirePropertyPlantAndEquipment', date);
+      const cap = capRaw != null ? -Math.abs(capRaw) : null; // CapEx as outflow (negative)
+      const fcf = (ocf != null && cap != null) ? ocf + cap : null;
+      const inv = vFn('NetCashUsedInInvestingActivities', date)
+               ?? vFn('NetCashProvidedByUsedInInvestingActivities', date);
+      const fin = vFn('NetCashProvidedByUsedInFinancingActivities', date);
+      const ebitda = (oi != null && dna != null) ? oi + dna : null;
+      return {
+        endDate: date, totalRevenue: rev, grossProfit: gp, operatingIncome: oi,
+        ebitda, netIncome: ni, researchDevelopment: rnd, sellingGeneralAdmin: sga,
+        totalOperatingExpenses: vFn('OperatingExpenses', date), interestExpense: ie,
+        incomeTaxExpense: it, operatingCashflow: ocf, capitalExpenditures: cap,
+        freeCashflow: fcf, investingCashflow: inv, financingCashflow: fin, depreciation: dna,
+      };
+    };
+
+    const annualPeriods    = aDates.map(d => buildPeriod(d, av)).filter(p => p.totalRevenue != null);
+    const quarterlyPeriods = qDates.map(d => buildPeriod(d, qv)).filter(p => p.totalRevenue != null);
+
+    // Balance sheet for EV (latest available)
+    const bsConceptsCash = ['CashCashEquivalentsAndShortTermInvestments','CashAndCashEquivalentsAtCarryingValue'];
+    const bsConceptsDebt = ['LongTermDebtNoncurrent','LongTermDebt'];
+    let cash = null, debt = null;
+    for (const c of bsConceptsCash) {
+      const e = getUSD(c)?.filter(x=>x.form==='10-K'||x.form==='10-Q').sort((a,b)=>b.end.localeCompare(a.end))[0];
+      if (e) { cash = e.val; break; }
+    }
+    for (const c of bsConceptsDebt) {
+      const e = getUSD(c)?.filter(x=>x.form==='10-K'||x.form==='10-Q').sort((a,b)=>b.end.localeCompare(a.end))[0];
+      if (e) { debt = (debt||0) + e.val; break; }
+    }
+    const netDebt = (debt!=null && cash!=null) ? debt - cash : null;
+    const sharesE = getUSD('CommonStockSharesOutstanding');
+    const sharesOutstanding = sharesE?.sort((a,b)=>b.end.localeCompare(a.end))[0]?.val ?? null;
+
+    // KPIs: calculate margins from latest annual
+    const la = annualPeriods[0] || {};
+    const kpis = {
+      grossMargins:     (la.grossProfit   && la.totalRevenue) ? la.grossProfit   / la.totalRevenue : null,
+      operatingMargins: (la.operatingIncome && la.totalRevenue) ? la.operatingIncome / la.totalRevenue : null,
+      ebitdaMargins:    (la.ebitda        && la.totalRevenue) ? la.ebitda        / la.totalRevenue : null,
+      profitMargins:    (la.netIncome     && la.totalRevenue) ? la.netIncome     / la.totalRevenue : null,
+      revenueGrowth:null,earningsGrowth:null,returnOnEquity:null,returnOnAssets:null,
+      debtToEquity:null,currentRatio:null,quickRatio:null,totalCash:cash,totalDebt:debt,
+      freeCashflow:null,operatingCashflow:null,targetMeanPrice:null,
+      numberOfAnalystOpinions:null,recommendationKey:null,
+    };
+    return { _source:'edgar', annualPeriods, quarterlyPeriods, kpis, netDebt, sharesOutstanding };
+  } catch(e) { return null; }
+}
+
 // ── Yahoo Finance crumb cache (30 min TTL) ───────────────────────────────────
 let _yahooCrumb = null, _yahooCrumbExpiry = 0;
 
@@ -3736,8 +3918,40 @@ async function fetchFinancialData() {
       };
     }
   }
+  // If FMP failed, try SEC EDGAR (free, open CORS, all US stocks)
+  let edgarResult = null;
+  if (!raw && EDGAR_CIK_MAP[finSelectedTicker]) {
+    st.textContent = fmpKey ? 'FMP failed — trying SEC EDGAR…' : 'Fetching from SEC EDGAR…';
+    edgarResult = await edgarFetchFinancials(finSelectedTicker);
+    if (edgarResult) {
+      // EDGAR data is already in our internal format (IS+CF merged per period)
+      const existingEntry = financialData[finSelectedTicker] || {};
+      const prevAnnualCount    = (existingEntry.annual||[]).length;
+      const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
+      financialData[finSelectedTicker] = {
+        annual:           finMergeByDate(existingEntry.annual,    edgarResult.annualPeriods),
+        quarterly:        finMergeByDate(existingEntry.quarterly, edgarResult.quarterlyPeriods),
+        netDebt:          edgarResult.netDebt          ?? existingEntry.netDebt          ?? null,
+        sharesOutstanding:edgarResult.sharesOutstanding ?? existingEntry.sharesOutstanding ?? null,
+        kpis:             edgarResult.kpis,
+        lastUpdated:      new Date().toISOString(),
+      };
+      saveFinancialData(); scheduleSave(); finNeedsRefetch = false;
+      const entry  = financialData[finSelectedTicker];
+      const addedA = entry.annual.length    - prevAnnualCount;
+      const addedQ = entry.quarterly.length - prevQuarterlyCount;
+      const addMsg = (addedA > 0 || addedQ > 0)
+        ? ` · +${addedA} annual, +${addedQ} quarterly periods`
+        : ' · no new periods (data up to date)';
+      st.textContent = `✓ Updated via SEC EDGAR${addMsg}`;
+      st.style.color = 'var(--grn)';
+      btn.disabled = false; btn.textContent = '⚡ Update Financial Data';
+      renderFinancialBody();
+      return;
+    }
+  }
   if (!raw) {
-    st.textContent = fmpKey ? 'FMP failed — trying Yahoo…' : 'Fetching from Yahoo Finance…';
+    st.textContent = fmpKey ? 'FMP + EDGAR failed — trying Yahoo…' : 'Fetching from Yahoo Finance…';
     raw = await yahooFetchFinancials(finSelectedTicker);
   }
   if (!raw || raw._failed) {
