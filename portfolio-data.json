@@ -3094,6 +3094,8 @@
           "depreciation": 2661000000
         }
       ],
+      "netDebt": 76443000000,
+      "sharesOutstanding": 15004697000,
       "kpis": {
         "grossMargins": 0.4690516410716045,
         "operatingMargins": 0.31970799762591884,
@@ -3116,7 +3118,7 @@
           "raw": null
         }
       },
-      "lastUpdated": "2026-05-20T16:33:02.476Z"
+      "lastUpdated": "2026-05-20T18:31:12.457Z"
     },
     "TSLA": {
       "annual": [
@@ -3338,5 +3340,5 @@
       "lastUpdated": "2026-05-20T16:41:07.879Z"
     }
   },
-  "lastUpdated": "2026-05-20T16:41:09.882Z"
+  "lastUpdated": "2026-05-20T18:31:14.460Z"
 }
