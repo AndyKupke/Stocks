@@ -3526,7 +3526,7 @@ async function edgarFetchFinancials(ticker) {
   const cik = EDGAR_CIK_MAP[ticker];
   if (!cik) return null;
   try {
-    const url = `https://data.sec.gov/api/xbrl/companyfacts/${cik}.json`;
+    const url = `https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`;
     const r = await fetch(url, { signal: AbortSignal.timeout(25000) });
     if (!r.ok) return null;
     const d = await r.json();
