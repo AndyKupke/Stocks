@@ -5607,7 +5607,13 @@
           "sellingGeneralAdmin": 3000000000,
           "totalOperatingExpenses": null,
           "interestExpense": null,
-          "incomeTaxExpense": 2063000000
+          "incomeTaxExpense": 2063000000,
+          "operatingCashflow": 14996000000,
+          "capitalExpenditures": -594000000,
+          "freeCashflow": 14402000000,
+          "investingCashflow": -8590000000,
+          "financingCashflow": -8079000000,
+          "depreciation": 3631000000
         },
         {
           "endDate": "2025-01-31",
@@ -5620,7 +5626,13 @@
           "sellingGeneralAdmin": 2836000000,
           "totalOperatingExpenses": null,
           "interestExpense": -272000000,
-          "incomeTaxExpense": 1241000000
+          "incomeTaxExpense": 1241000000,
+          "operatingCashflow": 13092000000,
+          "capitalExpenditures": -658000000,
+          "freeCashflow": 12434000000,
+          "investingCashflow": -3163000000,
+          "financingCashflow": -9429000000,
+          "depreciation": 3477000000
         },
         {
           "endDate": "2024-01-31",
@@ -5633,7 +5645,13 @@
           "sellingGeneralAdmin": 2534000000,
           "totalOperatingExpenses": null,
           "interestExpense": null,
-          "incomeTaxExpense": 814000000
+          "incomeTaxExpense": 814000000,
+          "operatingCashflow": 10234000000,
+          "capitalExpenditures": -736000000,
+          "freeCashflow": 9498000000,
+          "investingCashflow": -1327000000,
+          "financingCashflow": -7477000000,
+          "depreciation": 3959000000
         },
         {
           "endDate": "2023-01-31",
@@ -5646,7 +5664,13 @@
           "sellingGeneralAdmin": 2553000000,
           "totalOperatingExpenses": null,
           "interestExpense": -287000000,
-          "incomeTaxExpense": 452000000
+          "incomeTaxExpense": 452000000,
+          "operatingCashflow": 7111000000,
+          "capitalExpenditures": -798000000,
+          "freeCashflow": 6313000000,
+          "investingCashflow": -1989000000,
+          "financingCashflow": -3562000000,
+          "depreciation": 3786000000
         },
         {
           "endDate": "2022-01-31",
@@ -5659,7 +5683,13 @@
           "sellingGeneralAdmin": 2598000000,
           "totalOperatingExpenses": null,
           "interestExpense": -216000000,
-          "incomeTaxExpense": 88000000
+          "incomeTaxExpense": 88000000,
+          "operatingCashflow": 6000000000,
+          "capitalExpenditures": -717000000,
+          "freeCashflow": 5283000000,
+          "investingCashflow": -14536000000,
+          "financingCashflow": 7838000000,
+          "depreciation": 3298000000
         },
         {
           "endDate": "2021-01-31",
@@ -5672,7 +5702,13 @@
           "sellingGeneralAdmin": 2087000000,
           "totalOperatingExpenses": null,
           "interestExpense": -110000000,
-          "incomeTaxExpense": -1511000000
+          "incomeTaxExpense": -1511000000,
+          "operatingCashflow": 4801000000,
+          "capitalExpenditures": -710000000,
+          "freeCashflow": 4091000000,
+          "investingCashflow": -3971000000,
+          "financingCashflow": 1194000000,
+          "depreciation": 2846000000
         },
         {
           "endDate": "2020-01-31",
@@ -5685,7 +5721,13 @@
           "sellingGeneralAdmin": 1704000000,
           "totalOperatingExpenses": null,
           "interestExpense": -110000000,
-          "incomeTaxExpense": 580000000
+          "incomeTaxExpense": 580000000,
+          "operatingCashflow": 4331000000,
+          "capitalExpenditures": -643000000,
+          "freeCashflow": 3688000000,
+          "investingCashflow": -2980000000,
+          "financingCashflow": 164000000,
+          "depreciation": 2135000000
         },
         {
           "endDate": "2019-01-31",
@@ -5698,7 +5740,13 @@
           "sellingGeneralAdmin": 1346000000,
           "totalOperatingExpenses": null,
           "interestExpense": -126000000,
-          "incomeTaxExpense": -127000000
+          "incomeTaxExpense": -127000000,
+          "operatingCashflow": 3398000000,
+          "capitalExpenditures": -595000000,
+          "freeCashflow": 2803000000,
+          "investingCashflow": -5308000000,
+          "financingCashflow": 2010000000,
+          "depreciation": 962000000
         },
         {
           "endDate": "2018-01-31",
@@ -5711,7 +5759,13 @@
           "sellingGeneralAdmin": 1088358000,
           "totalOperatingExpenses": null,
           "interestExpense": -54000000,
-          "incomeTaxExpense": 74630000
+          "incomeTaxExpense": 74630000,
+          "operatingCashflow": 2737965000,
+          "capitalExpenditures": -534027000,
+          "freeCashflow": 2203938000,
+          "investingCashflow": -2010502000,
+          "financingCashflow": 221000000,
+          "depreciation": 752600000
         },
         {
           "endDate": "2017-01-31",
@@ -5724,7 +5778,13 @@
           "sellingGeneralAdmin": 966000000,
           "totalOperatingExpenses": null,
           "interestExpense": -88988000,
-          "incomeTaxExpense": -144000000
+          "incomeTaxExpense": -144000000,
+          "operatingCashflow": 2162198000,
+          "capitalExpenditures": -463958000,
+          "freeCashflow": 1698240000,
+          "investingCashflow": -2684341000,
+          "financingCashflow": 997698000,
+          "depreciation": 632245000
         },
         {
           "endDate": "2016-01-31",
@@ -5737,7 +5797,13 @@
           "sellingGeneralAdmin": 711621000,
           "totalOperatingExpenses": null,
           "interestExpense": -72485000,
-          "incomeTaxExpense": 111705000
+          "incomeTaxExpense": 111705000,
+          "operatingCashflow": 1672081000,
+          "capitalExpenditures": -709852000,
+          "freeCashflow": 962229000,
+          "investingCashflow": -1487878000,
+          "financingCashflow": 73152000,
+          "depreciation": 525750000
         },
         {
           "endDate": "2015-01-31",
@@ -5750,7 +5816,13 @@
           "sellingGeneralAdmin": 679936000,
           "totalOperatingExpenses": null,
           "interestExpense": -73237000,
-          "incomeTaxExpense": 49603000
+          "incomeTaxExpense": 49603000,
+          "operatingCashflow": 1173714000,
+          "capitalExpenditures": -416889000,
+          "freeCashflow": 756825000,
+          "investingCashflow": -698360000,
+          "financingCashflow": -310481000,
+          "depreciation": 448296000
         },
         {
           "endDate": "2014-01-31",
@@ -5763,7 +5835,13 @@
           "sellingGeneralAdmin": 596719000,
           "totalOperatingExpenses": null,
           "interestExpense": -77211000,
-          "incomeTaxExpense": -125760000
+          "incomeTaxExpense": -125760000,
+          "operatingCashflow": 875469000,
+          "capitalExpenditures": -299110000,
+          "freeCashflow": 576359000,
+          "investingCashflow": -2431555000,
+          "financingCashflow": 1598234000,
+          "depreciation": 369423000
         },
         {
           "endDate": "2013-01-31",
@@ -5776,7 +5854,13 @@
           "sellingGeneralAdmin": 433821000,
           "totalOperatingExpenses": null,
           "interestExpense": -30948000,
-          "incomeTaxExpense": 142651000
+          "incomeTaxExpense": 142651000,
+          "operatingCashflow": 736897000,
+          "capitalExpenditures": -179707000,
+          "freeCashflow": 557190000,
+          "investingCashflow": -938918000,
+          "financingCashflow": 334545000,
+          "depreciation": 216795000
         },
         {
           "endDate": "2012-01-31",
@@ -5789,7 +5873,13 @@
           "sellingGeneralAdmin": 347781000,
           "totalOperatingExpenses": null,
           "interestExpense": -17045000,
-          "incomeTaxExpense": -21745000
+          "incomeTaxExpense": -21745000,
+          "operatingCashflow": 591507000,
+          "capitalExpenditures": -171300000,
+          "freeCashflow": 420207000,
+          "investingCashflow": -489690000,
+          "financingCashflow": 75850000,
+          "depreciation": 157286000
         },
         {
           "endDate": "2011-01-31",
@@ -5802,7 +5892,13 @@
           "sellingGeneralAdmin": 255913000,
           "totalOperatingExpenses": null,
           "interestExpense": -24909000,
-          "incomeTaxExpense": 34601000
+          "incomeTaxExpense": 34601000,
+          "operatingCashflow": 459081000,
+          "capitalExpenditures": -368831000,
+          "freeCashflow": 90250000,
+          "investingCashflow": -1062554000,
+          "financingCashflow": 14074000,
+          "depreciation": 75746000
         },
         {
           "endDate": "2010-01-31",
@@ -5815,7 +5911,13 @@
           "sellingGeneralAdmin": 195290000,
           "totalOperatingExpenses": null,
           "interestExpense": -2000000,
-          "incomeTaxExpense": 57689000
+          "incomeTaxExpense": 57689000,
+          "operatingCashflow": 270911000,
+          "capitalExpenditures": -53901000,
+          "freeCashflow": 217010000,
+          "investingCashflow": -378616000,
+          "financingCashflow": 637153000,
+          "depreciation": 53177000
         },
         {
           "endDate": "2009-01-31",
@@ -5828,7 +5930,13 @@
           "sellingGeneralAdmin": 158613000,
           "totalOperatingExpenses": null,
           "interestExpense": -107000,
-          "incomeTaxExpense": 37557000
+          "incomeTaxExpense": 37557000,
+          "operatingCashflow": 229557000,
+          "capitalExpenditures": -61059000,
+          "freeCashflow": 168498000,
+          "investingCashflow": -120997000,
+          "financingCashflow": 96911000,
+          "depreciation": 94703000
         },
         {
           "endDate": "2008-01-31",
@@ -5841,7 +5949,13 @@
           "sellingGeneralAdmin": 116508000,
           "totalOperatingExpenses": null,
           "interestExpense": -46000,
-          "incomeTaxExpense": 23385000
+          "incomeTaxExpense": 23385000,
+          "operatingCashflow": 204275000,
+          "capitalExpenditures": -43552000,
+          "freeCashflow": 160723000,
+          "investingCashflow": -102709000,
+          "financingCashflow": 92713000,
+          "depreciation": 66414000
         },
         {
           "endDate": "2007-01-31",
@@ -5854,7 +5968,13 @@
           "sellingGeneralAdmin": 47986000,
           "totalOperatingExpenses": null,
           "interestExpense": -193000,
-          "incomeTaxExpense": 9795000
+          "incomeTaxExpense": 9795000,
+          "operatingCashflow": 111224000,
+          "capitalExpenditures": -22123000,
+          "freeCashflow": 89101000,
+          "investingCashflow": -168596000,
+          "financingCashflow": 45027000,
+          "depreciation": 35885000
         }
       ],
       "quarterly": [
@@ -5869,7 +5989,13 @@
           "sellingGeneralAdmin": 902000000,
           "totalOperatingExpenses": null,
           "interestExpense": null,
-          "incomeTaxExpense": 685000000
+          "incomeTaxExpense": 685000000,
+          "operatingCashflow": 5464000000,
+          "capitalExpenditures": -141000000,
+          "freeCashflow": 5323000000,
+          "investingCashflow": -8707000000,
+          "financingCashflow": 1588000000,
+          "depreciation": 1120000000
         },
         {
           "endDate": "2025-10-31",
@@ -5882,7 +6008,13 @@
           "sellingGeneralAdmin": 667000000,
           "totalOperatingExpenses": null,
           "interestExpense": -67000000,
-          "incomeTaxExpense": 426000000
+          "incomeTaxExpense": 426000000,
+          "operatingCashflow": 2316000000,
+          "capitalExpenditures": -139000000,
+          "freeCashflow": 2177000000,
+          "investingCashflow": 519000000,
+          "financingCashflow": -4244000000,
+          "depreciation": 851000000
         },
         {
           "endDate": "2025-07-31",
@@ -5895,7 +6027,13 @@
           "sellingGeneralAdmin": 734000000,
           "totalOperatingExpenses": null,
           "interestExpense": -67000000,
-          "incomeTaxExpense": 519000000
+          "incomeTaxExpense": 519000000,
+          "operatingCashflow": 740000000,
+          "capitalExpenditures": -135000000,
+          "freeCashflow": 605000000,
+          "investingCashflow": 1165000000,
+          "financingCashflow": -2503000000,
+          "depreciation": 817000000
         },
         {
           "endDate": "2025-04-30",
@@ -5908,7 +6046,13 @@
           "sellingGeneralAdmin": 697000000,
           "totalOperatingExpenses": null,
           "interestExpense": -68000000,
-          "incomeTaxExpense": 433000000
+          "incomeTaxExpense": 433000000,
+          "operatingCashflow": 6476000000,
+          "capitalExpenditures": -179000000,
+          "freeCashflow": 6297000000,
+          "investingCashflow": -1567000000,
+          "financingCashflow": -2920000000,
+          "depreciation": 843000000
         },
         {
           "endDate": "2025-01-31",
@@ -5921,7 +6065,13 @@
           "sellingGeneralAdmin": 767000000,
           "totalOperatingExpenses": null,
           "interestExpense": -68000000,
-          "incomeTaxExpense": 280000000
+          "incomeTaxExpense": 280000000,
+          "operatingCashflow": 3970000000,
+          "capitalExpenditures": -154000000,
+          "freeCashflow": 3816000000,
+          "investingCashflow": -2936000000,
+          "financingCashflow": -73000000,
+          "depreciation": 877000000
         },
         {
           "endDate": "2024-10-31",
@@ -5934,7 +6084,13 @@
           "sellingGeneralAdmin": 711000000,
           "totalOperatingExpenses": null,
           "interestExpense": -67000000,
-          "incomeTaxExpense": 219000000
+          "incomeTaxExpense": 219000000,
+          "operatingCashflow": 1983000000,
+          "capitalExpenditures": -204000000,
+          "freeCashflow": 1779000000,
+          "investingCashflow": -217000000,
+          "financingCashflow": -1446000000,
+          "depreciation": 814000000
         },
         {
           "endDate": "2024-07-31",
@@ -5947,7 +6103,13 @@
           "sellingGeneralAdmin": 711000000,
           "totalOperatingExpenses": null,
           "interestExpense": -68000000,
-          "incomeTaxExpense": 408000000
+          "incomeTaxExpense": 408000000,
+          "operatingCashflow": 892000000,
+          "capitalExpenditures": -137000000,
+          "freeCashflow": 755000000,
+          "investingCashflow": 2641000000,
+          "financingCashflow": -5802000000,
+          "depreciation": 907000000
         },
         {
           "endDate": "2024-04-30",
@@ -5960,7 +6122,13 @@
           "sellingGeneralAdmin": 647000000,
           "totalOperatingExpenses": null,
           "interestExpense": null,
-          "incomeTaxExpense": 334000000
+          "incomeTaxExpense": 334000000,
+          "operatingCashflow": 6247000000,
+          "capitalExpenditures": -163000000,
+          "freeCashflow": 6084000000,
+          "investingCashflow": -2651000000,
+          "financingCashflow": -2108000000,
+          "depreciation": 879000000
         },
         {
           "endDate": "2024-01-31",
@@ -5973,7 +6141,13 @@
           "sellingGeneralAdmin": 632000000,
           "totalOperatingExpenses": null,
           "interestExpense": -140000000,
-          "incomeTaxExpense": 199000000
+          "incomeTaxExpense": 199000000,
+          "operatingCashflow": 3403000000,
+          "capitalExpenditures": -147000000,
+          "freeCashflow": 3256000000,
+          "investingCashflow": -468000000,
+          "financingCashflow": -946000000,
+          "depreciation": 953000000
         },
         {
           "endDate": "2023-10-31",
@@ -5986,7 +6160,13 @@
           "sellingGeneralAdmin": 632000000,
           "totalOperatingExpenses": null,
           "interestExpense": -70000000,
-          "incomeTaxExpense": 263000000
+          "incomeTaxExpense": 263000000,
+          "operatingCashflow": 1532000000,
+          "capitalExpenditures": -166000000,
+          "freeCashflow": 1366000000,
+          "investingCashflow": -54000000,
+          "financingCashflow": -1765000000,
+          "depreciation": 862000000
         },
         {
           "endDate": "2023-07-31",
@@ -5999,7 +6179,13 @@
           "sellingGeneralAdmin": 909000000,
           "totalOperatingExpenses": null,
           "interestExpense": -70000000,
-          "incomeTaxExpense": 225000000
+          "incomeTaxExpense": 225000000,
+          "operatingCashflow": 808000000,
+          "capitalExpenditures": -180000000,
+          "freeCashflow": 628000000,
+          "investingCashflow": -1152000000,
+          "financingCashflow": -2050000000,
+          "depreciation": 890000000
         },
         {
           "endDate": "2023-04-30",
@@ -6012,7 +6198,13 @@
           "sellingGeneralAdmin": 638000000,
           "totalOperatingExpenses": null,
           "interestExpense": -74000000,
-          "incomeTaxExpense": 127000000
+          "incomeTaxExpense": 127000000,
+          "operatingCashflow": 4491000000,
+          "capitalExpenditures": -243000000,
+          "freeCashflow": 4248000000,
+          "investingCashflow": 347000000,
+          "financingCashflow": -2716000000,
+          "depreciation": 1254000000
         },
         {
           "endDate": "2023-01-31",
@@ -6025,7 +6217,13 @@
           "sellingGeneralAdmin": 586000000,
           "totalOperatingExpenses": null,
           "interestExpense": -63000000,
-          "incomeTaxExpense": 131000000
+          "incomeTaxExpense": 131000000,
+          "operatingCashflow": 2788000000,
+          "capitalExpenditures": -218000000,
+          "freeCashflow": 2570000000,
+          "investingCashflow": 312000000,
+          "financingCashflow": -2221000000,
+          "depreciation": 1032000000
         },
         {
           "endDate": "2022-10-31",
@@ -6038,7 +6236,13 @@
           "sellingGeneralAdmin": 664000000,
           "totalOperatingExpenses": null,
           "interestExpense": -75000000,
-          "incomeTaxExpense": 265000000
+          "incomeTaxExpense": 265000000,
+          "operatingCashflow": 313000000,
+          "capitalExpenditures": -198000000,
+          "freeCashflow": 115000000,
+          "investingCashflow": 533000000,
+          "financingCashflow": -1678000000,
+          "depreciation": 941000000
         },
         {
           "endDate": "2022-07-31",
@@ -6051,7 +6255,13 @@
           "sellingGeneralAdmin": 647000000,
           "totalOperatingExpenses": null,
           "interestExpense": -76000000,
-          "incomeTaxExpense": 113000000
+          "incomeTaxExpense": 113000000,
+          "operatingCashflow": 334000000,
+          "capitalExpenditures": -203000000,
+          "freeCashflow": 131000000,
+          "investingCashflow": -377000000,
+          "financingCashflow": 136000000,
+          "depreciation": 907000000
         },
         {
           "endDate": "2022-04-30",
@@ -6064,7 +6274,13 @@
           "sellingGeneralAdmin": 656000000,
           "totalOperatingExpenses": null,
           "interestExpense": -74000000,
-          "incomeTaxExpense": -57000000
+          "incomeTaxExpense": -57000000,
+          "operatingCashflow": 3676000000,
+          "capitalExpenditures": -179000000,
+          "freeCashflow": 3497000000,
+          "investingCashflow": -2457000000,
+          "financingCashflow": 201000000,
+          "depreciation": 906000000
         },
         {
           "endDate": "2022-01-31",
@@ -6077,7 +6293,13 @@
           "sellingGeneralAdmin": 733000000,
           "totalOperatingExpenses": null,
           "interestExpense": -75000000,
-          "incomeTaxExpense": -169000000
+          "incomeTaxExpense": -169000000,
+          "operatingCashflow": 1982000000,
+          "capitalExpenditures": -167000000,
+          "freeCashflow": 1815000000,
+          "investingCashflow": -1459000000,
+          "financingCashflow": 203000000,
+          "depreciation": 931000000
         },
         {
           "endDate": "2021-10-31",
@@ -6090,7 +6312,13 @@
           "sellingGeneralAdmin": 667000000,
           "totalOperatingExpenses": null,
           "interestExpense": -72000000,
-          "incomeTaxExpense": -169000000
+          "incomeTaxExpense": -169000000,
+          "operatingCashflow": 404000000,
+          "capitalExpenditures": -166000000,
+          "freeCashflow": 238000000,
+          "investingCashflow": -976000000,
+          "financingCashflow": -970000000,
+          "depreciation": 963000000
         },
         {
           "endDate": "2021-07-31",
@@ -6103,7 +6331,13 @@
           "sellingGeneralAdmin": 639000000,
           "totalOperatingExpenses": null,
           "interestExpense": -40000000,
-          "incomeTaxExpense": 291000000
+          "incomeTaxExpense": 291000000,
+          "operatingCashflow": 386000000,
+          "capitalExpenditures": -213000000,
+          "freeCashflow": 173000000,
+          "investingCashflow": -11054000000,
+          "financingCashflow": 8440000000,
+          "depreciation": 719000000
         },
         {
           "endDate": "2021-04-30",
@@ -6116,7 +6350,13 @@
           "sellingGeneralAdmin": 559000000,
           "totalOperatingExpenses": null,
           "interestExpense": -33000000,
-          "incomeTaxExpense": 135000000
+          "incomeTaxExpense": 135000000,
+          "operatingCashflow": 3228000000,
+          "capitalExpenditures": -171000000,
+          "freeCashflow": 3057000000,
+          "investingCashflow": -1047000000,
+          "financingCashflow": 165000000,
+          "depreciation": 685000000
         },
         {
           "endDate": "2021-01-31",
@@ -6129,7 +6369,13 @@
           "sellingGeneralAdmin": 574000000,
           "totalOperatingExpenses": null,
           "interestExpense": -51000000,
-          "incomeTaxExpense": 158000000
+          "incomeTaxExpense": 158000000,
+          "operatingCashflow": 2174000000,
+          "capitalExpenditures": -149000000,
+          "freeCashflow": 2025000000,
+          "investingCashflow": 94000000,
+          "financingCashflow": 176000000,
+          "depreciation": 869000000
         },
         {
           "endDate": "2020-10-31",
@@ -6142,7 +6388,13 @@
           "sellingGeneralAdmin": 522000000,
           "totalOperatingExpenses": null,
           "interestExpense": -25000000,
-          "incomeTaxExpense": 169000000
+          "incomeTaxExpense": 169000000,
+          "operatingCashflow": 339000000,
+          "capitalExpenditures": -124000000,
+          "freeCashflow": 215000000,
+          "investingCashflow": -1035000000,
+          "financingCashflow": 368000000,
+          "depreciation": 670000000
         },
         {
           "endDate": "2020-07-31",
@@ -6155,7 +6407,13 @@
           "sellingGeneralAdmin": 489000000,
           "totalOperatingExpenses": null,
           "interestExpense": -25000000,
-          "incomeTaxExpense": -1786000000
+          "incomeTaxExpense": -1786000000,
+          "operatingCashflow": 429000000,
+          "capitalExpenditures": -114000000,
+          "freeCashflow": 315000000,
+          "investingCashflow": -2593000000,
+          "financingCashflow": 441000000,
+          "depreciation": 649000000
         },
         {
           "endDate": "2020-04-30",
@@ -6168,7 +6426,13 @@
           "sellingGeneralAdmin": 502000000,
           "totalOperatingExpenses": null,
           "interestExpense": -25000000,
-          "incomeTaxExpense": -52000000
+          "incomeTaxExpense": -52000000,
+          "operatingCashflow": 1859000000,
+          "capitalExpenditures": -323000000,
+          "freeCashflow": 1536000000,
+          "investingCashflow": -437000000,
+          "financingCashflow": 209000000,
+          "depreciation": 658000000
         },
         {
           "endDate": "2020-01-31",
@@ -6181,7 +6445,13 @@
           "sellingGeneralAdmin": 490000000,
           "totalOperatingExpenses": null,
           "interestExpense": -30000000,
-          "incomeTaxExpense": 244000000
+          "incomeTaxExpense": 244000000,
+          "operatingCashflow": 1632000000,
+          "capitalExpenditures": -136000000,
+          "freeCashflow": 1496000000,
+          "investingCashflow": -1465000000,
+          "financingCashflow": 125000000,
+          "depreciation": 633000000
         },
         {
           "endDate": "2019-10-31",
@@ -6194,7 +6464,13 @@
           "sellingGeneralAdmin": 477000000,
           "totalOperatingExpenses": null,
           "interestExpense": -32000000,
-          "incomeTaxExpense": 173000000
+          "incomeTaxExpense": 173000000,
+          "operatingCashflow": 298000000,
+          "capitalExpenditures": -170000000,
+          "freeCashflow": 128000000,
+          "investingCashflow": 63000000,
+          "financingCashflow": 15000000,
+          "depreciation": 608000000
         },
         {
           "endDate": "2019-07-31",
@@ -6207,7 +6483,13 @@
           "sellingGeneralAdmin": 375000000,
           "totalOperatingExpenses": null,
           "interestExpense": -34000000,
-          "incomeTaxExpense": 73000000
+          "incomeTaxExpense": 73000000,
+          "operatingCashflow": 436000000,
+          "capitalExpenditures": -178000000,
+          "freeCashflow": 258000000,
+          "investingCashflow": -852000000,
+          "financingCashflow": -183000000,
+          "depreciation": 457000000
         },
         {
           "endDate": "2019-04-30",
@@ -6220,7 +6502,13 @@
           "sellingGeneralAdmin": 362000000,
           "totalOperatingExpenses": null,
           "interestExpense": -35000000,
-          "incomeTaxExpense": 90000000
+          "incomeTaxExpense": 90000000,
+          "operatingCashflow": 1965000000,
+          "capitalExpenditures": -159000000,
+          "freeCashflow": 1806000000,
+          "investingCashflow": -726000000,
+          "financingCashflow": 207000000,
+          "depreciation": 437000000
         },
         {
           "endDate": "2019-01-31",
@@ -6233,7 +6521,13 @@
           "sellingGeneralAdmin": 359000000,
           "totalOperatingExpenses": null,
           "interestExpense": -41000000,
-          "incomeTaxExpense": -123000000
+          "incomeTaxExpense": -123000000,
+          "operatingCashflow": 1331000000,
+          "capitalExpenditures": -167000000,
+          "freeCashflow": 1164000000,
+          "investingCashflow": -378000000,
+          "financingCashflow": -386000000,
+          "depreciation": 273000000
         },
         {
           "endDate": "2018-10-31",
@@ -6246,7 +6540,13 @@
           "sellingGeneralAdmin": 342000000,
           "totalOperatingExpenses": null,
           "interestExpense": -40000000,
-          "incomeTaxExpense": 23000000
+          "incomeTaxExpense": 23000000,
+          "operatingCashflow": 143000000,
+          "capitalExpenditures": -136000000,
+          "freeCashflow": 7000000,
+          "investingCashflow": -545000000,
+          "financingCashflow": 182000000,
+          "depreciation": 256000000
         },
         {
           "endDate": "2018-07-31",
@@ -6259,7 +6559,13 @@
           "sellingGeneralAdmin": 350000000,
           "totalOperatingExpenses": null,
           "interestExpense": -39000000,
-          "incomeTaxExpense": -68000000
+          "incomeTaxExpense": -68000000,
+          "operatingCashflow": 458000000,
+          "capitalExpenditures": -170000000,
+          "freeCashflow": 288000000,
+          "investingCashflow": -4661000000,
+          "financingCashflow": 589000000,
+          "depreciation": 252000000
         },
         {
           "endDate": "2018-04-30",
@@ -6272,7 +6578,13 @@
           "sellingGeneralAdmin": 295000000,
           "totalOperatingExpenses": null,
           "interestExpense": -34000000,
-          "incomeTaxExpense": 41000000
+          "incomeTaxExpense": 41000000,
+          "operatingCashflow": 1466000000,
+          "capitalExpenditures": -122000000,
+          "freeCashflow": 1344000000,
+          "investingCashflow": 276000000,
+          "financingCashflow": 1625000000,
+          "depreciation": 181000000
         },
         {
           "endDate": "2018-01-31",
@@ -6285,7 +6597,13 @@
           "sellingGeneralAdmin": 274490000,
           "totalOperatingExpenses": null,
           "interestExpense": -22000000,
-          "incomeTaxExpense": 20662000
+          "incomeTaxExpense": 20662000,
+          "operatingCashflow": 1051320000,
+          "capitalExpenditures": -137759000,
+          "freeCashflow": 913561000,
+          "investingCashflow": -583882000,
+          "financingCashflow": 19329000,
+          "depreciation": 187689000
         },
         {
           "endDate": "2017-10-31",
@@ -6298,7 +6616,13 @@
           "sellingGeneralAdmin": 271000000,
           "totalOperatingExpenses": null,
           "interestExpense": -21000000,
-          "incomeTaxExpense": 39000000
+          "incomeTaxExpense": 39000000,
+          "operatingCashflow": 125792000,
+          "capitalExpenditures": -111278000,
+          "freeCashflow": 14514000,
+          "investingCashflow": -135274000,
+          "financingCashflow": 134254000,
+          "depreciation": 187546000
         },
         {
           "endDate": "2017-07-31",
@@ -6311,7 +6635,13 @@
           "sellingGeneralAdmin": 283000000,
           "totalOperatingExpenses": null,
           "interestExpense": -22000000,
-          "incomeTaxExpense": 17000000
+          "incomeTaxExpense": 17000000,
+          "operatingCashflow": 331269000,
+          "capitalExpenditures": -128388000,
+          "freeCashflow": 202881000,
+          "investingCashflow": -523631000,
+          "financingCashflow": 117278000,
+          "depreciation": 192257000
         },
         {
           "endDate": "2017-04-30",
@@ -6324,7 +6654,13 @@
           "sellingGeneralAdmin": 260000000,
           "totalOperatingExpenses": null,
           "interestExpense": -22196000,
-          "incomeTaxExpense": -11000000
+          "incomeTaxExpense": -11000000,
+          "operatingCashflow": 1229584000,
+          "capitalExpenditures": -156602000,
+          "freeCashflow": 1072982000,
+          "investingCashflow": -767715000,
+          "financingCashflow": -49636000,
+          "depreciation": 185108000
         },
         {
           "endDate": "2017-01-31",
@@ -6337,7 +6673,13 @@
           "sellingGeneralAdmin": 257941000,
           "totalOperatingExpenses": null,
           "interestExpense": -24323000,
-          "incomeTaxExpense": 27971000
+          "incomeTaxExpense": 27971000,
+          "operatingCashflow": 706146000,
+          "capitalExpenditures": -143974000,
+          "freeCashflow": 562172000,
+          "investingCashflow": -497847000,
+          "financingCashflow": 260043000,
+          "depreciation": 180766000
         },
         {
           "endDate": "2016-10-31",
@@ -6350,7 +6692,13 @@
           "sellingGeneralAdmin": 246765000,
           "totalOperatingExpenses": null,
           "interestExpense": -21946000,
-          "incomeTaxExpense": 24723000
+          "incomeTaxExpense": 24723000,
+          "operatingCashflow": 154312000,
+          "capitalExpenditures": -140653000,
+          "freeCashflow": 13659000,
+          "investingCashflow": -193784000,
+          "financingCashflow": 81849000,
+          "depreciation": 169346000
         },
         {
           "endDate": "2016-07-31",
@@ -6363,7 +6711,13 @@
           "sellingGeneralAdmin": 252051000,
           "totalOperatingExpenses": null,
           "interestExpense": -20708000,
-          "incomeTaxExpense": -205339000
+          "incomeTaxExpense": -205339000,
+          "operatingCashflow": 250678000,
+          "capitalExpenditures": -96030000,
+          "freeCashflow": 154648000,
+          "investingCashflow": -1542432000,
+          "financingCashflow": 616633000,
+          "depreciation": 149361000
         },
         {
           "endDate": "2016-04-30",
@@ -6376,7 +6730,13 @@
           "sellingGeneralAdmin": 210806000,
           "totalOperatingExpenses": null,
           "interestExpense": -22011000,
-          "incomeTaxExpense": -1604000
+          "incomeTaxExpense": -1604000,
+          "operatingCashflow": 1051062000,
+          "capitalExpenditures": -83301000,
+          "freeCashflow": 967761000,
+          "investingCashflow": -450278000,
+          "financingCashflow": 39173000,
+          "depreciation": 132772000
         },
         {
           "endDate": "2016-01-31",
@@ -6389,7 +6749,13 @@
           "sellingGeneralAdmin": 203924000,
           "totalOperatingExpenses": null,
           "interestExpense": -19465000,
-          "incomeTaxExpense": 21366000
+          "incomeTaxExpense": 21366000,
+          "operatingCashflow": 459410000,
+          "capitalExpenditures": -68465000,
+          "freeCashflow": 390945000,
+          "investingCashflow": -605232000,
+          "financingCashflow": 84964000,
+          "depreciation": 131912000
         },
         {
           "endDate": "2015-10-31",
@@ -6402,7 +6768,13 @@
           "sellingGeneralAdmin": 186818000,
           "totalOperatingExpenses": null,
           "interestExpense": -18249000,
-          "incomeTaxExpense": 68548000
+          "incomeTaxExpense": 68548000,
+          "operatingCashflow": 117907000,
+          "capitalExpenditures": -80041000,
+          "freeCashflow": 37866000,
+          "investingCashflow": -112746000,
+          "financingCashflow": 131678000,
+          "depreciation": 134236000
         },
         {
           "endDate": "2015-07-31",
@@ -6415,7 +6787,13 @@
           "sellingGeneralAdmin": 181685000,
           "totalOperatingExpenses": null,
           "interestExpense": -18096000,
-          "incomeTaxExpense": 7810000
+          "incomeTaxExpense": 7810000,
+          "operatingCashflow": 304411000,
+          "capitalExpenditures": -64883000,
+          "freeCashflow": 239528000,
+          "investingCashflow": -233777000,
+          "financingCashflow": 73592000,
+          "depreciation": 131675000
         },
         {
           "endDate": "2015-04-30",
@@ -6428,7 +6806,13 @@
           "sellingGeneralAdmin": 139194000,
           "totalOperatingExpenses": null,
           "interestExpense": -16675000,
-          "incomeTaxExpense": 13981000
+          "incomeTaxExpense": 13981000,
+          "operatingCashflow": 730857000,
+          "capitalExpenditures": -496463000,
+          "freeCashflow": 234394000,
+          "investingCashflow": -536123000,
+          "financingCashflow": -157586000,
+          "depreciation": 127927000
         },
         {
           "endDate": "2015-01-31",
@@ -6441,7 +6825,13 @@
           "sellingGeneralAdmin": 181371000,
           "totalOperatingExpenses": null,
           "interestExpense": -16882000,
-          "incomeTaxExpense": 12267000
+          "incomeTaxExpense": 12267000,
+          "operatingCashflow": 332223000,
+          "capitalExpenditures": -96854000,
+          "freeCashflow": 235369000,
+          "investingCashflow": -145248000,
+          "financingCashflow": -104305000,
+          "depreciation": 117938000
         },
         {
           "endDate": "2014-10-31",
@@ -6454,7 +6844,13 @@
           "sellingGeneralAdmin": 167383000,
           "totalOperatingExpenses": null,
           "interestExpense": -17682000,
-          "incomeTaxExpense": 17075000
+          "incomeTaxExpense": 17075000,
+          "operatingCashflow": 122511000,
+          "capitalExpenditures": -188361000,
+          "freeCashflow": -65850000,
+          "investingCashflow": -56266000,
+          "financingCashflow": 19893000,
+          "depreciation": 111954000
         },
         {
           "endDate": "2014-07-31",
@@ -6467,7 +6863,13 @@
           "sellingGeneralAdmin": 169087000,
           "totalOperatingExpenses": null,
           "interestExpense": -18314000,
-          "incomeTaxExpense": 8119000
+          "incomeTaxExpense": 8119000,
+          "operatingCashflow": 245893000,
+          "capitalExpenditures": -71576000,
+          "freeCashflow": 174317000,
+          "investingCashflow": -286476000,
+          "financingCashflow": -6919000,
+          "depreciation": 107596000
         },
         {
           "endDate": "2014-04-30",
@@ -6480,7 +6882,13 @@
           "sellingGeneralAdmin": 162095000,
           "totalOperatingExpenses": null,
           "interestExpense": -20359000,
-          "incomeTaxExpense": 12142000
+          "incomeTaxExpense": 12142000,
+          "operatingCashflow": 473087000,
+          "capitalExpenditures": -60098000,
+          "freeCashflow": 412989000,
+          "investingCashflow": -210370000,
+          "financingCashflow": -219150000,
+          "depreciation": 110808000
         },
         {
           "endDate": "2014-01-31",
@@ -6493,7 +6901,13 @@
           "sellingGeneralAdmin": 162576000,
           "totalOperatingExpenses": null,
           "interestExpense": -22743000,
-          "incomeTaxExpense": -6524000
+          "incomeTaxExpense": -6524000,
+          "operatingCashflow": 271238000,
+          "capitalExpenditures": -69849000,
+          "freeCashflow": 201389000,
+          "investingCashflow": -193437000,
+          "financingCashflow": 56936000,
+          "depreciation": 114813000
         },
         {
           "endDate": "2013-10-31",
@@ -6506,7 +6920,13 @@
           "sellingGeneralAdmin": 153859000,
           "totalOperatingExpenses": null,
           "interestExpense": -22929000,
-          "incomeTaxExpense": 393000
+          "incomeTaxExpense": 393000,
+          "operatingCashflow": 137859000,
+          "capitalExpenditures": -72702000,
+          "freeCashflow": 65157000,
+          "investingCashflow": -163522000,
+          "financingCashflow": 92348000,
+          "depreciation": 114347000
         },
         {
           "endDate": "2013-07-31",
@@ -6519,7 +6939,13 @@
           "sellingGeneralAdmin": 150534000,
           "totalOperatingExpenses": null,
           "interestExpense": -19656000,
-          "incomeTaxExpense": -133407000
+          "incomeTaxExpense": -133407000,
+          "operatingCashflow": 183183000,
+          "capitalExpenditures": -102549000,
+          "freeCashflow": 80634000,
+          "investingCashflow": -1855320000,
+          "financingCashflow": 325309000,
+          "depreciation": 77966000
         },
         {
           "endDate": "2013-04-30",
@@ -6532,7 +6958,13 @@
           "sellingGeneralAdmin": 129750000,
           "totalOperatingExpenses": null,
           "interestExpense": -11883000,
-          "incomeTaxExpense": 13778000
+          "incomeTaxExpense": 13778000,
+          "operatingCashflow": 283189000,
+          "capitalExpenditures": -54010000,
+          "freeCashflow": 229179000,
+          "investingCashflow": -219276000,
+          "financingCashflow": 1123641000,
+          "depreciation": 62297000
         },
         {
           "endDate": "2013-01-31",
@@ -6545,7 +6977,13 @@
           "sellingGeneralAdmin": 115369000,
           "totalOperatingExpenses": null,
           "interestExpense": -8355000,
-          "incomeTaxExpense": -5199000
+          "incomeTaxExpense": -5199000,
+          "operatingCashflow": 281573000,
+          "capitalExpenditures": -50522000,
+          "freeCashflow": 231051000,
+          "investingCashflow": -178318000,
+          "financingCashflow": 124483000,
+          "depreciation": 57395000
         },
         {
           "endDate": "2012-10-31",
@@ -6558,7 +6996,13 @@
           "sellingGeneralAdmin": 113757000,
           "totalOperatingExpenses": null,
           "interestExpense": -8190000,
-          "incomeTaxExpense": 157446000
+          "incomeTaxExpense": 157446000,
+          "operatingCashflow": 105915000,
+          "capitalExpenditures": -51054000,
+          "freeCashflow": 54861000,
+          "investingCashflow": -657899000,
+          "financingCashflow": 71979000,
+          "depreciation": 59960000
         },
         {
           "endDate": "2012-07-31",
@@ -6571,7 +7015,13 @@
           "sellingGeneralAdmin": 103095000,
           "totalOperatingExpenses": null,
           "interestExpense": -8033000,
-          "incomeTaxExpense": -4203000
+          "incomeTaxExpense": -4203000,
+          "operatingCashflow": 136197000,
+          "capitalExpenditures": -29304000,
+          "freeCashflow": 106893000,
+          "investingCashflow": 372286000,
+          "financingCashflow": 41047000,
+          "depreciation": 49999000
         },
         {
           "endDate": "2012-04-30",
@@ -6584,7 +7034,13 @@
           "sellingGeneralAdmin": 101600000,
           "totalOperatingExpenses": null,
           "interestExpense": -6370000,
-          "incomeTaxExpense": -5393000
+          "incomeTaxExpense": -5393000,
+          "operatingCashflow": 213212000,
+          "capitalExpenditures": -48827000,
+          "freeCashflow": 164385000,
+          "investingCashflow": -474987000,
+          "financingCashflow": 97036000,
+          "depreciation": 49441000
         },
         {
           "endDate": "2012-01-31",
@@ -6597,7 +7053,13 @@
           "sellingGeneralAdmin": 93765000,
           "totalOperatingExpenses": null,
           "interestExpense": -5669000,
-          "incomeTaxExpense": -3457000
+          "incomeTaxExpense": -3457000,
+          "operatingCashflow": 240347000,
+          "capitalExpenditures": -51167000,
+          "freeCashflow": 189180000,
+          "investingCashflow": -157336000,
+          "financingCashflow": 12472000,
+          "depreciation": 45901000
         },
         {
           "endDate": "2011-10-31",
@@ -6610,7 +7072,13 @@
           "sellingGeneralAdmin": 85232000,
           "totalOperatingExpenses": null,
           "interestExpense": -3859000,
-          "incomeTaxExpense": -5094000
+          "incomeTaxExpense": -5094000,
+          "operatingCashflow": 128709000,
+          "capitalExpenditures": -41332000,
+          "freeCashflow": 87377000,
+          "investingCashflow": -89788000,
+          "financingCashflow": 15001000,
+          "depreciation": 41553000
         },
         {
           "endDate": "2011-07-31",
@@ -6623,7 +7091,13 @@
           "sellingGeneralAdmin": 84446000,
           "totalOperatingExpenses": null,
           "interestExpense": -3846000,
-          "incomeTaxExpense": -13445000
+          "incomeTaxExpense": -13445000,
+          "operatingCashflow": 82933000,
+          "capitalExpenditures": -50473000,
+          "freeCashflow": 32460000,
+          "investingCashflow": -321928000,
+          "financingCashflow": 20419000,
+          "depreciation": 40239000
         },
         {
           "endDate": "2011-04-30",
@@ -6636,7 +7110,13 @@
           "sellingGeneralAdmin": 84338000,
           "totalOperatingExpenses": null,
           "interestExpense": -3671000,
-          "incomeTaxExpense": 251000
+          "incomeTaxExpense": 251000,
+          "operatingCashflow": 139518000,
+          "capitalExpenditures": -28328000,
+          "freeCashflow": 111190000,
+          "investingCashflow": 79362000,
+          "financingCashflow": 27958000,
+          "depreciation": 29593000
         },
         {
           "endDate": "2011-01-31",
@@ -6649,7 +7129,13 @@
           "sellingGeneralAdmin": 74200000,
           "totalOperatingExpenses": null,
           "interestExpense": -3290000,
-          "incomeTaxExpense": -6491000
+          "incomeTaxExpense": -6491000,
+          "operatingCashflow": 165762000,
+          "capitalExpenditures": -300520000,
+          "freeCashflow": -134758000,
+          "investingCashflow": -382773000,
+          "financingCashflow": 10710000,
+          "depreciation": 23738000
         },
         {
           "endDate": "2010-10-31",
@@ -6662,7 +7148,13 @@
           "sellingGeneralAdmin": 63951000,
           "totalOperatingExpenses": null,
           "interestExpense": -7374000,
-          "incomeTaxExpense": 16192000
+          "incomeTaxExpense": 16192000,
+          "operatingCashflow": 74040000,
+          "capitalExpenditures": -20790000,
+          "freeCashflow": 53250000,
+          "investingCashflow": 244989000,
+          "financingCashflow": -96428000,
+          "depreciation": 19710000
         },
         {
           "endDate": "2010-07-31",
@@ -6675,7 +7167,13 @@
           "sellingGeneralAdmin": 61569000,
           "totalOperatingExpenses": null,
           "interestExpense": -7185000,
-          "incomeTaxExpense": 12884000
+          "incomeTaxExpense": 12884000,
+          "operatingCashflow": 76096000,
+          "capitalExpenditures": -27331000,
+          "freeCashflow": 48765000,
+          "investingCashflow": -415364000,
+          "financingCashflow": 54906000,
+          "depreciation": 17793000
         },
         {
           "endDate": "2010-04-30",
@@ -6688,7 +7186,13 @@
           "sellingGeneralAdmin": 56193000,
           "totalOperatingExpenses": null,
           "interestExpense": -7060000,
-          "incomeTaxExpense": 12016000
+          "incomeTaxExpense": 12016000,
+          "operatingCashflow": 143183000,
+          "capitalExpenditures": -12190000,
+          "freeCashflow": 130993000,
+          "investingCashflow": -509406000,
+          "financingCashflow": 44886000,
+          "depreciation": 14505000
         },
         {
           "endDate": "2010-01-31",
@@ -6701,7 +7205,13 @@
           "sellingGeneralAdmin": 55472000,
           "totalOperatingExpenses": null,
           "interestExpense": -20987000,
-          "incomeTaxExpense": 12263000
+          "incomeTaxExpense": 12263000,
+          "operatingCashflow": 91560000,
+          "capitalExpenditures": -7056000,
+          "freeCashflow": 84504000,
+          "investingCashflow": 95003000,
+          "financingCashflow": 577655000,
+          "depreciation": 15287000
         },
         {
           "endDate": "2009-10-31",
@@ -6714,7 +7224,13 @@
           "sellingGeneralAdmin": 49909000,
           "totalOperatingExpenses": null,
           "interestExpense": -292000,
-          "incomeTaxExpense": 15573000
+          "incomeTaxExpense": 15573000,
+          "operatingCashflow": 35520000,
+          "capitalExpenditures": -14089000,
+          "freeCashflow": 21431000,
+          "investingCashflow": -59832000,
+          "financingCashflow": 23562000,
+          "depreciation": 13601000
         },
         {
           "endDate": "2009-07-31",
@@ -6727,7 +7243,13 @@
           "sellingGeneralAdmin": 46759000,
           "totalOperatingExpenses": null,
           "interestExpense": -293000,
-          "incomeTaxExpense": 14030000
+          "incomeTaxExpense": 14030000,
+          "operatingCashflow": 45855000,
+          "capitalExpenditures": -19328000,
+          "freeCashflow": 26527000,
+          "investingCashflow": -157721000,
+          "financingCashflow": 18568000,
+          "depreciation": 12144000
         },
         {
           "endDate": "2009-04-30",
@@ -6740,7 +7262,13 @@
           "sellingGeneralAdmin": 43150000,
           "totalOperatingExpenses": null,
           "interestExpense": -208000,
-          "incomeTaxExpense": 15823000
+          "incomeTaxExpense": 15823000,
+          "operatingCashflow": 97976000,
+          "capitalExpenditures": -13428000,
+          "freeCashflow": 84548000,
+          "investingCashflow": -256066000,
+          "financingCashflow": 17368000,
+          "depreciation": 12145000
         },
         {
           "endDate": "2009-01-31",
@@ -6753,7 +7281,13 @@
           "sellingGeneralAdmin": 40816000,
           "totalOperatingExpenses": null,
           "interestExpense": -5400000,
-          "incomeTaxExpense": 7864000
+          "incomeTaxExpense": 7864000,
+          "operatingCashflow": 75529000,
+          "capitalExpenditures": -12232000,
+          "freeCashflow": 63297000,
+          "investingCashflow": 10708000,
+          "financingCashflow": 14350000,
+          "depreciation": 26351000
         },
         {
           "endDate": "2008-10-31",
@@ -6766,7 +7300,13 @@
           "sellingGeneralAdmin": 41284000,
           "totalOperatingExpenses": null,
           "interestExpense": -3800000,
-          "incomeTaxExpense": 8824000
+          "incomeTaxExpense": 8824000,
+          "operatingCashflow": 17121000,
+          "capitalExpenditures": -11614000,
+          "freeCashflow": 5507000,
+          "investingCashflow": -85914000,
+          "financingCashflow": 24015000,
+          "depreciation": 22694000
         },
         {
           "endDate": "2008-07-31",
@@ -6779,7 +7319,13 @@
           "sellingGeneralAdmin": 38081000,
           "totalOperatingExpenses": null,
           "interestExpense": -6700000,
-          "incomeTaxExpense": 10558000
+          "incomeTaxExpense": 10558000,
+          "operatingCashflow": 53075000,
+          "capitalExpenditures": -13036000,
+          "freeCashflow": 40039000,
+          "investingCashflow": -38154000,
+          "financingCashflow": 34368000,
+          "depreciation": 22777000
         },
         {
           "endDate": "2008-04-30",
@@ -6792,7 +7338,13 @@
           "sellingGeneralAdmin": 38432000,
           "totalOperatingExpenses": null,
           "interestExpense": -330000,
-          "incomeTaxExpense": 10311000
+          "incomeTaxExpense": 10311000,
+          "operatingCashflow": 83832000,
+          "capitalExpenditures": -24177000,
+          "freeCashflow": 59655000,
+          "investingCashflow": -7637000,
+          "financingCashflow": 24178000,
+          "depreciation": 22881000
         },
         {
           "endDate": "2008-01-31",
@@ -6805,7 +7357,13 @@
           "sellingGeneralAdmin": 35619000,
           "totalOperatingExpenses": null,
           "interestExpense": -2000,
-          "incomeTaxExpense": 8296000
+          "incomeTaxExpense": 8296000,
+          "operatingCashflow": 80793000,
+          "capitalExpenditures": -8369000,
+          "freeCashflow": 72424000,
+          "investingCashflow": 13902000,
+          "financingCashflow": 24088000,
+          "depreciation": 19036000
         },
         {
           "endDate": "2007-10-31",
@@ -6818,7 +7376,13 @@
           "sellingGeneralAdmin": 29296000,
           "totalOperatingExpenses": null,
           "interestExpense": -1000,
-          "incomeTaxExpense": 6594000
+          "incomeTaxExpense": 6594000,
+          "operatingCashflow": 51998000,
+          "capitalExpenditures": -9122000,
+          "freeCashflow": 42876000,
+          "investingCashflow": -42603000,
+          "financingCashflow": 29878000,
+          "depreciation": 17802000
         },
         {
           "endDate": "2007-07-31",
@@ -6831,7 +7395,13 @@
           "sellingGeneralAdmin": 26508000,
           "totalOperatingExpenses": null,
           "interestExpense": -2000,
-          "incomeTaxExpense": 4653000
+          "incomeTaxExpense": 4653000,
+          "operatingCashflow": 34654000,
+          "capitalExpenditures": -10104000,
+          "freeCashflow": 24550000,
+          "investingCashflow": -23839000,
+          "financingCashflow": 24318000,
+          "depreciation": 15689000
         },
         {
           "endDate": "2007-04-30",
@@ -6844,7 +7414,13 @@
           "sellingGeneralAdmin": 25085000,
           "totalOperatingExpenses": null,
           "interestExpense": -41000,
-          "incomeTaxExpense": 3842000
+          "incomeTaxExpense": 3842000,
+          "operatingCashflow": 36830000,
+          "capitalExpenditures": -15957000,
+          "freeCashflow": 20873000,
+          "investingCashflow": -50169000,
+          "financingCashflow": 14429000,
+          "depreciation": 13887000
         },
         {
           "endDate": "2007-01-31",
@@ -6857,7 +7433,13 @@
           "sellingGeneralAdmin": 11725000,
           "totalOperatingExpenses": null,
           "interestExpense": -112000,
-          "incomeTaxExpense": 2659000
+          "incomeTaxExpense": 2659000,
+          "operatingCashflow": 38159000,
+          "capitalExpenditures": -7625000,
+          "freeCashflow": 30534000,
+          "investingCashflow": -35444000,
+          "financingCashflow": 13650000,
+          "depreciation": 10513000
         },
         {
           "endDate": "2006-10-31",
@@ -6870,7 +7452,13 @@
           "sellingGeneralAdmin": 20840000,
           "totalOperatingExpenses": null,
           "interestExpense": -19000,
-          "incomeTaxExpense": 3418000
+          "incomeTaxExpense": 3418000,
+          "operatingCashflow": 30627000,
+          "capitalExpenditures": -9085000,
+          "freeCashflow": 21542000,
+          "investingCashflow": -125294000,
+          "financingCashflow": 14872000,
+          "depreciation": 9166000
         },
         {
           "endDate": "2006-07-31",
@@ -6883,7 +7471,13 @@
           "sellingGeneralAdmin": 19466000,
           "totalOperatingExpenses": null,
           "interestExpense": -151000,
-          "incomeTaxExpense": 1713000
+          "incomeTaxExpense": 1713000,
+          "operatingCashflow": 30022000,
+          "capitalExpenditures": -2818000,
+          "freeCashflow": 27204000,
+          "investingCashflow": -16969000,
+          "financingCashflow": 8553000,
+          "depreciation": 8754000
         },
         {
           "endDate": "2006-04-30",
@@ -6896,7 +7490,13 @@
           "sellingGeneralAdmin": 19405000,
           "totalOperatingExpenses": null,
           "interestExpense": -11000,
-          "incomeTaxExpense": 2005000
+          "incomeTaxExpense": 2005000,
+          "operatingCashflow": 12416000,
+          "capitalExpenditures": -2595000,
+          "freeCashflow": 9821000,
+          "investingCashflow": 9111000,
+          "financingCashflow": 7952000,
+          "depreciation": 7452000
         },
         {
           "endDate": "2006-01-31",
@@ -6909,7 +7509,13 @@
           "sellingGeneralAdmin": 15013000,
           "totalOperatingExpenses": null,
           "interestExpense": -13000,
-          "incomeTaxExpense": 1330000
+          "incomeTaxExpense": 1330000,
+          "operatingCashflow": 39340000,
+          "capitalExpenditures": -5614000,
+          "freeCashflow": 33726000,
+          "investingCashflow": -32893000,
+          "financingCashflow": 5933000,
+          "depreciation": 6197000
         }
       ],
       "netDebt": null,
@@ -6934,8 +7540,8 @@
         "numberOfAnalystOpinions": null,
         "recommendationKey": null
       },
-      "lastUpdated": "2026-05-21T18:22:21.510Z"
+      "lastUpdated": "2026-05-21T18:22:26.913Z"
     }
   },
-  "lastUpdated": "2026-05-21T18:22:23.513Z"
+  "lastUpdated": "2026-05-21T18:22:28.916Z"
 }
