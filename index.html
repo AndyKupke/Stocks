@@ -3606,19 +3606,21 @@ async function fmpFetchFinancials(ticker) {
 
   // Fetch annual + ratios + balance sheet in parallel; try limit=8 for quarterly (paid),
   // fall back to limit=5 (free tier cap) if those come back null.
-  const [aIS, aCF, ratios, keyMetrics, bs, qIS8, qCF8] = await Promise.all([
+  const [aIS, aCF, aBS, ratios, keyMetrics, qIS8, qCF8, qBS8] = await Promise.all([
     get('income-statement',       { period: 'annual',  limit: 5 }),
     get('cash-flow-statement',    { period: 'annual',  limit: 5 }),
+    get('balance-sheet-statement',{ period: 'annual',  limit: 5 }),
     get('ratios',                 { period: 'annual',  limit: 1 }),
     get('key-metrics',            { period: 'annual',  limit: 1 }),
-    get('balance-sheet-statement',{ period: 'annual',  limit: 1 }),
     get('income-statement',       { period: 'quarter', limit: 8 }),
     get('cash-flow-statement',    { period: 'quarter', limit: 8 }),
+    get('balance-sheet-statement',{ period: 'quarter', limit: 8 }),
   ]);
   // If limit=8 was rejected by free tier, fall back to limit=5
-  const [qIS, qCF] = await Promise.all([
-    qIS8 || get('income-statement',    { period: 'quarter', limit: 5 }),
-    qCF8 || get('cash-flow-statement', { period: 'quarter', limit: 5 }),
+  const [qIS, qCF, qBS] = await Promise.all([
+    qIS8 || get('income-statement',       { period: 'quarter', limit: 5 }),
+    qCF8 || get('cash-flow-statement',    { period: 'quarter', limit: 5 }),
+    qBS8 || get('balance-sheet-statement',{ period: 'quarter', limit: 5 }),
   ]);
 
   if (!aIS && !qIS) return null; // complete failure
@@ -3653,9 +3655,46 @@ async function fmpFetchFinancials(ticker) {
     changeInCash:        s.netChangeInCash                                    ?? null,
   })).filter(s => s.endDate);
 
+  const parseBS = arr => (arr||[]).map(s => ({
+    endDate:                 s.date?.slice(0,10) || null,
+    // Current assets
+    cashAndEquivalents:      s.cashAndCashEquivalents                         ?? null,
+    cashAndShortTermInv:     s.cashAndShortTermInvestments                    ?? null,
+    shortTermInvestments:    s.shortTermInvestments                           ?? null,
+    netReceivables:          s.netReceivables                                 ?? null,
+    inventory:               s.inventory                                      ?? null,
+    otherCurrentAssets:      s.otherCurrentAssets                             ?? null,
+    totalCurrentAssets:      s.totalCurrentAssets                             ?? null,
+    // Non-current assets
+    ppe:                     s.propertyPlantEquipmentNet                      ?? null,
+    goodwill:                s.goodwill                                       ?? null,
+    intangibleAssets:        s.intangibleAssets                               ?? null,
+    longTermInvestments:     s.longTermInvestments                            ?? null,
+    otherNonCurrentAssets:   s.otherNonCurrentAssets                         ?? null,
+    totalNonCurrentAssets:   s.totalNonCurrentAssets                         ?? null,
+    totalAssets:             s.totalAssets                                    ?? null,
+    // Current liabilities
+    accountsPayable:         s.accountPayables                                ?? null,
+    shortTermDebt:           s.shortTermDebt                                  ?? null,
+    deferredRevenue:         s.deferredRevenue                                ?? null,
+    otherCurrentLiab:        s.otherCurrentLiabilities                       ?? null,
+    totalCurrentLiab:        s.totalCurrentLiabilities                       ?? null,
+    // Non-current liabilities
+    longTermDebt:            s.longTermDebt                                   ?? null,
+    capitalLeaseObligation:  s.capitalLeaseObligations                       ?? null,
+    otherNonCurrentLiab:     s.otherNonCurrentLiabilities                    ?? null,
+    totalNonCurrentLiab:     s.totalNonCurrentLiabilities                    ?? null,
+    totalLiabilities:        s.totalLiabilities                              ?? null,
+    // Equity
+    commonStock:             s.commonStock                                    ?? null,
+    retainedEarnings:        s.retainedEarnings                              ?? null,
+    treasuryStock:           s.treasuryStock                                  ?? null,
+    totalShareholderEquity:  s.totalStockholdersEquity                       ?? null,
+  })).filter(s => s.endDate);
+
   const r0 = ratios?.[0]     || {};
   const km = keyMetrics?.[0] || {};
-  const bs0 = bs?.[0]        || {};
+  const bs0 = aBS?.[0]       || {};
 
   // Net debt and shares outstanding for EV multiples
   const netDebt          = bs0.netDebt                   ?? null;
@@ -3693,6 +3732,8 @@ async function fmpFetchFinancials(ticker) {
     quarterlyIS:    parseIS(qIS),
     annualCF:       parseCF(aCF),
     quarterlyCF:    parseCF(qCF),
+    annualBS:       parseBS(aBS),
+    quarterlyBS:    parseBS(qBS),
     kpis,
     netDebt,
     sharesOutstanding,
@@ -3767,8 +3808,8 @@ async function fetchFinancialData() {
       const existingEntry = financialData[finSelectedTicker] || {};
       const prevAnnualCount    = (existingEntry.annual||[]).length;
       const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
-      const newAnnual    = finMergeISCF(fmpResult.annualIS,    fmpResult.annualCF);
-      const newQuarterly = finMergeISCF(fmpResult.quarterlyIS, fmpResult.quarterlyCF);
+      const newAnnual    = finMergeByDate(finMergeISCF(fmpResult.annualIS,    fmpResult.annualCF),    fmpResult.annualBS    || []);
+      const newQuarterly = finMergeByDate(finMergeISCF(fmpResult.quarterlyIS, fmpResult.quarterlyCF), fmpResult.quarterlyBS || []);
       financialData[finSelectedTicker] = {
         annual:           finMergeByDate(existingEntry.annual,    newAnnual),
         quarterly:        finMergeByDate(existingEntry.quarterly, newQuarterly),
