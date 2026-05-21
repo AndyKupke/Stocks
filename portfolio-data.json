@@ -4857,8 +4857,8 @@
           "depreciation": 310000
         }
       ],
-      "netDebt": null,
-      "sharesOutstanding": null,
+      "netDebt": -397335000,
+      "sharesOutstanding": 53194000,
       "kpis": {
         "grossMargins": 0.837608630946678,
         "operatingMargins": 0.003638490005889033,
@@ -4871,15 +4871,15 @@
         "debtToEquity": null,
         "currentRatio": null,
         "quickRatio": null,
-        "totalCash": null,
-        "totalDebt": null,
+        "totalCash": 882242000,
+        "totalDebt": 484907000,
         "freeCashflow": null,
         "operatingCashflow": null,
         "targetMeanPrice": null,
         "numberOfAnalystOpinions": null,
         "recommendationKey": null
       },
-      "lastUpdated": "2026-05-20T19:22:29.120Z"
+      "lastUpdated": "2026-05-21T18:21:07.952Z"
     },
     "ABNB": {
       "annual": [
@@ -5595,5 +5595,5 @@
       "lastUpdated": "2026-05-20T19:28:31.170Z"
     }
   },
-  "lastUpdated": "2026-05-20T19:28:33.172Z"
+  "lastUpdated": "2026-05-21T18:21:09.956Z"
 }
