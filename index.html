@@ -3448,32 +3448,76 @@ async function avFetchFinancials(ticker) {
   const parseIS = reports => reports.map(r => ({
     endDate:               r.fiscalDateEnding || null,
     totalRevenue:          n(r.totalRevenue),
+    costOfRevenue:         n(r.costOfRevenue) ?? n(r.costofGoodsAndServicesSold),
     grossProfit:           n(r.grossProfit),
-    operatingIncome:       n(r.operatingIncome),
-    ebitda:                n(r.ebitda),
-    netIncome:             n(r.netIncome),
     researchDevelopment:   n(r.researchAndDevelopment),
     sellingGeneralAdmin:   n(r.sellingGeneralAndAdministrative),
-    totalOperatingExpenses:n(r.totalOperatingExpense),
+    depreciationAmort:     n(r.depreciationAndAmortization) ?? n(r.depreciation),
+    operatingIncome:       n(r.operatingIncome),
+    ebit:                  n(r.ebit),
     interestExpense:       n(r.interestExpense) != null ? -Math.abs(n(r.interestExpense)) : null,
+    interestIncome:        n(r.interestIncome),
+    incomeBeforeTax:       n(r.incomeBeforeTax),
     incomeTaxExpense:      n(r.incomeTaxExpense),
+    netIncomeContOps:      n(r.netIncomeFromContinuingOperations),
+    netIncome:             n(r.netIncome),
+    ebitda:                n(r.ebitda),
   })).filter(r => r.endDate);
 
   const parseCF = reports => reports.map(r => {
     const ocf = n(r.operatingCashflow);
     const capRaw = n(r.capitalExpenditures);
-    const cap = capRaw != null ? -Math.abs(capRaw) : null; // AV reports as positive
-    const dna = n(r.depreciationDepletionAndAmortization);
+    const cap = capRaw != null ? -Math.abs(capRaw) : null;
     return {
-      endDate:             r.fiscalDateEnding || null,
-      operatingCashflow:   ocf,
-      capitalExpenditures: cap,
-      freeCashflow:        (ocf != null && cap != null) ? ocf + cap : null,
-      investingCashflow:   n(r.cashflowFromInvestment),
-      financingCashflow:   n(r.cashflowFromFinancing),
-      depreciation:        dna,
+      endDate:                r.fiscalDateEnding || null,
+      operatingCashflow:      ocf,
+      depreciationAmortCF:    n(r.depreciationDepletionAndAmortization),
+      stockBasedComp:         n(r.stockBasedCompensation),
+      capitalExpenditures:    cap,
+      freeCashflow:           (ocf != null && cap != null) ? ocf + cap : null,
+      investingCashflow:      n(r.cashflowFromInvestment),
+      dividendPayout:         n(r.dividendPayout) != null ? -Math.abs(n(r.dividendPayout)) : null,
+      financingCashflow:      n(r.cashflowFromFinancing),
+      changeInCash:           n(r.changeInCashAndCashEquivalents),
     };
   }).filter(r => r.endDate);
+
+  const parseBS = reports => reports.map(r => ({
+    endDate:                 r.fiscalDateEnding || null,
+    // Current assets
+    cashAndEquivalents:      n(r.cashAndCashEquivalentsAtCarryingValue),
+    cashAndShortTermInv:     n(r.cashAndShortTermInvestments),
+    shortTermInvestments:    n(r.shortTermInvestments),
+    netReceivables:          n(r.currentNetReceivables),
+    inventory:               n(r.inventory),
+    otherCurrentAssets:      n(r.otherCurrentAssets),
+    totalCurrentAssets:      n(r.totalCurrentAssets),
+    // Non-current assets
+    ppe:                     n(r.propertyPlantEquipment),
+    goodwill:                n(r.goodwill),
+    intangibleAssets:        n(r.intangibleAssetsExcludingGoodwill),
+    longTermInvestments:     n(r.longTermInvestments),
+    otherNonCurrentAssets:   n(r.otherNonCurrentAssets),
+    totalNonCurrentAssets:   n(r.totalNonCurrentAssets),
+    totalAssets:             n(r.totalAssets),
+    // Current liabilities
+    accountsPayable:         n(r.currentAccountsPayable),
+    shortTermDebt:           n(r.shortTermDebt) ?? n(r.currentDebt),
+    deferredRevenue:         n(r.deferredRevenue),
+    otherCurrentLiab:        n(r.otherCurrentLiabilities),
+    totalCurrentLiab:        n(r.totalCurrentLiabilities),
+    // Non-current liabilities
+    longTermDebt:            n(r.longTermDebtNoncurrent) ?? n(r.longTermDebt),
+    capitalLeaseObligation:  n(r.capitalLeaseObligations),
+    otherNonCurrentLiab:     n(r.otherNonCurrentLiabilities),
+    totalNonCurrentLiab:     n(r.totalNonCurrentLiabilities),
+    totalLiabilities:        n(r.totalLiabilities),
+    // Equity
+    commonStock:             n(r.commonStock),
+    retainedEarnings:        n(r.retainedEarnings),
+    treasuryStock:           n(r.treasuryStock),
+    totalShareholderEquity:  n(r.totalShareholderEquity),
+  })).filter(r => r.endDate);
 
   // Merge IS + CF by date
   const merge = (isArr, cfArr) => {
@@ -3487,14 +3531,17 @@ async function avFetchFinancials(ticker) {
   const quarterlyIS = parseIS(isData.quarterlyReports || []);
   const annualCF    = parseCF(cfData?.annualReports    || []);
   const quarterlyCF = parseCF(cfData?.quarterlyReports || []);
+  const annualBS    = parseBS(bsData?.annualReports    || []);
+  const quarterlyBS = parseBS(bsData?.quarterlyReports || []);
 
-  const annualPeriods    = merge(annualIS,    annualCF);
-  const quarterlyPeriods = merge(quarterlyIS, quarterlyCF);
+  const annualPeriods    = merge(merge(annualIS,    annualCF),    annualBS);
+  const quarterlyPeriods = merge(merge(quarterlyIS, quarterlyCF), quarterlyBS);
 
-  // Balance sheet for net debt
-  const bs = bsData?.annualReports?.[0] || {};
-  const cash = n(bs.cashAndShortTermInvestments) ?? n(bs.cashAndCashEquivalentsAtCarryingValue);
-  const debt = n(bs.shortLongTermDebtTotal) ?? n(bs.longTermDebt);
+  // Balance sheet latest for net debt (from annualBS or raw)
+  const bs = annualBS[0] || bsData?.annualReports?.[0] || {};
+  const bsLatest = annualBS[0] || {};
+  const cash = bsLatest.cashAndShortTermInv ?? bsLatest.cashAndEquivalents ?? n(bsData?.annualReports?.[0]?.cashAndShortTermInvestments) ?? null;
+  const debt = n(bsData?.annualReports?.[0]?.shortLongTermDebtTotal) ?? bsLatest.longTermDebt ?? null;
   const netDebt = (cash != null && debt != null) ? debt - cash : null;
 
   // Shares outstanding: OVERVIEW is more reliable than balance sheet field (often "None")
@@ -3578,26 +3625,32 @@ async function fmpFetchFinancials(ticker) {
 
   const parseIS = arr => (arr||[]).map(s => ({
     endDate:               s.date?.slice(0,10) || null,
-    totalRevenue:          s.revenue                                    ?? null,
-    grossProfit:           s.grossProfit                                ?? null,
-    operatingIncome:       s.operatingIncome                            ?? null,
-    ebitda:                s.ebitda                                     ?? null,
-    netIncome:             s.netIncome                                  ?? null,
-    researchDevelopment:   s.researchAndDevelopmentExpenses             ?? null,
-    sellingGeneralAdmin:   s.sellingGeneralAndAdministrativeExpenses    ?? null,
-    totalOperatingExpenses:s.operatingExpenses                          ?? null,
-    interestExpense:       s.interestExpense                            ?? null,
-    incomeTaxExpense:      s.incomeTaxExpense                           ?? null,
+    totalRevenue:          s.revenue                                            ?? null,
+    costOfRevenue:         s.costOfRevenue                                      ?? null,
+    grossProfit:           s.grossProfit                                        ?? null,
+    researchDevelopment:   s.researchAndDevelopmentExpenses                     ?? null,
+    sellingGeneralAdmin:   s.sellingGeneralAndAdministrativeExpenses            ?? null,
+    depreciationAmort:     s.depreciationAndAmortization                        ?? null,
+    operatingIncome:       s.operatingIncome                                    ?? null,
+    ebit:                  s.operatingIncome                                    ?? null,
+    interestExpense:       s.interestExpense != null ? -Math.abs(s.interestExpense) : null,
+    incomeBeforeTax:       s.incomeBeforeTaxExpense                             ?? null,
+    incomeTaxExpense:      s.incomeTaxExpense                                   ?? null,
+    netIncome:             s.netIncome                                          ?? null,
+    ebitda:                s.ebitda                                             ?? null,
   })).filter(s => s.endDate);
 
   const parseCF = arr => (arr||[]).map(s => ({
     endDate:             s.date?.slice(0,10) || null,
-    operatingCashflow:   s.operatingCashFlow                         ?? null,
-    capitalExpenditures: s.capitalExpenditure                        ?? null,
-    freeCashflow:        s.freeCashFlow                              ?? null,
-    investingCashflow:   s.netCashProvidedByInvestingActivities      ?? null,
-    financingCashflow:   s.netCashProvidedByFinancingActivities      ?? null,
-    depreciation:        s.depreciationAndAmortization               ?? null,
+    operatingCashflow:   s.operatingCashFlow                                  ?? null,
+    depreciationAmortCF: s.depreciationAndAmortization                        ?? null,
+    stockBasedComp:      s.stockBasedCompensation                             ?? null,
+    capitalExpenditures: s.capitalExpenditure != null ? -Math.abs(s.capitalExpenditure) : null,
+    freeCashflow:        s.freeCashFlow                                       ?? null,
+    investingCashflow:   s.netCashProvidedByInvestingActivities               ?? null,
+    dividendPayout:      s.dividendsPaid != null ? -Math.abs(s.dividendsPaid) : null,
+    financingCashflow:   s.netCashProvidedByFinancingActivities               ?? null,
+    changeInCash:        s.netChangeInCash                                    ?? null,
   })).filter(s => s.endDate);
 
   const r0 = ratios?.[0]     || {};
@@ -3647,34 +3700,6 @@ async function fmpFetchFinancials(ticker) {
 }
 
 // ── (EDGAR and Yahoo Finance financial fetchers removed — AV + FMP cover all needs) ──
-function finParseStatements(arr) {
-  return (arr||[]).map(s => ({
-    endDate:                   s.endDate?.fmt || null,
-    totalRevenue:              s.totalRevenue?.raw ?? null,
-    grossProfit:               s.grossProfit?.raw ?? null,
-    operatingIncome:           s.operatingIncome?.raw ?? null,
-    ebitda:                    s.ebitda?.raw ?? null,
-    netIncome:                 (s.netIncome?.raw ?? s.netIncomeApplicableToCommonShares?.raw) ?? null,
-    researchDevelopment:       s.researchDevelopment?.raw ?? null,
-    sellingGeneralAdmin:       s.sellingGeneralAdministrative?.raw ?? null,
-    totalOperatingExpenses:    s.totalOperatingExpenses?.raw ?? null,
-    interestExpense:           s.interestExpense?.raw ?? null,
-    incomeTaxExpense:          s.incomeTaxExpense?.raw ?? null,
-  })).filter(s => s.endDate);
-}
-
-function finParseCashflows(arr) {
-  return (arr||[]).map(s => ({
-    endDate:            s.endDate?.fmt || null,
-    operatingCashflow:  s.totalCashFromOperatingActivities?.raw ?? null,
-    capitalExpenditures:s.capitalExpenditures?.raw ?? null,
-    freeCashflow:       s.freeCashflow?.raw ?? null,
-    investingCashflow:  s.totalCashFromInvestingActivities?.raw ?? null,
-    financingCashflow:  s.totalCashFromFinancingActivities?.raw ?? null,
-    depreciation:       s.depreciation?.raw ?? null,
-  })).filter(s => s.endDate);
-}
-
 function finMergeByDate(existing, incoming) {
   const map = {};
   (existing||[]).forEach(r => { if(r.endDate) map[r.endDate] = {...r}; });
@@ -3739,27 +3764,31 @@ async function fetchFinancialData() {
     st.textContent = 'Fetching from Financial Modeling Prep…';
     const fmpResult = await fmpFetchFinancials(finSelectedTicker);
     if (fmpResult) {
-      // Convert FMP structure to the same shape fetchFinancialData expects
-      raw = {
-        _source: 'fmp',
-        incomeStatementHistory:            { incomeStatementHistory: fmpResult.annualIS.map(s => ({
-          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
-        })) },
-        incomeStatementHistoryQuarterly:   { incomeStatementHistory: fmpResult.quarterlyIS.map(s => ({
-          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
-        })) },
-        cashflowStatementHistory:          { cashflowStatements: fmpResult.annualCF.map(s => ({
-          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
-        })) },
-        cashflowStatementHistoryQuarterly: { cashflowStatements: fmpResult.quarterlyCF.map(s => ({
-          endDate: { fmt: s.endDate }, ...Object.fromEntries(Object.entries(s).filter(([k])=>k!=='endDate').map(([k,v])=>[k,{raw:v}]))
-        })) },
-        financialData: Object.fromEntries(
-          Object.entries(fmpResult.kpis).map(([k,v]) => [k, typeof v === 'string' ? v : {raw:v}])
-        ),
-        _netDebt:           fmpResult.netDebt,
-        _sharesOutstanding: fmpResult.sharesOutstanding,
+      const existingEntry = financialData[finSelectedTicker] || {};
+      const prevAnnualCount    = (existingEntry.annual||[]).length;
+      const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
+      const newAnnual    = finMergeISCF(fmpResult.annualIS,    fmpResult.annualCF);
+      const newQuarterly = finMergeISCF(fmpResult.quarterlyIS, fmpResult.quarterlyCF);
+      financialData[finSelectedTicker] = {
+        annual:           finMergeByDate(existingEntry.annual,    newAnnual),
+        quarterly:        finMergeByDate(existingEntry.quarterly, newQuarterly),
+        netDebt:          fmpResult.netDebt          ?? existingEntry.netDebt          ?? null,
+        sharesOutstanding:fmpResult.sharesOutstanding ?? existingEntry.sharesOutstanding ?? null,
+        kpis:             fmpResult.kpis,
+        lastUpdated:      new Date().toISOString(),
       };
+      saveFinancialData(); scheduleSave(); finNeedsRefetch = false;
+      const entry  = financialData[finSelectedTicker];
+      const addedA = entry.annual.length    - prevAnnualCount;
+      const addedQ = entry.quarterly.length - prevQuarterlyCount;
+      const addMsg = (addedA > 0 || addedQ > 0)
+        ? ` · +${addedA} annual, +${addedQ} quarterly periods`
+        : ' · no new periods (data up to date)';
+      st.textContent = `✓ Updated via FMP${addMsg}`;
+      st.style.color = 'var(--grn)';
+      btn.disabled = false; btn.textContent = '⚡ Update Financial Data';
+      renderFinancialBody();
+      return;
     }
   }
   if (!raw) {
@@ -3771,67 +3800,6 @@ async function fetchFinancialData() {
     st.style.color = 'var(--red)';
     return;
   }
-  st.textContent = `Parsing data…`;
-
-  const existingEntry = financialData[finSelectedTicker] || {};
-  const annualIS   = finParseStatements(raw.incomeStatementHistory?.incomeStatementHistory);
-  const quarterlyIS= finParseStatements(raw.incomeStatementHistoryQuarterly?.incomeStatementHistory);
-  const annualCF   = finParseCashflows(raw.cashflowStatementHistory?.cashflowStatements);
-  const quarterlyCF= finParseCashflows(raw.cashflowStatementHistoryQuarterly?.cashflowStatements);
-  const fd = raw.financialData || {};
-
-  const newAnnual    = finMergeISCF(annualIS, annualCF);
-  const newQuarterly = finMergeISCF(quarterlyIS, quarterlyCF);
-
-  const prevAnnualCount    = (existingEntry.annual||[]).length;
-  const prevQuarterlyCount = (existingEntry.quarterly||[]).length;
-
-  financialData[finSelectedTicker] = {
-    annual:           finMergeByDate(existingEntry.annual, newAnnual),
-    quarterly:        finMergeByDate(existingEntry.quarterly, newQuarterly),
-    netDebt:          raw._netDebt          ?? existingEntry.netDebt          ?? null,
-    sharesOutstanding:raw._sharesOutstanding ?? existingEntry.sharesOutstanding ?? null,
-    kpis: {
-      grossMargins:            fd.grossMargins?.raw ?? null,
-      operatingMargins:        fd.operatingMargins?.raw ?? null,
-      ebitdaMargins:           fd.ebitdaMargins?.raw ?? null,
-      profitMargins:           fd.profitMargins?.raw ?? null,
-      revenueGrowth:           fd.revenueGrowth?.raw ?? null,
-      earningsGrowth:          fd.earningsGrowth?.raw ?? null,
-      returnOnEquity:          fd.returnOnEquity?.raw ?? null,
-      returnOnAssets:          fd.returnOnAssets?.raw ?? null,
-      debtToEquity:            fd.debtToEquity?.raw ?? null,
-      currentRatio:            fd.currentRatio?.raw ?? null,
-      quickRatio:              fd.quickRatio?.raw ?? null,
-      totalCash:               fd.totalCash?.raw ?? null,
-      totalDebt:               fd.totalDebt?.raw ?? null,
-      freeCashflow:            fd.freeCashflow?.raw ?? null,
-      operatingCashflow:       fd.operatingCashflow?.raw ?? null,
-      targetMeanPrice:         fd.targetMeanPrice?.raw ?? null,
-      numberOfAnalystOpinions: fd.numberOfAnalystOpinions?.raw ?? null,
-      recommendationKey:       fd.recommendationKey ?? null,
-    },
-    lastUpdated: new Date().toISOString()
-  };
-
-  saveFinancialData();
-  scheduleSave();
-  finNeedsRefetch = false;
-
-  const entry = financialData[finSelectedTicker];
-  const addedA = entry.annual.length    - prevAnnualCount;
-  const addedQ = entry.quarterly.length - prevQuarterlyCount;
-  const addedMsg = (addedA > 0 || addedQ > 0)
-    ? ` · +${addedA} annual, +${addedQ} quarterly periods`
-    : ' · data refreshed';
-
-  btn.disabled = false;
-  btn.textContent = '⚡ Update Financial Data';
-  st.textContent = `✓ Updated via FMP${addedMsg}`;
-  st.style.color = 'var(--grn)';
-  setTimeout(() => { st.textContent = ''; }, 4000);
-
-  renderFinancialBody();
 }
 
 function finOnStockChange() {
@@ -3990,16 +3958,28 @@ function finBuildTable(title, rows, periods) {
   const maxCols = Math.min(periods.length, 8);
   const cols = periods.slice(0, maxCols);
   const thCells = cols.map(p => `<th style="text-align:right;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.3px;white-space:nowrap;">${finFmtColHeader(p.endDate)}</th>`).join('');
-  const bodyRows = rows.map(({ label, key, fmt, indent }) => {
+  const numCols = cols.length;
+  const bodyRows = rows.map(({ label, key, fmt, indent, style, header, divider }) => {
+    if (divider) {
+      return `<tr><td colspan="${numCols + 1}" style="padding:6px 0;border:none;"></td></tr>`;
+    }
+    if (header) {
+      return `<tr style="background:var(--surf2);"><td colspan="${numCols + 1}" style="padding:5px 12px;font-size:9px;font-weight:700;color:var(--txt3);letter-spacing:1.2px;text-transform:uppercase;">${label}</td></tr>`;
+    }
     const td = cols.map(p => {
-      const v = p[key];
+      const v = key != null ? p[key] : null;
       const formatted = fmt ? fmt(v) : fmtFin(v);
-      return `<td style="text-align:right;padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;">${formatted}</td>`;
+      const fw = (style === 'total' || style === 'subtotal') ? 'font-weight:600;' : '';
+      return `<td style="text-align:right;padding:5px 12px;font-size:12px;font-family:'IBM Plex Mono',monospace;${fw}">${formatted}</td>`;
     }).join('');
-    const labelStyle = indent
-      ? 'padding:5px 12px 5px 24px;font-size:11px;color:var(--txt2);'
-      : 'padding:5px 12px;font-size:11px;color:var(--txt);font-weight:600;';
-    return `<tr style="border-bottom:1px solid var(--bdr);">
+    let labelStyle;
+    if (style === 'total')    labelStyle = 'padding:5px 12px;font-size:11px;color:var(--txt);font-weight:700;';
+    else if (style === 'subtotal') labelStyle = 'padding:5px 12px;font-size:11px;color:var(--txt);font-weight:600;';
+    else if (indent)          labelStyle = 'padding:5px 12px 5px 24px;font-size:11px;color:var(--txt2);';
+    else                      labelStyle = 'padding:5px 12px;font-size:11px;color:var(--txt);font-weight:600;';
+    const topBorder = style === 'total' ? 'border-top:1px solid var(--bdr2);' : '';
+    const rowBorder = style === 'total' ? 'border-bottom:2px solid var(--bdr2);' : 'border-bottom:1px solid var(--bdr);';
+    return `<tr style="${rowBorder}${topBorder}">
       <td style="${labelStyle}white-space:nowrap;">${label}</td>${td}</tr>`;
   }).join('');
   return `
@@ -4008,7 +3988,7 @@ function finBuildTable(title, rows, periods) {
       <div style="overflow-x:auto;">
         <table style="width:100%;border-collapse:collapse;min-width:500px;">
           <thead><tr style="border-bottom:2px solid var(--bdr2);">
-            <th style="text-align:left;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;min-width:180px;">ITEM</th>
+            <th style="text-align:left;padding:6px 12px;font-size:10px;color:var(--txt3);font-weight:600;min-width:200px;">ITEM</th>
             ${thCells}
           </tr></thead>
           <tbody>${bodyRows}</tbody>
@@ -4086,24 +4066,65 @@ function renderFinancialBody() {
   }
 
   const plRows = [
-    { label:'Revenue',                key:'totalRevenue',           fmt: fmtFin },
-    { label:'Gross Profit',           key:'grossProfit',             fmt: fmtFin },
-    { label:'Operating Income',       key:'operatingIncome',         fmt: fmtFin },
-    { label:'EBITDA',                 key:'ebitda',                  fmt: fmtFin },
-    { label:'Net Income',             key:'netIncome',               fmt: fmtFin },
-    { label:'R&D Expenses',           key:'researchDevelopment',     fmt: v => fmtFin(v), indent:true },
-    { label:'SG&A Expenses',          key:'sellingGeneralAdmin',     fmt: v => fmtFin(v), indent:true },
-    { label:'Interest Expense',       key:'interestExpense',         fmt: v => fmtFin(v), indent:true },
-    { label:'Income Tax',             key:'incomeTaxExpense',        fmt: v => fmtFin(v), indent:true },
+    { label:'Revenue',                key:'totalRevenue',       fmt:fmtFin, style:'total' },
+    { label:'Cost of Revenue',        key:'costOfRevenue',      fmt:fmtFin, indent:true },
+    { label:'Gross Profit',           key:'grossProfit',        fmt:fmtFin, style:'subtotal' },
+    { label:'R&D Expenses',           key:'researchDevelopment',fmt:fmtFin, indent:true },
+    { label:'SG&A Expenses',          key:'sellingGeneralAdmin',fmt:fmtFin, indent:true },
+    { label:'D&A',                    key:'depreciationAmort',  fmt:fmtFin, indent:true },
+    { label:'Operating Income (EBIT)',key:'operatingIncome',    fmt:fmtFin, style:'subtotal' },
+    { label:'Interest Expense',       key:'interestExpense',    fmt:fmtFin, indent:true },
+    { label:'Income Before Tax',      key:'incomeBeforeTax',    fmt:fmtFin, style:'subtotal' },
+    { label:'Income Tax',             key:'incomeTaxExpense',   fmt:fmtFin, indent:true },
+    { label:'Net Income',             key:'netIncome',          fmt:fmtFin, style:'total' },
+    { divider:true },
+    { label:'EBITDA',                 key:'ebitda',             fmt:fmtFin, style:'subtotal' },
   ];
 
   const cfRows = [
-    { label:'Operating Cash Flow',    key:'operatingCashflow',   fmt: fmtFin },
-    { label:'Capital Expenditures',   key:'capitalExpenditures', fmt: fmtFin },
-    { label:'Free Cash Flow',         key:'freeCashflow',        fmt: fmtFin },
-    { label:'Investing Cash Flow',    key:'investingCashflow',   fmt: v => fmtFin(v), indent:true },
-    { label:'Financing Cash Flow',    key:'financingCashflow',   fmt: v => fmtFin(v), indent:true },
-    { label:'Depreciation & Amort.',  key:'depreciation',        fmt: v => fmtFin(v), indent:true },
+    { label:'Operating Cash Flow',      key:'operatingCashflow',   fmt:fmtFin, style:'subtotal' },
+    { label:'D&A (add-back)',           key:'depreciationAmortCF', fmt:fmtFin, indent:true },
+    { label:'Stock-Based Compensation', key:'stockBasedComp',      fmt:fmtFin, indent:true },
+    { label:'Capital Expenditures',     key:'capitalExpenditures', fmt:fmtFin, indent:true },
+    { label:'Free Cash Flow',           key:'freeCashflow',        fmt:fmtFin, style:'total' },
+    { divider:true },
+    { label:'Investing Cash Flow',      key:'investingCashflow',   fmt:fmtFin },
+    { label:'Financing Cash Flow',      key:'financingCashflow',   fmt:fmtFin },
+    { label:'Dividend Paid',            key:'dividendPayout',      fmt:fmtFin, indent:true },
+    { label:'Net Change in Cash',       key:'changeInCash',        fmt:fmtFin, style:'subtotal' },
+  ];
+
+  const bsRows = [
+    { label:'ASSETS', header:true },
+    { label:'Cash & Equivalents',        key:'cashAndEquivalents',    fmt:fmtFin, indent:true },
+    { label:'Short-term Investments',    key:'shortTermInvestments',  fmt:fmtFin, indent:true },
+    { label:'Net Receivables',           key:'netReceivables',        fmt:fmtFin, indent:true },
+    { label:'Inventory',                 key:'inventory',             fmt:fmtFin, indent:true },
+    { label:'Other Current Assets',      key:'otherCurrentAssets',    fmt:fmtFin, indent:true },
+    { label:'Total Current Assets',      key:'totalCurrentAssets',    fmt:fmtFin, style:'subtotal' },
+    { label:'PP&E',                      key:'ppe',                   fmt:fmtFin, indent:true },
+    { label:'Goodwill',                  key:'goodwill',              fmt:fmtFin, indent:true },
+    { label:'Intangible Assets',         key:'intangibleAssets',      fmt:fmtFin, indent:true },
+    { label:'Long-term Investments',     key:'longTermInvestments',   fmt:fmtFin, indent:true },
+    { label:'Other Non-Current Assets',  key:'otherNonCurrentAssets', fmt:fmtFin, indent:true },
+    { label:'Total Non-Current Assets',  key:'totalNonCurrentAssets', fmt:fmtFin, style:'subtotal' },
+    { label:'Total Assets',              key:'totalAssets',           fmt:fmtFin, style:'total' },
+    { label:'LIABILITIES', header:true },
+    { label:'Accounts Payable',          key:'accountsPayable',       fmt:fmtFin, indent:true },
+    { label:'Short-term Debt',           key:'shortTermDebt',         fmt:fmtFin, indent:true },
+    { label:'Deferred Revenue',          key:'deferredRevenue',       fmt:fmtFin, indent:true },
+    { label:'Other Current Liabilities', key:'otherCurrentLiab',      fmt:fmtFin, indent:true },
+    { label:'Total Current Liabilities', key:'totalCurrentLiab',      fmt:fmtFin, style:'subtotal' },
+    { label:'Long-term Debt',            key:'longTermDebt',          fmt:fmtFin, indent:true },
+    { label:'Capital Lease Obligations', key:'capitalLeaseObligation',fmt:fmtFin, indent:true },
+    { label:'Other Non-Current Liab.',   key:'otherNonCurrentLiab',   fmt:fmtFin, indent:true },
+    { label:'Total Non-Current Liab.',   key:'totalNonCurrentLiab',   fmt:fmtFin, style:'subtotal' },
+    { label:'Total Liabilities',         key:'totalLiabilities',      fmt:fmtFin, style:'total' },
+    { label:'EQUITY', header:true },
+    { label:'Common Stock',              key:'commonStock',            fmt:fmtFin, indent:true },
+    { label:'Retained Earnings',         key:'retainedEarnings',      fmt:fmtFin, indent:true },
+    { label:'Treasury Stock',            key:'treasuryStock',         fmt:fmtFin, indent:true },
+    { label:'Total Shareholder Equity',  key:'totalShareholderEquity',fmt:fmtFin, style:'total' },
   ];
 
   // For quarterly view show up to 8 periods; annual show all (usually 5)
@@ -4111,8 +4132,9 @@ function renderFinancialBody() {
 
   body.innerHTML =
     finBuildEvMultiples(entry) +
-    finBuildTable('P&L Statement', plRows, displayPeriods) +
+    finBuildTable('Income Statement', plRows, displayPeriods) +
     finBuildTable('Cash Flow Statement', cfRows, displayPeriods) +
+    finBuildTable('Balance Sheet', bsRows, displayPeriods) +
     finBuildKpiTable(entry.kpis);
 }
 
