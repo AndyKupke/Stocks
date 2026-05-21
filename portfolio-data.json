@@ -5584,15 +5584,15 @@
         "debtToEquity": null,
         "currentRatio": null,
         "quickRatio": null,
-        "totalCash": 6560000000,
-        "totalDebt": 2067000000,
+        "totalCash": null,
+        "totalDebt": null,
         "freeCashflow": null,
         "operatingCashflow": null,
         "targetMeanPrice": null,
         "numberOfAnalystOpinions": null,
         "recommendationKey": null
       },
-      "lastUpdated": "2026-05-21T18:22:09.892Z"
+      "lastUpdated": "2026-05-21T18:31:46.250Z"
     },
     "CRM": {
       "annual": [
@@ -8079,5 +8079,5 @@
       "lastUpdated": "2026-05-21T18:23:40.550Z"
     }
   },
-  "lastUpdated": "2026-05-21T18:25:25.005Z"
+  "lastUpdated": "2026-05-21T18:31:48.253Z"
 }
