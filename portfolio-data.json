@@ -2888,6 +2888,23 @@
       "ipo": false,
       "note": "",
       "id": 228
+    },
+    "HUBS": {
+      "t": "HUBS",
+      "n": "HubSpot Inc",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NYSE",
+      "cv": "H",
+      "rk": 2,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Yamini Rangan CEO. AI-first CRM. SMB market. 30%+ NRR. Breeze AI platform.",
+      "id": 64
     }
   },
   "additionalShares": {
@@ -8681,5 +8698,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-22T23:32:18.443Z"
+  "lastUpdated": "2026-05-22T23:32:42.055Z"
 }
