@@ -198,6 +198,10 @@
     "HUBS": {
       "shares": 0,
       "_portChecked": false
+    },
+    "BIDU": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -231,7 +235,8 @@
     "IREN",
     "APLD",
     "CORZ",
-    "HUBS"
+    "HUBS",
+    "BIDU"
   ],
   "prices": {
     "S0LR": {
@@ -8671,5 +8676,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-22T07:49:39.188Z"
+  "lastUpdated": "2026-05-22T07:52:04.004Z"
 }
