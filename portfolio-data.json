@@ -198,10 +198,6 @@
     "HUBS": {
       "shares": 0,
       "_portChecked": false
-    },
-    "SNDK": {
-      "shares": 0,
-      "_portChecked": false
     }
   },
   "buySet": [
@@ -235,8 +231,7 @@
     "IREN",
     "APLD",
     "CORZ",
-    "HUBS",
-    "SNDK"
+    "HUBS"
   ],
   "prices": {
     "S0LR": {
@@ -2891,7 +2886,7 @@
     "HOOD": 338,
     "PATH": 2000,
     "G24": 240,
-    "TNIE": -42000,
+    "TNIE": -5000,
     "ATAI": 2775,
     "BILL": 610,
     "SATS": 70,
@@ -8676,5 +8671,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-21T19:58:04.284Z"
+  "lastUpdated": "2026-05-22T07:49:39.188Z"
 }
