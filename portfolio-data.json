@@ -222,6 +222,10 @@
     "ZS": {
       "shares": 0,
       "_portChecked": false
+    },
+    "VEEV": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -261,7 +265,8 @@
     "ADBE",
     "WDAY",
     "NOW",
-    "ZS"
+    "ZS",
+    "VEEV"
   ],
   "prices": {
     "S0LR": {
@@ -8735,5 +8740,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:30:27.100Z"
+  "lastUpdated": "2026-05-23T06:32:54.390Z"
 }
