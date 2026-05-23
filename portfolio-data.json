@@ -230,6 +230,10 @@
     "GTLB": {
       "shares": 0,
       "_portChecked": false
+    },
+    "FIG": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -271,7 +275,8 @@
     "ZS",
     "VEEV",
     "QLYS",
-    "GTLB"
+    "GTLB",
+    "FIG"
   ],
   "prices": {
     "S0LR": {
@@ -3001,7 +3006,7 @@
       "ex": "NYSE",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -8801,5 +8806,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:40:28.729Z"
+  "lastUpdated": "2026-05-23T06:40:37.023Z"
 }
