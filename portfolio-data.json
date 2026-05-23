@@ -2905,6 +2905,23 @@
       "ipo": false,
       "note": "Yamini Rangan CEO. AI-first CRM. SMB market. 30%+ NRR. Breeze AI platform.",
       "id": 64
+    },
+    "ADBE": {
+      "t": "ADBE",
+      "n": "Adobe",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 229
     }
   },
   "additionalShares": {
@@ -8698,5 +8715,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-22T23:32:42.055Z"
+  "lastUpdated": "2026-05-23T06:24:29.231Z"
 }
