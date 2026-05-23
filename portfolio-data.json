@@ -218,6 +218,10 @@
     "NOW": {
       "shares": 0,
       "_portChecked": false
+    },
+    "ZS": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -256,7 +260,8 @@
     "DOCU",
     "ADBE",
     "WDAY",
-    "NOW"
+    "NOW",
+    "ZS"
   ],
   "prices": {
     "S0LR": {
@@ -8730,5 +8735,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:30:20.622Z"
+  "lastUpdated": "2026-05-23T06:30:27.100Z"
 }
