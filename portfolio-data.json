@@ -3030,6 +3030,23 @@
       "ipo": false,
       "note": "Founder-led Roy Mann. AI agents in workflow. Record Q4 deals. Strong NRR.",
       "id": 61
+    },
+    "GTLB": {
+      "t": "GTLB",
+      "n": "GitLab Inc",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "M",
+      "rk": 3,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Sid Sijbrandij CEO. DevSecOps platform. AI Duo coding assistant. Dev platform consolidation.",
+      "id": 68
     }
   },
   "additionalShares": {
@@ -8823,5 +8840,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:43:26.710Z"
+  "lastUpdated": "2026-05-23T06:44:17.488Z"
 }
