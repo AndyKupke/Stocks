@@ -226,6 +226,10 @@
     "QLYS": {
       "shares": 0,
       "_portChecked": false
+    },
+    "GTLB": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -266,7 +270,8 @@
     "NOW",
     "ZS",
     "VEEV",
-    "QLYS"
+    "QLYS",
+    "GTLB"
   ],
   "prices": {
     "S0LR": {
@@ -8779,5 +8784,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:38:10.964Z"
+  "lastUpdated": "2026-05-23T06:40:04.816Z"
 }
