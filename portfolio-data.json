@@ -3013,6 +3013,23 @@
       "ipo": false,
       "note": "",
       "id": 231
+    },
+    "MNDY": {
+      "t": "MNDY",
+      "n": "Monday.com",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Founder-led Roy Mann. AI agents in workflow. Record Q4 deals. Strong NRR.",
+      "id": 61
     }
   },
   "additionalShares": {
@@ -8806,5 +8823,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:40:37.023Z"
+  "lastUpdated": "2026-05-23T06:43:26.710Z"
 }
