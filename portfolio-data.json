@@ -3047,6 +3047,23 @@
       "ipo": false,
       "note": "Sid Sijbrandij CEO. DevSecOps platform. AI Duo coding assistant. Dev platform consolidation.",
       "id": 68
+    },
+    "DOCU": {
+      "t": "DOCU",
+      "n": "DocuSign Inc",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "M",
+      "rk": 2,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Allan Thygesen CEO. AI contract intelligence. IAM platform. Deeply embedded workflows.",
+      "id": 83
     }
   },
   "additionalShares": {
@@ -8840,5 +8857,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:44:17.488Z"
+  "lastUpdated": "2026-05-23T06:44:31.087Z"
 }
