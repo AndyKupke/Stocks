@@ -2991,6 +2991,23 @@
       "ipo": false,
       "note": "",
       "id": 230
+    },
+    "FIG": {
+      "t": "FIG",
+      "n": "Figma",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NYSE",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 231
     }
   },
   "additionalShares": {
@@ -8784,5 +8801,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:40:04.816Z"
+  "lastUpdated": "2026-05-23T06:40:28.729Z"
 }
