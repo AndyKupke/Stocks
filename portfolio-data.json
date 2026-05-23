@@ -210,6 +210,10 @@
     "ADBE": {
       "shares": 0,
       "_portChecked": false
+    },
+    "WDAY": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -246,7 +250,8 @@
     "HUBS",
     "BIDU",
     "DOCU",
-    "ADBE"
+    "ADBE",
+    "WDAY"
   ],
   "prices": {
     "S0LR": {
@@ -8720,5 +8725,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-23T06:24:34.387Z"
+  "lastUpdated": "2026-05-23T06:28:10.947Z"
 }
