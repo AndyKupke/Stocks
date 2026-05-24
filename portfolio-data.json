@@ -194,6 +194,10 @@
     },
     "FIG": {
       "shares": 0
+    },
+    "OD7U": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -236,7 +240,8 @@
     "VEEV",
     "QLYS",
     "GTLB",
-    "FIG"
+    "FIG",
+    "OD7U"
   ],
   "prices": {
     "S0LR": {
@@ -2792,7 +2797,7 @@
       "ex": "XETRA",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": true,
       "hr": false,
       "priv": false,
@@ -2804,5 +2809,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-24T12:28:38.448Z"
+  "lastUpdated": "2026-05-24T12:29:15.360Z"
 }
