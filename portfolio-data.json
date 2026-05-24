@@ -2804,10 +2804,27 @@
       "ipo": false,
       "note": "",
       "id": 225
+    },
+    "QDVF": {
+      "t": "QDVF",
+      "n": "iShares S&P500 Energy Sector",
+      "th": "T6",
+      "ind": "ETF",
+      "reg": "US",
+      "ex": "XETRA",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": true,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 226
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-24T12:29:15.360Z"
+  "lastUpdated": "2026-05-24T12:30:56.949Z"
 }
