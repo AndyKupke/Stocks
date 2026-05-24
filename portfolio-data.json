@@ -198,6 +198,14 @@
     "OD7U": {
       "shares": 0,
       "_portChecked": false
+    },
+    "QDVF": {
+      "shares": 0,
+      "_portChecked": false
+    },
+    "SXRS": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -241,7 +249,9 @@
     "QLYS",
     "GTLB",
     "FIG",
-    "OD7U"
+    "OD7U",
+    "QDVF",
+    "SXRS"
   ],
   "prices": {
     "S0LR": {
@@ -2817,7 +2827,7 @@
       "ex": "XETRA",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": true,
       "hr": false,
       "priv": false,
@@ -2834,7 +2844,7 @@
       "ex": "XETRA",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": true,
       "hr": false,
       "priv": false,
@@ -2846,5 +2856,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-24T12:37:41.822Z"
+  "lastUpdated": "2026-05-24T12:37:47.731Z"
 }
