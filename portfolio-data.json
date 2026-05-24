@@ -2786,7 +2786,9 @@
       "chgytd": -23.62157451396265
     }
   },
-  "deletedTickers": [],
+  "deletedTickers": [
+    "FRVO"
+  ],
   "customStocks": {
     "OD7U": {
       "t": "OD7U",
@@ -2803,7 +2805,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 225
+      "id": 224
     },
     "QDVF": {
       "t": "QDVF",
@@ -2820,7 +2822,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 226
+      "id": 225
     },
     "SXRS": {
       "t": "SXRS",
@@ -2837,11 +2839,11 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 227
+      "id": 226
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-24T12:36:24.466Z"
+  "lastUpdated": "2026-05-24T12:37:16.104Z"
 }
