@@ -2821,10 +2821,27 @@
       "ipo": false,
       "note": "",
       "id": 226
+    },
+    "SXRS": {
+      "t": "SXRS",
+      "n": "iShares Diversified Commodity Swap",
+      "th": "T6",
+      "ind": "ETF",
+      "reg": "Global",
+      "ex": "XETRA",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": true,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 227
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-24T12:30:56.949Z"
+  "lastUpdated": "2026-05-24T12:36:24.466Z"
 }
