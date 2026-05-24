@@ -2787,7 +2787,8 @@
     }
   },
   "deletedTickers": [
-    "FRVO"
+    "FRVO",
+    "LTHM"
   ],
   "customStocks": {
     "OD7U": {
@@ -2805,7 +2806,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 224
+      "id": 223
     },
     "QDVF": {
       "t": "QDVF",
@@ -2822,7 +2823,7 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 225
+      "id": 224
     },
     "SXRS": {
       "t": "SXRS",
@@ -2839,11 +2840,11 @@
       "priv": false,
       "ipo": false,
       "note": "",
-      "id": 226
+      "id": 225
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-24T12:37:16.104Z"
+  "lastUpdated": "2026-05-24T12:37:41.822Z"
 }
