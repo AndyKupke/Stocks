@@ -1503,7 +1503,10 @@ function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BU
 let PORTFOLIO       = loadPortfolio();
 let BUY_SET         = loadBuySet();
 let DELETED_TICKERS = new Set();
-let CUSTOM_STOCKS      = {}; // ticker → full stock object for user-added or user-edited stocks
+const LS_CUSTOM_KEY = 'investment_custom_v1';
+function loadCustomStocks(){ try{ const r=localStorage.getItem(LS_CUSTOM_KEY); return r?JSON.parse(r):{}; }catch(e){return{};} }
+function saveCustomStocksLocal(){ try{ localStorage.setItem(LS_CUSTOM_KEY,JSON.stringify(CUSTOM_STOCKS)); }catch(e){} }
+let CUSTOM_STOCKS      = loadCustomStocks(); // ticker → full stock object; backed by localStorage for crash safety
 let ADDITIONAL_SHARES  = {}; // ticker → delta shares (positive=buy more, negative=sell)
 
 function isInPort(t){ return !!PORTFOLIO[t]; }
@@ -2467,7 +2470,9 @@ function confirmAdd(){
     id:ST.length+1};
   ST.push(newStock);
   CUSTOM_STOCKS[tk] = newStock;
-  scheduleSave();
+  saveCustomStocksLocal(); // back up immediately to localStorage (crash/close safety)
+  markDirty();
+  syncToGitHub();          // push to GitHub right away, no 2-second wait
   closeModal();wlFilter();renderThesesTab();renderFw();
 }
 
@@ -2553,7 +2558,9 @@ function confirmEdit() {
   // Persist edit to CUSTOM_STOCKS
   if (newTk !== origTk) delete CUSTOM_STOCKS[origTk];
   CUSTOM_STOCKS[newTk] = {...ST[idx]};
-  scheduleSave();
+  saveCustomStocksLocal(); // back up immediately to localStorage
+  markDirty();
+  syncToGitHub();          // push to GitHub right away
 
   closeEditModal();
   wlFilter();
@@ -2568,7 +2575,9 @@ function removeStock(tk){
   DELETED_TICKERS.add(tk);
   delete CUSTOM_STOCKS[tk];
   ST=ST.filter(s=>s.t!==tk);ST.forEach((s,i)=>s.id=i+1);
-  scheduleSave();
+  saveCustomStocksLocal(); // back up immediately to localStorage
+  markDirty();
+  syncToGitHub();          // push to GitHub right away
   wlFilter();renderPortfolioTab();renderThesesTab();
 }
 function wlReset(){
@@ -2781,6 +2790,7 @@ async function ghGetSha(){
 }
 
 function scheduleSave(){
+  markDirty(); // always stamp the dirty timestamp so GitHub never wins over local
   clearTimeout(ghSaveTimer);
   ghSaveTimer = setTimeout(syncToGitHub, 2000);
   setSyncStatus('Unsaved changes…', 'var(--org)');
@@ -5353,14 +5363,17 @@ async function init(){
     if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
     if(ghData.fxRates)          fxRates           = ghData.fxRates;
     if(ghData.financialData)    financialData     = ghData.financialData;
-    try{ localStorage.setItem(LS_KEY,       JSON.stringify(PORTFOLIO));   }catch(e){}
-    try{ localStorage.setItem(LS_BUY_KEY,   JSON.stringify([...BUY_SET]));}catch(e){}
-    try{ localStorage.setItem(LS_PRICES_KEY,JSON.stringify(priceData));   }catch(e){}
+    try{ localStorage.setItem(LS_KEY,        JSON.stringify(PORTFOLIO));     }catch(e){}
+    try{ localStorage.setItem(LS_BUY_KEY,    JSON.stringify([...BUY_SET]));  }catch(e){}
+    try{ localStorage.setItem(LS_PRICES_KEY, JSON.stringify(priceData));     }catch(e){}
+    saveCustomStocksLocal(); // keep localStorage in sync with GitHub
     setSyncStatus('Loaded from GitHub', 'var(--grn)');
   } else if(ghData && dirtyTs > ghTs){
     // Local changes are newer than GitHub — keep local data and push it up
     if(ghData.deletedTickers)   DELETED_TICKERS   = new Set(ghData.deletedTickers);
-    if(ghData.customStocks)     CUSTOM_STOCKS     = ghData.customStocks;
+    // Merge: take GitHub's CUSTOM_STOCKS as base, then apply local version on top
+    // (local wins for any key that exists in both — it's the newer version)
+    if(ghData.customStocks)     CUSTOM_STOCKS     = { ...ghData.customStocks, ...CUSTOM_STOCKS };
     if(ghData.additionalShares) ADDITIONAL_SHARES = ghData.additionalShares;
     if(ghData.fxRates)          fxRates           = ghData.fxRates;
     if(ghData.financialData)    financialData     = ghData.financialData;
