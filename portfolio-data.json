@@ -3023,10 +3023,27 @@
       "ipo": false,
       "note": "",
       "id": 228
+    },
+    "QLYS": {
+      "t": "QLYS",
+      "n": "Qualys",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 229
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:57:39.783Z"
+  "lastUpdated": "2026-05-26T17:59:09.716Z"
 }
