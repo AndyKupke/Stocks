@@ -2958,10 +2958,27 @@
       "ipo": false,
       "note": "Yamini Rangan CEO. AI-first CRM. SMB market. 30%+ NRR. Breeze AI platform.",
       "id": 64
+    },
+    "PATH": {
+      "t": "PATH",
+      "n": "UiPath Inc",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NYSE",
+      "cv": "M",
+      "rk": 3,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "RPA + AI agents. Enterprise automation. Potential AI agent orchestration layer.",
+      "id": 59
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:40:45.180Z"
+  "lastUpdated": "2026-05-26T17:40:50.480Z"
 }
