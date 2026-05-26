@@ -93,9 +93,6 @@
     "AMZN": {
       "shares": 0
     },
-    "AAPL": {
-      "shares": 0
-    },
     "ASML": {
       "shares": 0
     },
@@ -217,7 +214,6 @@
     "RHM",
     "GOOGL",
     "AMZN",
-    "AAPL",
     "ASML",
     "CRWV",
     "URA",
@@ -2998,5 +2994,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:41:31.654Z"
+  "lastUpdated": "2026-05-26T17:53:20.046Z"
 }
