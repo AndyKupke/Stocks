@@ -2941,10 +2941,27 @@
       "ipo": false,
       "note": "Sid Sijbrandij CEO. DevSecOps platform. AI Duo coding assistant. Dev platform consolidation.",
       "id": 68
+    },
+    "HUBS": {
+      "t": "HUBS",
+      "n": "HubSpot Inc",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NYSE",
+      "cv": "H",
+      "rk": 2,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Yamini Rangan CEO. AI-first CRM. SMB market. 30%+ NRR. Breeze AI platform.",
+      "id": 64
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:40:40.797Z"
+  "lastUpdated": "2026-05-26T17:40:45.180Z"
 }
