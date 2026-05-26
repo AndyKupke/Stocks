@@ -2924,10 +2924,27 @@
       "ipo": false,
       "note": "Jay Chaudhry founder CEO. Zero Trust security. AI threat detection. Critical enterprise moat.",
       "id": 74
+    },
+    "GTLB": {
+      "t": "GTLB",
+      "n": "GitLab Inc",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "M",
+      "rk": 3,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Sid Sijbrandij CEO. DevSecOps platform. AI Duo coding assistant. Dev platform consolidation.",
+      "id": 68
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:40:34.197Z"
+  "lastUpdated": "2026-05-26T17:40:40.797Z"
 }
