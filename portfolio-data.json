@@ -15,9 +15,6 @@
     "HOOD": {
       "shares": 32
     },
-    "PATH": {
-      "shares": 300
-    },
     "G24": {
       "shares": 60
     },
@@ -206,6 +203,10 @@
     "SXRS": {
       "shares": 0,
       "_portChecked": false
+    },
+    "PATH": {
+      "shares": 0,
+      "_portChecked": true
     }
   },
   "buySet": [
@@ -2997,5 +2998,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:41:11.347Z"
+  "lastUpdated": "2026-05-26T17:41:31.654Z"
 }
