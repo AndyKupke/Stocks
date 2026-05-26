@@ -2907,10 +2907,27 @@
       "ipo": false,
       "note": "Allan Thygesen CEO. AI contract intelligence. IAM platform. Deeply embedded workflows.",
       "id": 83
+    },
+    "ZS": {
+      "t": "ZS",
+      "n": "Zscaler",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Jay Chaudhry founder CEO. Zero Trust security. AI threat detection. Critical enterprise moat.",
+      "id": 74
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:40:26.631Z"
+  "lastUpdated": "2026-05-26T17:40:34.197Z"
 }
