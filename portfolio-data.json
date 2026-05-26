@@ -2975,10 +2975,27 @@
       "ipo": false,
       "note": "RPA + AI agents. Enterprise automation. Potential AI agent orchestration layer.",
       "id": 59
+    },
+    "MNDY": {
+      "t": "MNDY",
+      "n": "Monday.com",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Founder-led Roy Mann. AI agents in workflow. Record Q4 deals. Strong NRR.",
+      "id": 61
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:40:50.480Z"
+  "lastUpdated": "2026-05-26T17:41:11.347Z"
 }
