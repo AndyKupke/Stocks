@@ -2989,10 +2989,27 @@
       "ipo": false,
       "note": "Founder-led Roy Mann. AI agents in workflow. Record Q4 deals. Strong NRR.",
       "id": 61
+    },
+    "CRM": {
+      "t": "CRM",
+      "n": "Salesforce",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NYSE",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 227
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:53:20.046Z"
+  "lastUpdated": "2026-05-26T17:56:33.598Z"
 }
