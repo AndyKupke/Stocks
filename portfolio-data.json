@@ -2883,17 +2883,34 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
       "ipo": false,
       "note": "",
       "id": 226
+    },
+    "DOCU": {
+      "t": "DOCU",
+      "n": "DocuSign Inc",
+      "th": "T5",
+      "ind": "Enterprise SaaS",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "M",
+      "rk": 2,
+      "dp": true,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "Allan Thygesen CEO. AI contract intelligence. IAM platform. Deeply embedded workflows.",
+      "id": 83
     }
   },
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T17:37:32.773Z"
+  "lastUpdated": "2026-05-26T17:40:26.631Z"
 }
