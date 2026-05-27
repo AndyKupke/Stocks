@@ -2627,7 +2627,7 @@
       "ex": "NYSE",
       "cv": "M",
       "rk": 3,
-      "dp": true,
+      "dp": false,
       "etf": true,
       "hr": false,
       "priv": false,
@@ -4107,9 +4107,6 @@
     "CRWV": {
       "shares": 0
     },
-    "URA": {
-      "shares": 0
-    },
     "META": {
       "shares": 0
     },
@@ -4224,7 +4221,6 @@
     "GOOGL",
     "AMZN",
     "CRWV",
-    "URA",
     "META",
     "MSFT",
     "MNDY",
@@ -6826,5 +6822,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:12:54.277Z"
+  "lastUpdated": "2026-05-27T03:12:57.372Z"
 }
