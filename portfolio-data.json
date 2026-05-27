@@ -587,7 +587,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 1,
-      "dp": true,
+      "dp": false,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4104,9 +4104,6 @@
     "AMZN": {
       "shares": 0
     },
-    "ASML": {
-      "shares": 0
-    },
     "CRWV": {
       "shares": 0
     },
@@ -4229,7 +4226,6 @@
     "BKSY",
     "GOOGL",
     "AMZN",
-    "ASML",
     "CRWV",
     "URA",
     "META",
@@ -6834,5 +6830,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:09:21.901Z"
+  "lastUpdated": "2026-05-27T03:12:12.324Z"
 }
