@@ -2287,7 +2287,7 @@
       "ex": "NASDAQ",
       "cv": "L",
       "rk": 4,
-      "dp": true,
+      "dp": false,
       "etf": false,
       "hr": true,
       "priv": false,
@@ -4164,9 +4164,6 @@
     "HUBS": {
       "shares": 0
     },
-    "BIDU": {
-      "shares": 0
-    },
     "DOCU": {
       "shares": 0
     },
@@ -4246,7 +4243,6 @@
     "APLD",
     "CORZ",
     "HUBS",
-    "BIDU",
     "DOCU",
     "ADBE",
     "WDAY",
@@ -6830,5 +6826,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:12:12.324Z"
+  "lastUpdated": "2026-05-27T03:12:54.277Z"
 }
