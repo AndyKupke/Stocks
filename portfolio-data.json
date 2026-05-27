@@ -14,7 +14,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Top Pick. 29% sales growth FY2025, 36% backlog Ã¢ÂÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
+      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂ¢ÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
       "id": 1
     },
     {
@@ -4045,6 +4045,23 @@
       "ipo": false,
       "note": "",
       "id": 238
+    },
+    {
+      "t": "ETL",
+      "n": "Eutelsat",
+      "th": "T1",
+      "ind": "Space / Satellite",
+      "reg": "US",
+      "ex": "EPA",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 239
     }
   ],
   "portfolio": {
@@ -6906,5 +6923,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:24:05.619Z"
+  "lastUpdated": "2026-05-27T11:08:06.627Z"
 }
