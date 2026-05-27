@@ -9,12 +9,12 @@
       "ex": "XETRA",
       "cv": "H",
       "rk": 2,
-      "dp": true,
+      "dp": false,
       "etf": false,
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Top Pick. 29% sales growth FY2025, 36% backlog â¬63.7B. 35% CAGR revenue target. Germany defense giant.",
+      "note": "Top Pick. 29% sales growth FY2025, 36% backlog Ã¢ÂÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
       "id": 1
     },
     {
@@ -4098,9 +4098,6 @@
     "BKSY": {
       "shares": 0
     },
-    "RHM": {
-      "shares": 0
-    },
     "GOOGL": {
       "shares": 0
     },
@@ -4233,7 +4230,6 @@
     "PL",
     "ASTS",
     "BKSY",
-    "RHM",
     "GOOGL",
     "AMZN",
     "ASML",
@@ -6842,5 +6838,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-26T18:22:09.208Z"
+  "lastUpdated": "2026-05-27T03:09:11.448Z"
 }
