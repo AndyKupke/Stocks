@@ -4258,7 +4258,8 @@
     "SHOP",
     "SAP",
     "URA",
-    "CLSK"
+    "CLSK",
+    "TSAT"
   ],
   "prices": {
     "S0LR": {
@@ -6828,5 +6829,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:13:15.362Z"
+  "lastUpdated": "2026-05-27T03:13:25.601Z"
 }
