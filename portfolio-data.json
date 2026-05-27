@@ -4028,6 +4028,23 @@
       "ipo": false,
       "note": "",
       "id": 237
+    },
+    {
+      "t": "BITF",
+      "n": "Bitfarm",
+      "th": "T3",
+      "ind": "Data Centers",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 238
     }
   ],
   "portfolio": {
@@ -6862,5 +6879,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:18:08.179Z"
+  "lastUpdated": "2026-05-27T03:21:58.394Z"
 }
