@@ -2661,7 +2661,7 @@
       "ex": "NASDAQ",
       "cv": "M",
       "rk": 3,
-      "dp": true,
+      "dp": false,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4143,9 +4143,6 @@
     "BE": {
       "shares": 0
     },
-    "CLSK": {
-      "shares": 0
-    },
     "RIOT": {
       "shares": 0
     },
@@ -4237,7 +4234,6 @@
     "CRM",
     "OKTA",
     "BE",
-    "CLSK",
     "RIOT",
     "IREN",
     "APLD",
@@ -6827,5 +6823,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:13:00.690Z"
+  "lastUpdated": "2026-05-27T03:13:10.229Z"
 }
