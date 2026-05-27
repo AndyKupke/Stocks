@@ -4021,7 +4021,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4234,6 +4234,10 @@
     "TSAT": {
       "shares": 0,
       "_portChecked": true
+    },
+    "LITE": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -4276,7 +4280,8 @@
     "SHOP",
     "SAP",
     "URA",
-    "CLSK"
+    "CLSK",
+    "LITE"
   ],
   "prices": {
     "S0LR": {
@@ -6846,5 +6851,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:17:21.707Z"
+  "lastUpdated": "2026-05-27T03:17:41.556Z"
 }
