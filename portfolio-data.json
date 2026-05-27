@@ -4011,6 +4011,23 @@
       "ipo": false,
       "note": "",
       "id": 236
+    },
+    {
+      "t": "LITE",
+      "n": "Lumentum",
+      "th": "T3",
+      "ind": "AI / Chips",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 237
     }
   ],
   "portfolio": {
@@ -6829,5 +6846,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:13:37.500Z"
+  "lastUpdated": "2026-05-27T03:17:21.707Z"
 }
