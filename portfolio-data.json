@@ -451,7 +451,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": true,
+      "dp": false,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4122,9 +4122,6 @@
     "MNDY": {
       "shares": 0
     },
-    "NVDA": {
-      "shares": 0
-    },
     "PLTR": {
       "shares": 0
     },
@@ -4238,7 +4235,6 @@
     "META",
     "MSFT",
     "MNDY",
-    "NVDA",
     "PLTR",
     "QCOM",
     "RKLB",
@@ -6838,5 +6834,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:09:11.448Z"
+  "lastUpdated": "2026-05-27T03:09:21.901Z"
 }
