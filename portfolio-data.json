@@ -2627,7 +2627,7 @@
       "ex": "NYSE",
       "cv": "M",
       "rk": 3,
-      "dp": false,
+      "dp": true,
       "etf": true,
       "hr": false,
       "priv": false,
@@ -4211,6 +4211,10 @@
     "SAP": {
       "shares": 0,
       "_portChecked": false
+    },
+    "URA": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -4252,7 +4256,8 @@
     "QDVF",
     "SXRS",
     "SHOP",
-    "SAP"
+    "SAP",
+    "URA"
   ],
   "prices": {
     "S0LR": {
@@ -6822,5 +6827,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:12:57.372Z"
+  "lastUpdated": "2026-05-27T03:13:00.690Z"
 }
