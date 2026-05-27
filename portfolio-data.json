@@ -4062,9 +4062,6 @@
     "SATS": {
       "shares": 130
     },
-    "TSAT": {
-      "shares": 360
-    },
     "ATAI": {
       "shares": 4225
     },
@@ -4216,6 +4213,10 @@
     "CLSK": {
       "shares": 0,
       "_portChecked": false
+    },
+    "TSAT": {
+      "shares": 0,
+      "_portChecked": true
     }
   },
   "buySet": [
@@ -4258,8 +4259,7 @@
     "SHOP",
     "SAP",
     "URA",
-    "CLSK",
-    "TSAT"
+    "CLSK"
   ],
   "prices": {
     "S0LR": {
@@ -6829,5 +6829,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:13:25.601Z"
+  "lastUpdated": "2026-05-27T03:13:37.500Z"
 }
