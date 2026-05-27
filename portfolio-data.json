@@ -2661,7 +2661,7 @@
       "ex": "NASDAQ",
       "cv": "M",
       "rk": 3,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4212,6 +4212,10 @@
     "URA": {
       "shares": 0,
       "_portChecked": false
+    },
+    "CLSK": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -4253,7 +4257,8 @@
     "SXRS",
     "SHOP",
     "SAP",
-    "URA"
+    "URA",
+    "CLSK"
   ],
   "prices": {
     "S0LR": {
@@ -6823,5 +6828,5 @@
   "additionalShares": {},
   "fxRates": {},
   "financialData": {},
-  "lastUpdated": "2026-05-27T03:13:10.229Z"
+  "lastUpdated": "2026-05-27T03:13:15.362Z"
 }
