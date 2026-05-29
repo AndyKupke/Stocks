@@ -1502,7 +1502,7 @@ function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BU
 
 let PORTFOLIO       = loadPortfolio();
 let BUY_SET         = loadBuySet();
-let ADDITIONAL_SHARES  = {}; // ticker → delta shares (positive=buy more, negative=sell)
+let ADDITIONAL_SHARES  = loadAddlShares(); // ticker → delta shares (positive=buy more, negative=sell)
 
 function isInPort(t){ return !!PORTFOLIO[t]; }
 function isBuy(t)   { return BUY_SET.has(t); }
@@ -1511,7 +1511,8 @@ function getAddlShares(t){ return ADDITIONAL_SHARES[t]||0; }
 function updateAddlShares(t, v){
   const n = parseInt(v, 10);
   if(!n){ delete ADDITIONAL_SHARES[t]; } else { ADDITIONAL_SHARES[t] = n; }
-  scheduleSave();
+  saveAddlShares();
+  syncToGitHub();
   renderPortfolioTab(
     document.getElementById('port-q')?.value?.toLowerCase()||'',
     document.getElementById('port-th')?.value||'',
@@ -2611,7 +2612,11 @@ let priceData = loadPriceData();
 
 const LS_FX_KEY = 'investment_fx_v1';
 function loadFxRates(){ try { const r=localStorage.getItem(LS_FX_KEY); return r?JSON.parse(r):{}; } catch(e){return{};} }
-function saveFxRates(){ try { localStorage.setItem(LS_FX_KEY, JSON.stringify(fxRates)); } catch(e){} }
+function saveFxRates(){ try { localStorage.setItem(LS_FX_KEY, JSON.stringify(fxRates)); markDirty(); } catch(e){} }
+
+const LS_ADDL_KEY = 'investment_addl_v1';
+function loadAddlShares(){ try { const r=localStorage.getItem(LS_ADDL_KEY); return r?JSON.parse(r):{}; } catch(e){return{};} }
+function saveAddlShares(){ try { localStorage.setItem(LS_ADDL_KEY, JSON.stringify(ADDITIONAL_SHARES)); markDirty(); } catch(e){} }
 
 // ── FMP API KEY ───────────────────────────────────────────────────────────────
 // ── Alpha Vantage API key ─────────────────────────────────────────────────────
@@ -2685,7 +2690,7 @@ function saveFxRatesManual() {
     if (v > 0) fxRates[k] = v; else delete fxRates[k];
   });
   saveFxRates();
-  scheduleSave();
+  syncToGitHub();
   const el = document.getElementById('fx-save-status');
   if (el) { el.textContent = 'Saved ✓'; el.style.color = 'var(--grn)'; setTimeout(() => { el.textContent=''; }, 2000); }
   renderPortfolioTab(
@@ -5376,9 +5381,9 @@ async function init(){
       try{ localStorage.setItem(LS_PRICES_KEY, JSON.stringify(priceData));   }catch(e){}
       setSyncStatus('Loaded from GitHub', 'var(--grn)');
     } else {
-      // Local portfolio/price data is newer — push it up
-      if(ghData.additionalShares)ADDITIONAL_SHARES = ghData.additionalShares;
-      if(ghData.fxRates)         fxRates           = ghData.fxRates;
+      // Local portfolio/price data is newer — push it up.
+      // Keep local fxRates and ADDITIONAL_SHARES (they were saved to localStorage).
+      // Only take financialData from GitHub (not user-edited, always prefer freshest fetch).
       if(ghData.financialData)   financialData     = ghData.financialData;
       setSyncStatus('Local changes detected — syncing…', 'var(--org)');
       setTimeout(syncToGitHub, 500);
