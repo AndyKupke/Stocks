@@ -487,14 +487,17 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="menu-nav-btn" onclick="menuNav('portfolio')">
       <span class="menu-nav-icon">&#9679;</span>Portfolio
     </button>
-    <button class="menu-nav-btn" onclick="menuNav('longlist')">
-      <span class="menu-nav-icon">&#9776;</span>Long List
+    <button class="menu-nav-btn" onclick="menuNav('framework')">
+      <span class="menu-nav-icon">&#9685;</span>Portfolio Targets
     </button>
     <button class="menu-nav-btn" onclick="menuNav('theses')">
       <span class="menu-nav-icon">&#9670;</span>Investment Theses
     </button>
-    <button class="menu-nav-btn" onclick="menuNav('framework')">
-      <span class="menu-nav-icon">&#9685;</span>Portfolio Targets
+    <button class="menu-nav-btn" onclick="menuNav('longlist')">
+      <span class="menu-nav-icon">&#9776;</span>Long List
+    </button>
+    <button class="menu-nav-btn" onclick="menuNav('financial-analysis')">
+      <span class="menu-nav-icon">&#9783;</span>Stock Financial Analysis
     </button>
     <button class="menu-nav-btn" onclick="menuNav('plan')">
       <span class="menu-nav-icon">&#8734;</span>Long-term Plan
@@ -502,14 +505,12 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="menu-nav-btn" onclick="menuNav('bvp')">
       <span class="menu-nav-icon">&#9729;</span>SaaS Index
     </button>
-    <button class="menu-nav-btn" onclick="menuNav('monthly')">
-      <span class="menu-nav-icon">&#9998;</span>Monthly Process
-    </button>
+    <div style="margin:8px 18px;border-top:1px solid var(--bdr);"></div>
     <button class="menu-nav-btn" onclick="menuNav('fx')">
       <span class="menu-nav-icon">&#8652;</span>FX Rates
     </button>
-    <button class="menu-nav-btn" onclick="menuNav('financial-analysis')">
-      <span class="menu-nav-icon">&#9783;</span>Stock Financial Analysis
+    <button class="menu-nav-btn" onclick="menuNav('monthly')">
+      <span class="menu-nav-icon">&#9998;</span>Monthly Process
     </button>
   </div>
   <div style="padding:12px 18px;border-top:1px solid var(--bdr);font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);letter-spacing:.5px;">
@@ -576,7 +577,6 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       <option>Travel / Hospitality</option><option>ETF</option>
     </select>
     <select id="port-view" onchange="portFilter()" style="min-width:110px"><option value="all">All positions</option><option value="portfolio">Portfolio only</option><option value="buy">Buy only</option></select>
-    <label class="chk"><input type="checkbox" id="port-oipo" onchange="portFilter()"> IPOs only</label>
     <div class="spacer"></div>
     <button class="fbtn" onclick="portReset()">Reset</button>
     <button class="fbtn" onclick="renderPortfolioTab()">Refresh</button>
@@ -617,7 +617,6 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       <option>Travel / Hospitality</option><option>ETF</option>
     </select>
     <label class="chk"><input type="checkbox" id="wl-odep" onchange="wlFilter()"> Depot only</label>
-    <label class="chk"><input type="checkbox" id="wl-oipo" onchange="wlFilter()"> IPOs only</label>
     <div class="spacer"></div>
     <button class="fbtn" onclick="wlReset()">Reset</button>
     <button class="fbtn pri" onclick="openModal()">+ Add Stock</button>
@@ -1658,7 +1657,6 @@ function portFilter(){ renderPortfolioTab(); }
 function portReset(){
   ['port-q'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   ['port-th','port-reg','port-ind','port-view'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('port-oipo').checked=false;
   renderPortfolioTab();
 }
 
@@ -1684,7 +1682,6 @@ function renderPortfolioTab(){
   const reg  = document.getElementById('port-reg')?.value||'';
   const ind  = document.getElementById('port-ind')?.value||'';
   const view = document.getElementById('port-view')?.value||'all';
-  const oipo = document.getElementById('port-oipo')?.checked||false;
   const phd=document.getElementById('port-thead'); if(phd) phd.innerHTML=buildPortThead();
   const all=ST.filter(s=>isInPort(s.t));
   const filtered=all.filter(s=>{
@@ -1694,7 +1691,6 @@ function renderPortfolioTab(){
     if(ind&&s.ind!==ind)return false;
     if(view==='buy'&&!isBuy(s.t))return false;
     if(view==='portfolio'&&isBuy(s.t)&&!PORTFOLIO[s.t]?._portChecked)return false;
-    if(oipo&&!s.ipo)return false;
     return true;
   });
   // Apply sort
@@ -2005,14 +2001,12 @@ function wlFilter(){
   const reg=document.getElementById('wl-reg').value;
   const ind=document.getElementById('wl-ind').value;
   const od=document.getElementById('wl-odep').checked;
-  const oi=document.getElementById('wl-oipo').checked;
   wlDisp=ST.filter(s=>{
     if(q&&!s.t.toLowerCase().includes(q)&&!s.n.toLowerCase().includes(q))return false;
     if(th&&s.th!==th)return false;
     if(reg&&s.reg!==reg)return false;
     if(ind&&s.ind!==ind)return false;
     if(od&&!s.dp)return false;
-    if(oi&&!s.ipo)return false;
     return true;
   });
   wlApplySort();renderLLTable();renderLLCoverage();
@@ -2601,7 +2595,6 @@ function removeStock(tk){
 function wlReset(){
   ['wl-q','wl-th','wl-reg','wl-ind'].forEach(id=>{document.getElementById(id).value='';});
   document.getElementById('wl-odep').checked=false;
-  document.getElementById('wl-oipo').checked=false;
   wlFilter();
 }
 function showTab(id,btn){
