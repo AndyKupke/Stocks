@@ -184,8 +184,8 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 .pchg-load{color:var(--txt3);}
 /* ── FETCH BAR ── */
 .fetch-bar{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bdr);border-radius:4px;padding:8px 14px;margin-bottom:12px;}
-.fetch-btn{background:#1f6feb;border:1px solid var(--acc);color:var(--txt);font-family:'DM Mono',monospace;font-size:11px;padding:5px 14px;border-radius:4px;cursor:pointer;transition:all .15s;}
-.fetch-btn:hover{background:var(--acc);}
+.fetch-btn{background:var(--acc);border:1px solid var(--acc);color:#050A1E;font-family:'DM Mono',monospace;font-size:11px;padding:5px 14px;border-radius:4px;cursor:pointer;transition:all .15s;}
+.fetch-btn:hover{background:#e6b800;border-color:#e6b800;}
 .fetch-btn:disabled{background:var(--bdr2);border-color:var(--bdr);color:var(--txt3);cursor:not-allowed;}
 .fetch-btn.spinning::after{content:' …';}
 .fetch-status{font-family:'DM Mono',monospace;font-size:11px;color:var(--txt2);flex:1;}
@@ -244,7 +244,7 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 .bseg{background:var(--surf2);border:1px solid var(--bdr2);border-radius:5px;padding:4px 8px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;transition:all .12s;white-space:nowrap;}
 .bseg:hover{color:var(--txt2);}
 .bseg.bsm{opacity:.35;}
-.bseg.bsm.on{background:var(--acc2,#1f6feb);border-color:var(--acc);color:#fff;opacity:1;}
+.bseg.bsm.on{background:var(--acc);border-color:var(--acc);color:#050A1E;opacity:1;}
 .bfslider{-webkit-appearance:none;appearance:none;width:160px;height:3px;border-radius:2px;background:var(--bdr2);outline:none;cursor:pointer;margin-top:4px;}
 .bfslider::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--acc);cursor:pointer;border:2px solid var(--surf);}
 .bslider-ticks{display:flex;justify-content:space-between;width:160px;font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);margin-top:2px;}
@@ -525,14 +525,6 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       <span style="display:block;width:18px;height:2px;background:var(--txt2);border-radius:1px;transition:background .15s;"></span>
     </button>
     <div style="display:flex;align-items:center;gap:8px;">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
-        <circle cx="12" cy="12" r="10" fill="#d29922" opacity=".15"/>
-        <path d="M12 5v1M12 18v1M7.5 8.5l.7.7M15.8 14.8l.7.7M5 12h1M18 12h1M7.5 15.5l.7-.7M15.8 9.2l.7-.7" stroke="#d29922" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="12" cy="12" r="3" fill="#d29922"/>
-        <path d="M10 12.5c0-.83.67-1.5 1.5-1.5h1c.55 0 1 .45 1 1s-.45 1-1 1h-1c-.55 0-1 .45-1 1s.45 1 1 1h1c.83 0 1.5-.67 1.5-1.5" stroke="var(--surf)" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="12" y1="10.5" x2="12" y2="11" stroke="var(--surf)" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="12" y1="13.5" x2="12" y2="14" stroke="var(--surf)" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
       <div class="hdr-title">Investment Strategy</div>
     </div>
   </div>
@@ -1697,6 +1689,11 @@ function renderPortfolioTab(q='',th='',view='all'){
     else if(portSortKey==='chg90d'){ av=pd_a.chg90d??-Infinity;bv=pd_b.chg90d??-Infinity; }
     else if(portSortKey==='chg1y') { av=pd_a.chg1y??-Infinity; bv=pd_b.chg1y??-Infinity; }
     else if(portSortKey==='chgytd'){ av=pd_a.chgytd??-Infinity;bv=pd_b.chgytd??-Infinity; }
+    else if(portSortKey==='shares'){ av=getShares(a.t)||0;      bv=getShares(b.t)||0; }
+    else if(portSortKey==='posval'){ const sha=getShares(a.t)||0,shb=getShares(b.t)||0; av=isBuy(a.t)?0:sha*(pd_a.price||0); bv=isBuy(b.t)?0:shb*(pd_b.price||0); }
+    else if(portSortKey==='addlsh'){ av=getAddlShares(a.t)||0;  bv=getAddlShares(b.t)||0; }
+    else if(portSortKey==='addlinv'){ const aa=getAddlShares(a.t)||0,ab=getAddlShares(b.t)||0; av=aa*(pd_a.price||0); bv=ab*(pd_b.price||0); }
+    else if(portSortKey==='tothold'){ const sha=getShares(a.t)||0,shb=getShares(b.t)||0,aa=getAddlShares(a.t)||0,ab=getAddlShares(b.t)||0; av=isBuy(a.t)?25000:(sha+aa)*(pd_a.price||0); bv=isBuy(b.t)?25000:(shb+ab)*(pd_b.price||0); }
     else { av=a.id; bv=b.id; }
     if(typeof av==='string') return portSortDir*(av.toLowerCase()<bv.toLowerCase()?-1:av.toLowerCase()>bv.toLowerCase()?1:0);
     return portSortDir*(av<bv?-1:av>bv?1:0);
@@ -1719,8 +1716,7 @@ function renderPortfolioTab(q='',th='',view='all'){
       : `<td class="pc-shares"><input type="number" class="shares-input" min="0" value="${sh||''}" placeholder="shares" oninput="updateShares('${s.t}',this.value)" title="Number of shares held"></td>`;
     const posValCell = (()=>{
       if(buyFlag) {
-        const eurVal = toEur(25000, 'EURONEXT'); // already EUR
-        return `<td class="pc-posval price-cell" style="opacity:.35;color:var(--ylw)">€ 25.000,00</td>`;
+        return `<td class="pc-posval price-cell" style="color:var(--txt3)">—</td>`;
       }
       if(!sh||!pd.price) return `<td class="pc-posval price-cell" style="color:var(--txt3)">—</td>`;
       const eur = toEur(sh * pd.price, s.ex);
@@ -1774,7 +1770,7 @@ function renderPortfolioTab(q='',th='',view='all'){
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg90d)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg1y)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chgytd)}</td>
-      <td class="pc-remove"><button class="fbtn" style="font-size:9px;border-color:var(--red);color:var(--red)" onclick="removeFromPortfolio('${s.t}')">Remove</button></td>
+      <td class="pc-remove"><button class="ab-btn" style="border-color:var(--red);color:var(--red)" onclick="removeFromPortfolio('${s.t}')">✕</button></td>
     </tr>`;
   }).join('');
   const total = all.length;
@@ -4604,11 +4600,11 @@ function buildPortThead() {
     <th class="pc-ticker" onclick="portSort('ticker')">Ticker</th>
     <th class="pc-company" onclick="portSort('name')">Company</th>
     <th class="pc-price" onclick="portSort('price')">Price</th>
-    <th class="pc-shares" title="Number of shares held">Shares</th>
-    <th class="pc-posval" title="shares × price, converted to €">Pos. Value (€)</th>
-    <th class="pc-addl-sh" title="Additional shares to buy (positive) or sell (negative) — depot positions only">Add'l Shares</th>
-    <th class="pc-addl-inv" title="Additional investment or divestment = add'l shares × price, converted to €">Add'l Inv. (€)</th>
-    <th class="pc-total-hold" title="Total holding = (current + add'l shares) × price, converted to €; or €25K for Buy positions">Total Holding (€)</th>
+    <th class="pc-shares" title="Number of shares held" onclick="portSort('shares')" style="cursor:pointer">Shares</th>
+    <th class="pc-posval" title="shares × price, converted to €" onclick="portSort('posval')" style="cursor:pointer">Pos. Value (€)</th>
+    <th class="pc-addl-sh" title="Additional shares to buy (positive) or sell (negative) — depot positions only" onclick="portSort('addlsh')" style="cursor:pointer">Add'l Shares</th>
+    <th class="pc-addl-inv" title="Additional investment or divestment = add'l shares × price, converted to €" onclick="portSort('addlinv')" style="cursor:pointer">Add'l Inv. (€)</th>
+    <th class="pc-total-hold" title="Total holding = (current + add'l shares) × price, converted to €; or €25K for Buy positions" onclick="portSort('tothold')" style="cursor:pointer">Total Holding (€)</th>
     <th class="pc-grptog cgrp-toggle" onclick="toggleColGroup('port','details')" style="${dClr}" title="Thesis, Industry, Region, Exchange, Conviction, Risk">${dLbl}</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('thesis')">Thesis</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('industry')">Industry</th>
