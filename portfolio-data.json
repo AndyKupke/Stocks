@@ -14,7 +14,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂ¢ÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
+      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
       "id": 1
     },
     {
@@ -6932,7 +6932,9 @@
     }
   },
   "additionalShares": {},
-  "fxRates": {},
+  "fxRates": {
+    "USD": 0.86
+  },
   "financialData": {},
-  "lastUpdated": "2026-05-27T11:08:24.564Z"
+  "lastUpdated": "2026-05-29T13:08:38.277Z"
 }
