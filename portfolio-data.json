@@ -7437,6 +7437,58 @@
       "chgytd": null,
       "listDate": "2026-05-08",
       "sector": null
+    },
+    "MOBI": {
+      "sym": "MOBI",
+      "price": 13.100000381469727,
+      "mcap": null,
+      "chg1d": 0.7692337036132812,
+      "chg7d": 0.9245057277769632,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-08",
+      "sector": null
+    },
+    "SUJA": {
+      "sym": "SUJA",
+      "price": 15.430000305175781,
+      "mcap": null,
+      "chg1d": -0.06476214688647872,
+      "chg7d": 9.045941492247604,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-07",
+      "sector": null
+    },
+    "HAWK": {
+      "sym": "HAWK",
+      "price": 33.0099983215332,
+      "mcap": null,
+      "chg1d": 3.2530467016440725,
+      "chg7d": 4.860224909609971,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-07",
+      "sector": null
+    },
+    "REA": {
+      "sym": "REA",
+      "price": 21.850000381469727,
+      "mcap": null,
+      "chg1d": 4.445508134723363,
+      "chg7d": 13.095241856154319,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-05",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13216,5 +13268,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:22:00.220Z"
+  "lastUpdated": "2026-05-30T21:22:11.857Z"
 }
