@@ -8061,6 +8061,58 @@
       "chgytd": null,
       "listDate": "2026-02-27",
       "sector": null
+    },
+    "GENB": {
+      "sym": "GENB",
+      "price": 13.119999885559082,
+      "mcap": null,
+      "chg1d": 0.22918053950717843,
+      "chg7d": 0.3058101076937457,
+      "chg30d": -9.266944322633693,
+      "chg90d": 13.29879077719516,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-02-27",
+      "sector": null
+    },
+    "FVAV": {
+      "sym": "FVAV",
+      "price": 10.100000381469727,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": -0.4926033393071871,
+      "chg30d": 0,
+      "chg90d": 0.39761391833571513,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-02-26",
+      "sector": null
+    },
+    "TRGSU": {
+      "sym": "TRGSU",
+      "price": 10.069999694824219,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0.9018051775153018,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-02-26",
+      "sector": null
+    },
+    "CTAAU": {
+      "sym": "CTAAU",
+      "price": 10.0600004196167,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.3992011978605717,
+      "chg90d": 0.8016120345677332,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-02-24",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13840,5 +13892,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:23:58.676Z"
+  "lastUpdated": "2026-05-30T21:24:17.676Z"
 }
