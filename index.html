@@ -3752,12 +3752,12 @@ async function fmpFetchFinancials(ticker) {
 
   // FMP uses the same Yahoo-style exchange suffixes (.DE, .PA, .L, etc.)
   const sym = toYahooSym(ticker);
-  // FMP new stable API (post-Aug 2025): symbol is a query param, not path segment
-  const BASE = 'https://financialmodelingprep.com/stable';
+  // FMP free-tier API v3: symbol is the path segment, not a query param
+  const BASE = 'https://financialmodelingprep.com/api/v3';
   const get = async (endpoint, params) => {
     try {
-      const qs = new URLSearchParams({ symbol: sym, ...params, apikey: apiKey }).toString();
-      const url = `${BASE}/${endpoint}?${qs}`;
+      const qs = new URLSearchParams({ ...params, apikey: apiKey }).toString();
+      const url = `${BASE}/${endpoint}/${encodeURIComponent(sym)}?${qs}`;
       const r = await fetch(url, { signal: AbortSignal.timeout(12000) });
       if (!r.ok) return null;
       const d = await r.json();
@@ -3765,9 +3765,8 @@ async function fmpFetchFinancials(ticker) {
     } catch(e) { return null; }
   };
 
-  // Fetch annual + ratios + balance sheet in parallel; try limit=8 for quarterly (paid),
-  // fall back to limit=5 (free tier cap) if those come back null.
-  const [aIS, aCF, aBS, ratios, keyMetrics, qIS8, qCF8, qBS8] = await Promise.all([
+  // Fetch annual + quarterly in parallel (v3 honours limit param, free plan allows up to 5 annual)
+  const [aIS, aCF, aBS, ratios, keyMetrics, qIS, qCF, qBS] = await Promise.all([
     get('income-statement',       { period: 'annual',  limit: 5 }),
     get('cash-flow-statement',    { period: 'annual',  limit: 5 }),
     get('balance-sheet-statement',{ period: 'annual',  limit: 5 }),
@@ -3776,12 +3775,6 @@ async function fmpFetchFinancials(ticker) {
     get('income-statement',       { period: 'quarter', limit: 8 }),
     get('cash-flow-statement',    { period: 'quarter', limit: 8 }),
     get('balance-sheet-statement',{ period: 'quarter', limit: 8 }),
-  ]);
-  // If limit=8 was rejected by free tier, fall back to limit=5
-  const [qIS, qCF, qBS] = await Promise.all([
-    qIS8 || get('income-statement',       { period: 'quarter', limit: 5 }),
-    qCF8 || get('cash-flow-statement',    { period: 'quarter', limit: 5 }),
-    qBS8 || get('balance-sheet-statement',{ period: 'quarter', limit: 5 }),
   ]);
 
   if (!aIS && !qIS) return null; // complete failure
@@ -3797,7 +3790,7 @@ async function fmpFetchFinancials(ticker) {
     operatingIncome:       s.operatingIncome                                    ?? null,
     ebit:                  s.operatingIncome                                    ?? null,
     interestExpense:       s.interestExpense != null ? -Math.abs(s.interestExpense) : null,
-    incomeBeforeTax:       s.incomeBeforeTaxExpense                             ?? null,
+    incomeBeforeTax:       s.incomeBeforeTax ?? s.incomeBeforeTaxExpense        ?? null,
     incomeTaxExpense:      s.incomeTaxExpense                                   ?? null,
     netIncome:             s.netIncome                                          ?? null,
     ebitda:                s.ebitda                                             ?? null,
@@ -3810,9 +3803,9 @@ async function fmpFetchFinancials(ticker) {
     stockBasedComp:      s.stockBasedCompensation                             ?? null,
     capitalExpenditures: s.capitalExpenditure != null ? -Math.abs(s.capitalExpenditure) : null,
     freeCashflow:        s.freeCashFlow                                       ?? null,
-    investingCashflow:   s.netCashProvidedByInvestingActivities               ?? null,
+    investingCashflow:   s.netCashUsedForInvestingActivities ?? s.netCashProvidedByInvestingActivities ?? null,
     dividendPayout:      s.dividendsPaid != null ? -Math.abs(s.dividendsPaid) : null,
-    financingCashflow:   s.netCashProvidedByFinancingActivities               ?? null,
+    financingCashflow:   s.netCashUsedProvidedByFinancingActivities ?? s.netCashProvidedByFinancingActivities ?? null,
     changeInCash:        s.netChangeInCash                                    ?? null,
   })).filter(s => s.endDate);
 
