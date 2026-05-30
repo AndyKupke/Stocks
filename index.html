@@ -1823,7 +1823,7 @@ function renderPortfolioTab(){
       <td class="pc-grpcell cgrp-cell port-details${detH}"><span class="mono" style="font-size:10px;color:var(--txt2)">${s.reg}</span></td>
       <td class="pc-grpcell cgrp-cell port-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex}</span></td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('port','perf')"></td>
-      <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtMcap(pd.mcap)}</td>
+      <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtMcap(pd.mcap, s.ex)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg1d)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg7d)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg30d)}</td>
@@ -2102,7 +2102,7 @@ function renderLLTable(){
       <td class="cgrp-cell ll-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex}</span></td>
       <td class="price-cell">${fmtPrice(pd.price,s.ex)}</td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('ll','perf')"></td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtMcap(pd.mcap)}</td>
+      <td class="cgrp-cell ll-perf${perfH}">${fmtMcap(pd.mcap, s.ex)}</td>
       <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg1d)}</td>
       <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg7d)}</td>
       <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg30d)}</td>
@@ -3089,10 +3089,11 @@ async function yahooFetchOne(sym) {
   const qUrl  = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}`;
   const qUrl2 = qUrl.replace('query1', 'query2');
 
-  // Kick off a parallel quote fetch for marketCap — the v8 chart API meta does NOT reliably
-  // include sharesOutstanding/marketCap, so we always fetch this alongside the chart request.
-  // This runs concurrently and we only await it when we already have a successful chart result.
-  const mcapPromise = (async () => {
+  // Kick off a parallel quote fetch for sharesOutstanding — the v8 chart API meta does NOT
+  // reliably include this field, so we fetch v7/quote concurrently with the chart requests.
+  // sharesOutstanding × price = mcap in local currency (cleaner than using Yahoo's marketCap
+  // field whose currency is ambiguous for non-US stocks).
+  const sharesPromise = (async () => {
     for (const u of [qUrl, qUrl2,
       `https://api.allorigins.win/raw?url=${encodeURIComponent(qUrl2)}`,
       `https://corsproxy.io/?${encodeURIComponent(qUrl2)}`]) {
@@ -3104,7 +3105,7 @@ async function yahooFetchOne(sym) {
         const wrapper = JSON.parse(text);
         const json = wrapper.contents ? JSON.parse(wrapper.contents) : wrapper;
         const q = json?.quoteResponse?.result?.[0];
-        if (q?.marketCap) return q.marketCap; // raw USD value
+        if (q?.sharesOutstanding > 0) return q.sharesOutstanding;
       } catch(e) {}
     }
     return null;
@@ -3145,10 +3146,10 @@ async function yahooFetchOne(sym) {
       }
       const result = json?.chart?.result?.[0];
       if (result && result.timestamp?.length > 2) {
-        // Patch marketCap from parallel quote fetch when chart meta lacks it
-        if (!result.meta?.marketCap && !result.meta?.sharesOutstanding) {
-          const rawMcap = await mcapPromise;
-          if (rawMcap) { result.meta = result.meta || {}; result.meta.marketCap = rawMcap; }
+        // Patch sharesOutstanding from parallel quote fetch when chart meta lacks it
+        if (!(result.meta?.sharesOutstanding > 0)) {
+          const shares = await sharesPromise;
+          if (shares > 0) { result.meta = result.meta || {}; result.meta.sharesOutstanding = shares; }
         }
         return result;
       }
@@ -3297,7 +3298,7 @@ async function fetchSinglePrice(sym, btn) {
     if (result) {
       if (result._quoteOnly) {
         const q = result.quote;
-        d = { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
+        d = { sym, price: q.regularMarketPrice, mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice) ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9 : (q.marketCap ? q.marketCap/1e9 : null),
           chg1d: q.regularMarketChangePercent ?? null,
           chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
       } else {
@@ -3360,7 +3361,7 @@ async function fetchIpoPrices() {
           const q = result.quote;
           // capture sector while we have the quote data
           const sector = q.industryDisp || q.industry || q.sector || null;
-          return { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
+          return { sym, price: q.regularMarketPrice, mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice) ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9 : (q.marketCap ? q.marketCap/1e9 : null),
             chg1d: q.regularMarketChangePercent ?? null,
             chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null, listDate: null, sector };
         }
@@ -3419,7 +3420,7 @@ async function fetchAllPrices() {
       if (result._quoteOnly) {
         const q = result.quote;
         fetched++;
-        return { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
+        return { sym, price: q.regularMarketPrice, mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice) ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9 : (q.marketCap ? q.marketCap/1e9 : null),
           chg1d: q.regularMarketChangePercent ?? null,
           chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
       }
@@ -3522,11 +3523,13 @@ function fmtPrice(v, ex) {
   return `<span class="price-cell">${sym} ${n}</span>`;
 }
 
-function fmtMcap(v) {
+function fmtMcap(v, ex) {
   if (v == null) return `<span class="pchg pchg-load">—</span>`;
-  if (v >= 1000) return `<span class="mcap-cell">$${(v/1000).toFixed(1)}T</span>`;
-  if (v >= 1)    return `<span class="mcap-cell">$${v.toFixed(0)}B</span>`;
-  return `<span class="mcap-cell">$${(v*1000).toFixed(0)}M</span>`;
+  // v is local-currency bn; convert to EUR bn using stored FX rates
+  const eur = (toEur(v * 1e9, ex) ?? v * (fxRates.USD || 1) * 1e9) / 1e9;
+  if (eur >= 1000) return `<span class="mcap-cell">€${(eur/1000).toFixed(1)}T</span>`;
+  if (eur >= 1)    return `<span class="mcap-cell">€${eur.toFixed(0)}B</span>`;
+  return `<span class="mcap-cell">€${(eur*1000).toFixed(0)}M</span>`;
 }
 
 function fmtChg(v) {
@@ -6068,7 +6071,7 @@ function renderIpoTable() {
       <td class="cgrp-cell ipo-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex||'—'}</span></td>
       <td class="price-cell" style="text-align:right">${liveCell}</td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleIpoColGroup('perf')"></td>
-      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtMcap(pd.mcap)}</td>
+      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtMcap(pd.mcap, s.ex)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg1d)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg7d)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg30d)}</td>
