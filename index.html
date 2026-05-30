@@ -5540,32 +5540,91 @@ async function ghSaveIpos(records, lastFetched) {
   } catch(e) { return false; }
 }
 
-// ── Yahoo Finance IPO calendar fetch (no API key required) ─────────────────
-// Queries multiple regions to capture NASDAQ/NYSE + core European exchanges.
-// Uses the same CORS proxy chain as price fetches.
+// ── Nasdaq public IPO calendar (US — NASDAQ + NYSE, no API key) ─────────────
+// api.nasdaq.com is called by the Nasdaq website itself so it has permissive
+// CORS. We query one month at a time for the required date range.
+async function _nasdaqFetchMonth(yearMonth) {
+  const base = `https://api.nasdaq.com/api/ipo/calendar?date=${yearMonth}`;
+  const hdrs = { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' };
+  const tries = [
+    { url: base, hdrs },
+    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`, hdrs: {} },
+    { url: `https://corsproxy.io/?${encodeURIComponent(base)}`, hdrs: {} },
+    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`, hdrs: {} },
+  ];
+  for (const { url, hdrs: h } of tries) {
+    try {
+      const r = await fetch(url, { headers: h });
+      if (!r.ok) continue;
+      const j = await r.json();
+      if (j?.data) return j.data;        // valid Nasdaq response
+    } catch(e) { /* next */ }
+  }
+  return null;   // all attempts failed
+}
+
+function _parseMDY(d) {
+  // "05/15/2026" → "2026-05-15"
+  if (!d) return '';
+  const m = d.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return `${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+  return d.slice(0, 10);  // already ISO or unknown
+}
+
+async function _fetchNasdaqIpos(fromStr, toStr, seen) {
+  // Build list of YYYY-MM months covering fromStr → toStr
+  const months = [];
+  const cur = new Date(fromStr.slice(0, 7) + '-01');
+  const end = new Date(toStr.slice(0, 7) + '-01');
+  while (cur <= end) { months.push(cur.toISOString().slice(0, 7)); cur.setMonth(cur.getMonth() + 1); }
+
+  const records = [];
+  for (const month of months) {
+    const data = await _nasdaqFetchMonth(month);
+    if (!data) continue;
+    const rows = [
+      ...(data.priced?.rows || []),
+      ...(data.upcoming?.upcomingTable?.rows || []),
+    ];
+    for (const row of rows) {
+      const sym = (row.proposedTickerSymbol || '').trim();
+      if (!sym || seen.has(sym)) continue;
+      const rawDate = row.pricedDate || row.expectedPriceDate || '';
+      const date = _parseMDY(rawDate);
+      if (!date || date < fromStr || date > toStr) continue;
+      const exStr = row.proposedExchange || 'NASDAQ';
+      const { short, reg } = ipoExInfo(exStr);
+      seen.add(sym);
+      records.push({ t: sym, n: row.companyName || '', date, ex: short || 'NASDAQ', reg: reg || 'US', status: row.dealStatus || '' });
+    }
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return records;
+}
+
+// ── Yahoo Finance IPO calendar — European regions only, best-effort ─────────
+// Returns [] (no events), null (proxy failed), or array of events.
+// Only exits the proxy loop when the response has Yahoo's result structure.
 async function _yahooFetchIpoRegion(fromStr, toStr, region) {
-  const base = `https://query1.finance.yahoo.com/v2/finance/calendar/ipo?from=${fromStr}&to=${toStr}&lang=en-US&region=${region}`;
+  const base  = `https://query1.finance.yahoo.com/v2/finance/calendar/ipo?from=${fromStr}&to=${toStr}&lang=en-US&region=${region}`;
   const base2 = base.replace('query1', 'query2');
   const proxies = [
-    base,
-    base2,
     `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`,
     `https://api.allorigins.win/raw?url=${encodeURIComponent(base2)}`,
     `https://corsproxy.io/?${encodeURIComponent(base)}`,
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`,
-    `https://thingproxy.freeboard.io/fetch/${base}`,
   ];
   for (const url of proxies) {
     try {
       const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
       if (!r.ok) continue;
       const j = await r.json();
-      // Response shape: { finance: { result: [{ ipoCalendar: [...] }] } }
-      const events = j?.finance?.result?.[0]?.ipoCalendar || j?.result?.[0]?.ipoCalendar || [];
-      if (Array.isArray(events)) return events;
+      // Only accept if the response has Yahoo's expected result structure
+      const result0 = j?.finance?.result?.[0] ?? j?.result?.[0];
+      if (result0 && 'ipoCalendar' in result0) return result0.ipoCalendar || [];
     } catch(e) { /* try next proxy */ }
   }
-  return [];
+  return null;  // null = all proxies failed for this region
 }
 
 async function fetchIpos() {
@@ -5581,76 +5640,65 @@ async function fetchIpos() {
   const toStr      = today.toISOString().slice(0, 10);
 
   // Start from the day after the most recent IPO already in the database,
-  // but never go further back than 360 days.
+  // never going back more than 360 days.
   let fromStr = maxFromStr;
-  let isIncremental = false;
   if (ipoAllData.length) {
     const latestDate = ipoAllData.reduce((max, s) => (s.date > max ? s.date : max), '');
     if (latestDate && latestDate > maxFromStr) {
-      // Start one day after the latest known IPO date
-      const d = new Date(latestDate);
-      d.setDate(d.getDate() + 1);
+      const d = new Date(latestDate); d.setDate(d.getDate() + 1);
       fromStr = d.toISOString().slice(0, 10);
-      isIncremental = true;
     }
   }
 
-  setStatus(isIncremental
-    ? `Fetching new IPOs from ${fromStr} to ${toStr}…`
-    : `No existing data — fetching up to 360 days (${fromStr} – ${toStr})…`);
+  // Deduplicate against existing database
+  const seen = new Set(ipoAllData.map(s => s.t));
+  const newRecords = [];
 
   try {
-    // Query US + core European regions
-    const regions = ['US', 'DE', 'GB', 'FR', 'NL', 'IT', 'CH', 'SE', 'NO', 'ES', 'BE', 'AT', 'DK', 'FI', 'PL'];
-    const allEvents = [];
-    // Seed seen-set with tickers already in database to avoid duplicates
-    const seen = new Set(ipoAllData.map(s => s.t));
+    // ── 1. US IPOs via Nasdaq public API (reliable, no CORS issues) ──────────
+    if (btn) btn.textContent = 'Fetching US…';
+    setStatus(`Fetching US IPOs from Nasdaq (${fromStr} → ${toStr})…`);
+    const usRecs = await _fetchNasdaqIpos(fromStr, toStr, seen);
+    newRecords.push(...usRecs);
 
-    for (let i = 0; i < regions.length; i++) {
-      const regionCode = regions[i];
-      if (btn) btn.textContent = `Fetching… (${i + 1}/${regions.length})`;
-      const events = await _yahooFetchIpoRegion(fromStr, toStr, regionCode);
-      for (const ev of events) {
-        const sym = ev.symbol || '';
-        if (!sym || seen.has(sym)) continue;
-        seen.add(sym);
-        allEvents.push(ev);
+    // ── 2. European IPOs via Yahoo Finance (best-effort, proxy-dependent) ────
+    const euRegions = ['DE', 'GB', 'FR', 'NL', 'IT', 'CH', 'SE', 'NO', 'ES', 'BE', 'AT', 'DK', 'FI', 'PL'];
+    let euFound = 0, euFailed = 0;
+    for (let i = 0; i < euRegions.length; i++) {
+      const rc = euRegions[i];
+      if (btn) btn.textContent = `EU (${i + 1}/${euRegions.length})…`;
+      const events = await _yahooFetchIpoRegion(fromStr, toStr, rc);
+      if (events === null) { euFailed++; }
+      else {
+        for (const ev of events) {
+          const sym = ev.symbol || '';
+          if (!sym || seen.has(sym)) continue;
+          const exStr = ev.exchange || ev.exchangeName || '';
+          const { short, reg } = ipoExInfo(exStr);
+          if (!short) continue;
+          const rawDate = ev.startdatetime || ev.date || '';
+          const date = rawDate ? rawDate.slice(0, 10) : '';
+          seen.add(sym);
+          newRecords.push({ t: sym, n: ev.companyShortName || ev.name || '', date, ex: short, reg, status: ev.actions || '' });
+          euFound++;
+        }
       }
-      // small pause between regions to be polite
-      if (i < regions.length - 1) await new Promise(r => setTimeout(r, 300));
+      if (i < euRegions.length - 1) await new Promise(r => setTimeout(r, 300));
     }
 
-    const newRecords = allEvents
-      .map(ev => {
-        const exStr = ev.exchange || ev.exchangeName || '';
-        const { short, reg } = ipoExInfo(exStr);
-        if (!short) return null;
-        const rawDate = ev.startdatetime || ev.date || '';
-        const date = rawDate ? rawDate.slice(0, 10) : '';
-        return {
-          t:      ev.symbol || '',
-          n:      ev.companyShortName || ev.name || ev.company || '',
-          date,
-          ex:     short,
-          reg,
-          status: ev.actions || '',
-        };
-      })
-      .filter(r => r && r.t);
+    // ── 3. Merge, save, render ────────────────────────────────────────────────
+    const addedTxt = newRecords.length
+      ? `+${newRecords.length} new (${usRecs.length} US · ${euFound} EU${euFailed ? ` · ${euFailed} EU regions unavailable` : ''})`
+      : `no new IPOs found${euFailed === euRegions.length ? ' — EU proxy unavailable' : ''}`;
 
-    // Merge: new records first, then existing, re-sort newest first
+    setStatus(`${addedTxt} — saving…`);
     const merged = [...newRecords, ...ipoAllData]
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
-    const addedTxt = newRecords.length
-      ? `+${newRecords.length} new`
-      : 'no new IPOs found';
-    setStatus(`${addedTxt} — saving to GitHub…`);
-
     const saved = await ghSaveIpos(merged, today.toISOString());
     ipoAllData = merged;
-    const savedTxt = saved ? ' ✓ Saved to GitHub.' : ' (GitHub save failed — check token)';
-    setStatus(`${addedTxt} · ${merged.length} total in database${savedTxt}`);
+    const savedTxt = saved ? ' ✓ Saved.' : ' (GitHub save failed)';
+    setStatus(`${addedTxt} · ${merged.length} total${savedTxt}`);
     setSyncStatus(saved ? 'IPO data saved' : 'IPO GitHub save failed', saved ? 'var(--grn)' : 'var(--red)');
     ipoApplyWindow();
     ipoFilter();
