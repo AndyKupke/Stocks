@@ -3089,6 +3089,27 @@ async function yahooFetchOne(sym) {
   const qUrl  = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}`;
   const qUrl2 = qUrl.replace('query1', 'query2');
 
+  // Kick off a parallel quote fetch for marketCap — the v8 chart API meta does NOT reliably
+  // include sharesOutstanding/marketCap, so we always fetch this alongside the chart request.
+  // This runs concurrently and we only await it when we already have a successful chart result.
+  const mcapPromise = (async () => {
+    for (const u of [qUrl, qUrl2,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(qUrl2)}`,
+      `https://corsproxy.io/?${encodeURIComponent(qUrl2)}`]) {
+      try {
+        const r = await fetch(u, { signal: AbortSignal.timeout(8000) });
+        if (!r.ok) continue;
+        const text = await r.text();
+        if (!text || text.length < 20) continue;
+        const wrapper = JSON.parse(text);
+        const json = wrapper.contents ? JSON.parse(wrapper.contents) : wrapper;
+        const q = json?.quoteResponse?.result?.[0];
+        if (q?.marketCap) return q.marketCap; // raw USD value
+      } catch(e) {}
+    }
+    return null;
+  })();
+
   // 9 strategies tried in sequence — chart API first (full history), quote API as fallback
   const ATTEMPTS = [
     { url: yUrl,  hdrs },
@@ -3123,7 +3144,14 @@ async function yahooFetchOne(sym) {
         continue;
       }
       const result = json?.chart?.result?.[0];
-      if (result && result.timestamp?.length > 2) return result;
+      if (result && result.timestamp?.length > 2) {
+        // Patch marketCap from parallel quote fetch when chart meta lacks it
+        if (!result.meta?.marketCap && !result.meta?.sharesOutstanding) {
+          const rawMcap = await mcapPromise;
+          if (rawMcap) { result.meta = result.meta || {}; result.meta.marketCap = rawMcap; }
+        }
+        return result;
+      }
     } catch(e) {
       continue;
     }
