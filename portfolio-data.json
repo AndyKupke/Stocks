@@ -7241,6 +7241,84 @@
       "chgytd": null,
       "listDate": "2026-05-19",
       "sector": null
+    },
+    "DUKR": {
+      "sym": "DUKR",
+      "price": 7.5,
+      "mcap": null,
+      "chg1d": 6.990010772029944,
+      "chg7d": 11.607146341683212,
+      "chg30d": -37.5,
+      "chg90d": 2061.383267481939,
+      "chg1y": 4418.072461118067,
+      "chgytd": 2179.6352847906337,
+      "listDate": "2021-01-08",
+      "sector": null
+    },
+    "GUACU": {
+      "sym": "GUACU",
+      "price": 10.039999961853027,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0.09970318193491681,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-15",
+      "sector": null
+    },
+    "PTACU": {
+      "sym": "PTACU",
+      "price": 9.979999542236328,
+      "mcap": null,
+      "chg1d": -0.10010239350302436,
+      "chg7d": 0.30150485976147023,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-15",
+      "sector": null
+    },
+    "EXYN": {
+      "sym": "EXYN",
+      "price": 6,
+      "mcap": null,
+      "chg1d": 0.5025160948520995,
+      "chg7d": 17.647061023470208,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-15",
+      "sector": null
+    },
+    "IDACU": {
+      "sym": "IDACU",
+      "price": 10.039999961853027,
+      "mcap": null,
+      "chg1d": 0.19959584007662895,
+      "chg7d": 0.09970318193491681,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-15",
+      "sector": null
+    },
+    "VIDA": {
+      "sym": "VIDA",
+      "price": 3.4800000190734863,
+      "mcap": null,
+      "chg1d": -9.844556641183672,
+      "chg7d": -2.793293485019055,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-15",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13020,5 +13098,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:21:21.746Z"
+  "lastUpdated": "2026-05-30T21:21:42.438Z"
 }
