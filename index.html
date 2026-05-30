@@ -3180,6 +3180,10 @@ function processYahooCandles(sym, result) {
   }
   if (chgytd === null) chgytd = pctVs(365);
 
+  // Yahoo firstTradeDate — Unix timestamp of first day the stock traded
+  const ftd = meta.firstTradeDate;
+  const listDate = ftd ? new Date(ftd * 1000).toISOString().slice(0, 10) : null;
+
   return {
     price, mcap,
     chg1d:  prev   ? ((price - prev) / prev) * 100 : null,
@@ -3188,6 +3192,7 @@ function processYahooCandles(sym, result) {
     chg90d: pctVs(90),
     chg1y:  pctVs(365),
     chgytd,
+    listDate,   // YYYY-MM-DD of first trading day from Yahoo
   };
 }
 
@@ -3318,7 +3323,7 @@ async function fetchIpoPrices() {
   if (btn) { btn.disabled = true; btn.classList.add('spinning'); }
 
   const syms = [...new Set(ipoData.map(s => s.t).filter(Boolean))];
-  let fetched = 0;
+  let fetched = 0, datesEnriched = 0;
   const setStatus = msg => { if (st) st.textContent = msg; };
   setStatus(`Fetching live prices for ${syms.length} IPO tickers from Yahoo Finance…`);
 
@@ -3335,17 +3340,36 @@ async function fetchIpoPrices() {
           const q = result.quote;
           return { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
             chg1d: q.regularMarketChangePercent ?? null,
-            chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
+            chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null, listDate: null };
         }
         const d = processYahooCandles(sym, result);
         return d ? { sym, ...d } : null;
       } catch(e) { return null; }
     }));
+
+    // Backfill missing IPO dates from Yahoo's firstTradeDate
+    results.filter(Boolean).forEach(d => {
+      if (!d.listDate) return;
+      const rec = ipoAllData.find(s => s.t === d.sym);
+      if (rec && !rec.date) {
+        rec.date = d.listDate;
+        datesEnriched++;
+      }
+    });
+
     applyFetchedPrices(results.filter(Boolean));
     await new Promise(r => setTimeout(r, 200));
   }
 
-  setStatus(`Done — ${fetched} of ${syms.length} IPO prices fetched from Yahoo Finance`);
+  // Re-save to GitHub if Yahoo filled in any missing dates
+  if (datesEnriched > 0) {
+    setStatus(`Saving ${datesEnriched} Yahoo-sourced IPO dates to GitHub…`);
+    await ghSaveIpos(ipoAllData, new Date().toISOString());
+    setStatus(`Done — ${fetched} prices fetched · ${datesEnriched} IPO dates enriched from Yahoo · saved to GitHub`);
+  } else {
+    setStatus(`Done — ${fetched} of ${syms.length} IPO prices fetched from Yahoo Finance`);
+  }
+  renderIpoTable();
   if (btn) { btn.disabled = false; btn.classList.remove('spinning'); }
 }
 
@@ -5548,10 +5572,12 @@ async function fetchIpos() {
       .map(r => {
         const exStr = r.exchange || r.exchangeShortName || '';
         const { short, reg } = ipoExInfo(exStr);
+        // FMP v3 uses 'date'; also check 'ipoDate' and 'offeringDate' just in case
+        const date = r.date || r.ipoDate || r.offeringDate || '';
         return {
           t:      r.symbol  || '',
           n:      r.company || r.name || '',
-          date:   r.date    || '',
+          date,
           ex:     short,
           reg:    reg,
           status: r.actions || '',
