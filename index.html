@@ -5615,18 +5615,43 @@ async function _yahooFetchIpoRegion(fromStr, toStr, region) {
   return null;  // null = all proxies failed for this region
 }
 
-// Fetch Yahoo sector/industry for a single ticker (quote endpoint via proxies)
+// Fetch Yahoo sector/industry for a single ticker.
+// Tries v10/quoteSummary (assetProfile) first — most complete sector data.
+// Falls back to v7/quote if quoteSummary proxies all fail.
 async function _fetchYahooSector(sym) {
   const ySym = toYahooSym(sym);
-  const base  = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}`;
-  const base2 = base.replace('query1', 'query2');
-  const proxies = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(base2)}`,
-    `https://corsproxy.io/?${encodeURIComponent(base)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`,
+
+  // ── v10 quoteSummary / assetProfile (best source) ────────────────────────
+  const sumBase  = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=assetProfile&lang=en-US&region=US`;
+  const sumBase2 = sumBase.replace('query2', 'query1');
+  const sumProxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(sumBase)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(sumBase2)}`,
+    `https://corsproxy.io/?${encodeURIComponent(sumBase)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(sumBase)}`,
   ];
-  for (const url of proxies) {
+  for (const url of sumProxies) {
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (!r.ok) continue;
+      const text = await r.text();
+      const w = JSON.parse(text);
+      const j = w.contents ? JSON.parse(w.contents) : w;
+      const profile = j?.quoteSummary?.result?.[0]?.assetProfile;
+      if (profile?.sector) return profile.industry || profile.sector;
+    } catch(e) { /* try next */ }
+  }
+
+  // ── v7/quote fallback ─────────────────────────────────────────────────────
+  const qBase  = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}`;
+  const qBase2 = qBase.replace('query1', 'query2');
+  const qProxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(qBase)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(qBase2)}`,
+    `https://corsproxy.io/?${encodeURIComponent(qBase)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(qBase)}`,
+  ];
+  for (const url of qProxies) {
     try {
       const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
       if (!r.ok) continue;
@@ -5634,10 +5659,30 @@ async function _fetchYahooSector(sym) {
       const w = JSON.parse(text);
       const j = w.contents ? JSON.parse(w.contents) : w;
       const q = j?.quoteResponse?.result?.[0];
-      if (q) return q.industryDisp || q.industry || q.sector || null;
-    } catch(e) { /* try next proxy */ }
+      if (q?.sector) return q.industryDisp || q.industry || q.sector;
+    } catch(e) { /* try next */ }
   }
   return null;
+}
+
+// ── FMP company screener for EU IPOs (uses existing FMP API key) ─────────────
+// Returns normalised IPO records with ind/th already populated, or null on fail.
+async function _fetchFmpEuIpos(fromStr, toStr, key) {
+  const exch = 'EURONEXT,XETRA,LSE,SIX,STO,OSE,CPH,HEL,VIE,WSE,BME,BIT,NASDAQ OMX';
+  // Try stable screener first, then v3 screener as fallback
+  const urls = [
+    `https://financialmodelingprep.com/stable/company-screener?exchange=${encodeURIComponent(exch)}&ipoDateFrom=${fromStr}&ipoDateTo=${toStr}&isActivelyTrading=true&limit=500&apikey=${key}`,
+    `https://financialmodelingprep.com/api/v3/stock-screener?exchangeShortName=${encodeURIComponent(exch)}&ipoDateFrom=${fromStr}&ipoDateTo=${toStr}&limit=500&apikey=${key}`,
+  ];
+  for (const url of urls) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const data = await r.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    } catch(e) { /* try next */ }
+  }
+  return null;  // null = both failed (wrong plan or network error)
 }
 
 async function fetchIpos() {
@@ -5674,35 +5719,70 @@ async function fetchIpos() {
     const usRecs = await _fetchNasdaqIpos(fromStr, toStr, seen);
     newRecords.push(...usRecs);
 
-    // ── 2. European IPOs via Yahoo Finance (best-effort, proxy-dependent) ────
-    const euRegions = ['DE', 'GB', 'FR', 'NL', 'IT', 'CH', 'SE', 'NO', 'ES', 'BE', 'AT', 'DK', 'FI', 'PL'];
-    let euFound = 0, euFailed = 0;
-    for (let i = 0; i < euRegions.length; i++) {
-      const rc = euRegions[i];
-      if (btn) btn.textContent = `EU (${i + 1}/${euRegions.length})…`;
-      const events = await _yahooFetchIpoRegion(fromStr, toStr, rc);
-      if (events === null) { euFailed++; }
-      else {
-        for (const ev of events) {
-          const sym = ev.symbol || '';
+    // ── 2. EU IPOs: FMP screener (preferred) → Yahoo calendar (fallback) ──────
+    let euFound = 0, euSource = '';
+    const fmpKey = getFmpKey();
+
+    if (fmpKey) {
+      if (btn) btn.textContent = 'Fetching EU (FMP)…';
+      setStatus('Fetching EU IPOs via FMP screener…');
+      const fmpRows = await _fetchFmpEuIpos(fromStr, toStr, fmpKey);
+      if (fmpRows) {
+        for (const row of fmpRows) {
+          const sym = (row.symbol || '').trim();
           if (!sym || seen.has(sym)) continue;
-          const exStr = ev.exchange || ev.exchangeName || '';
+          const exStr = row.exchangeShortName || row.exchange || '';
           const { short, reg } = ipoExInfo(exStr);
           if (!short) continue;
-          const rawDate = ev.startdatetime || ev.date || '';
-          const date = rawDate ? rawDate.slice(0, 10) : '';
+          const date = (row.ipoDate || '').slice(0, 10);
+          if (!date || date < fromStr || date > toStr) continue;
+          const sector = row.sector || row.industry || '';
           seen.add(sym);
-          newRecords.push({ t: sym, n: ev.companyShortName || ev.name || '', date, ex: short, reg, status: ev.actions || '' });
+          newRecords.push({
+            t: sym, n: row.companyName || row.name || '',
+            date, ex: short, reg, status: 'priced',
+            ind: sector, th: ipoMatchThesis(sector),
+          });
           euFound++;
         }
+        euSource = 'FMP screener';
+      } else {
+        euSource = 'FMP failed';
       }
-      if (i < euRegions.length - 1) await new Promise(r => setTimeout(r, 300));
+    }
+
+    // Fall back to Yahoo Finance calendar if no FMP key or FMP failed
+    if (!fmpKey || euSource === 'FMP failed') {
+      const euRegions = ['DE', 'GB', 'FR', 'NL', 'IT', 'CH', 'SE', 'NO', 'ES', 'BE', 'AT', 'DK', 'FI', 'PL'];
+      let euFailed = 0;
+      for (let i = 0; i < euRegions.length; i++) {
+        const rc = euRegions[i];
+        if (btn) btn.textContent = `EU Yahoo (${i + 1}/${euRegions.length})…`;
+        const events = await _yahooFetchIpoRegion(fromStr, toStr, rc);
+        if (events === null) { euFailed++; }
+        else {
+          for (const ev of events) {
+            const sym = ev.symbol || '';
+            if (!sym || seen.has(sym)) continue;
+            const exStr = ev.exchange || ev.exchangeName || '';
+            const { short, reg } = ipoExInfo(exStr);
+            if (!short) continue;
+            const rawDate = ev.startdatetime || ev.date || '';
+            const date = rawDate ? rawDate.slice(0, 10) : '';
+            seen.add(sym);
+            newRecords.push({ t: sym, n: ev.companyShortName || ev.name || '', date, ex: short, reg, ind: '', th: '', status: ev.actions || '' });
+            euFound++;
+          }
+        }
+        if (i < euRegions.length - 1) await new Promise(r => setTimeout(r, 300));
+      }
+      euSource = euFailed === euRegions.length ? 'Yahoo (all proxies failed)' : 'Yahoo';
     }
 
     // ── 3. Merge ──────────────────────────────────────────────────────────────
     const addedTxt = newRecords.length
-      ? `+${newRecords.length} new (${usRecs.length} US · ${euFound} EU${euFailed ? ` · ${euFailed} EU regions unavailable` : ''})`
-      : `no new IPOs found${euFailed === euRegions.length ? ' — EU proxy unavailable' : ''}`;
+      ? `+${newRecords.length} new (${usRecs.length} US · ${euFound} EU via ${euSource})`
+      : `no new IPOs found`;
 
     const merged = [...newRecords, ...ipoAllData]
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
