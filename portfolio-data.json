@@ -8607,6 +8607,71 @@
       "chgytd": null,
       "listDate": "2026-01-30",
       "sector": null
+    },
+    "YSS": {
+      "sym": "YSS",
+      "price": 32.63999938964844,
+      "mcap": null,
+      "chg1d": 2.031883786123433,
+      "chg7d": -7.03503610870029,
+      "chg30d": 1.8091016578702164,
+      "chg90d": 40.81103951651099,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-29",
+      "sector": null
+    },
+    "KTWOU": {
+      "sym": "KTWOU",
+      "price": 10.119999885559082,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0.09891423562246307,
+      "chg30d": 0.09891423562246307,
+      "chg90d": 0.5964161375717804,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-29",
+      "sector": null
+    },
+    "XSLLU": {
+      "sym": "XSLLU",
+      "price": 9.979999542236328,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0.8080800685720759,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-29",
+      "sector": null
+    },
+    "LIFE": {
+      "sym": "LIFE",
+      "price": 18.899999618530273,
+      "mcap": null,
+      "chg1d": -3.472933134961282,
+      "chg7d": -10.596025713297884,
+      "chg30d": -3.0271942509830088,
+      "chg90d": 39.89636786330791,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-29",
+      "sector": null
+    },
+    "PICS": {
+      "sym": "PICS",
+      "price": 10.59000015258789,
+      "mcap": null,
+      "chg1d": -0.935448379052458,
+      "chg7d": -2.216064384200249,
+      "chg30d": -9.098708160096137,
+      "chg90d": -31.09954306156014,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-29",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -14386,5 +14451,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:24:59.873Z"
+  "lastUpdated": "2026-05-30T21:25:20.671Z"
 }
