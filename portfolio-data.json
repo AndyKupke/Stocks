@@ -7097,7 +7097,8 @@
       "chg90d": null,
       "chg1y": null,
       "chgytd": null,
-      "listDate": "2026-05-13"
+      "listDate": "2026-05-13",
+      "sector": null
     },
     "PECEU": {
       "sym": "PECEU",
@@ -7383,6 +7384,58 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-14",
+      "sector": null
+    },
+    "EROK": {
+      "sym": "EROK",
+      "price": 22.290000915527344,
+      "mcap": null,
+      "chg1d": 0.13477397276295897,
+      "chg7d": 0.13477397276295897,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-14",
+      "sector": null
+    },
+    "GMRS": {
+      "sym": "GMRS",
+      "price": 12.5,
+      "mcap": null,
+      "chg1d": -0.15974805936424355,
+      "chg7d": 5.396293101597436,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-13",
+      "sector": null
+    },
+    "BREZU": {
+      "sym": "BREZU",
+      "price": 10.039999961853027,
+      "mcap": null,
+      "chg1d": 0.19959584007662895,
+      "chg7d": 0.09970318193491681,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-13",
+      "sector": null
+    },
+    "ODTX": {
+      "sym": "ODTX",
+      "price": 17.010000228881836,
+      "mcap": null,
+      "chg1d": -5.07812412688509,
+      "chg7d": -1.0471221616262105,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-08",
       "sector": null
     }
   },
@@ -13163,5 +13216,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:21:53.556Z"
+  "lastUpdated": "2026-05-30T21:22:00.220Z"
 }
