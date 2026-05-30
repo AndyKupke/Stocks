@@ -636,8 +636,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 <!-- IPO TAB -->
 <div class="sec" id="sec-ipos">
   <div class="fetch-bar" id="fetch-bar-ipo">
-    <button class="fetch-btn" id="ipo-fetch-btn" onclick="fetchIpos()">&#9889; Fetch &amp; Save IPOs (360 days)</button>
-    <span class="fetch-status" id="ipo-status">Click to fetch from FMP and save to GitHub — or opens cached data if already fetched</span>
+    <button class="fetch-btn" id="ipo-fetch-btn" onclick="fetchIpos()">&#9889; Fetch &amp; Save IPO List (360 days)</button>
+    <button class="fetch-btn" id="ipo-price-btn" onclick="fetchIpoPrices()" style="margin-left:8px;">&#9889; Fetch Live Prices</button>
+    <span class="fetch-status" id="ipo-status">Click to load IPOs from FMP and save to GitHub — then fetch live prices from Yahoo Finance</span>
   </div>
   <div class="fbar">
     <input type="text" id="ipo-q" placeholder="Search ticker or name..." oninput="ipoFilter()">
@@ -3065,10 +3066,13 @@ function toYahooSym(t) {
   if (YAHOO_EXPLICIT[t]) return YAHOO_EXPLICIT[t];
   // 2. Already has exchange suffix (e.g. 000660.KS, KON.OL)
   if (t.includes('.')) return t;
-  // 3. Look up this ticker's exchange in our stock list and apply suffix
+  // 3. Look up exchange in Long List
   const stock = ST.find(s => s.t === t);
   if (stock && EXCHANGE_SUFFIX[stock.ex]) return t + EXCHANGE_SUFFIX[stock.ex];
-  // 4. Fallback: return as-is (US tickers work without suffix)
+  // 4. Fall back to IPO database for recently-listed stocks not yet in Long List
+  const ipoStock = ipoAllData.find(s => s.t === t);
+  if (ipoStock && EXCHANGE_SUFFIX[ipoStock.ex]) return t + EXCHANGE_SUFFIX[ipoStock.ex];
+  // 5. Fallback: return as-is (US tickers work without suffix)
   return t;
 }
 
@@ -3296,10 +3300,53 @@ function applyFetchedPrices(results) {
   savePriceData();   // persist immediately after each batch
   renderPortfolioTab();
   renderLLTable();
+  if (ipoAllData.length) renderIpoTable();
   if(typeof bvpRender === 'function') bvpRender();
   renderPlan();
   window.addEventListener('resize', () => { if(typeof renderPlan==='function') renderPlan(); });
   // fsInit() called on-demand when stock tab is opened
+}
+
+async function fetchIpoPrices() {
+  if (!ipoData.length) {
+    const el = document.getElementById('ipo-status');
+    if (el) el.textContent = 'No IPOs loaded — fetch the IPO list first';
+    return;
+  }
+  const btn = document.getElementById('ipo-price-btn');
+  const st  = document.getElementById('ipo-status');
+  if (btn) { btn.disabled = true; btn.classList.add('spinning'); }
+
+  const syms = [...new Set(ipoData.map(s => s.t).filter(Boolean))];
+  let fetched = 0;
+  const setStatus = msg => { if (st) st.textContent = msg; };
+  setStatus(`Fetching live prices for ${syms.length} IPO tickers from Yahoo Finance…`);
+
+  const CONCUR = 6;
+  for (let i = 0; i < syms.length; i += CONCUR) {
+    const batch = syms.slice(i, i + CONCUR);
+    setStatus(`Fetching prices… ${i + 1}–${Math.min(i + CONCUR, syms.length)} of ${syms.length} (${fetched} ok)`);
+    const results = await Promise.all(batch.map(async sym => {
+      try {
+        const result = await yahooFetchOne(sym);
+        if (!result) return null;
+        fetched++;
+        if (result._quoteOnly) {
+          const q = result.quote;
+          return { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
+            chg1d: q.regularMarketChangePercent ?? null,
+            chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
+        }
+        const d = processYahooCandles(sym, result);
+        return d ? { sym, ...d } : null;
+      } catch(e) { return null; }
+    }));
+    applyFetchedPrices(results.filter(Boolean));
+    await new Promise(r => setTimeout(r, 200));
+  }
+
+  setStatus(`Done — ${fetched} of ${syms.length} IPO prices fetched from Yahoo Finance`);
+  if (btn) { btn.disabled = false; btn.classList.remove('spinning'); }
 }
 
 async function fetchAllPrices() {
@@ -5485,33 +5532,32 @@ async function fetchIpos() {
   setStatus('Fetching 360 days of IPOs from FMP…');
 
   try {
-    const url = `https://financialmodelingprep.com/stable/ipo-calendar?from=${fromStr}&to=${toStr}&apikey=${key}`;
+    // FMP v3 IPO calendar — returns ticker, company, date, exchange, status
+    const url = `https://financialmodelingprep.com/api/v3/ipo_calendar?from=${fromStr}&to=${toStr}&apikey=${key}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`FMP HTTP ${res.status}`);
     const raw = await res.json();
-    if (!Array.isArray(raw)) throw new Error('Unexpected response format from FMP');
+    if (!Array.isArray(raw)) throw new Error('Unexpected response from FMP — check API key plan');
 
     const normalised = raw
       .filter(r => {
-        if (!r.exchange) return false;
-        return IPO_EX_MAP.some(e => r.exchange.toLowerCase().includes(e.match));
+        const ex = r.exchange || r.exchangeShortName || '';
+        if (!ex) return false;
+        return IPO_EX_MAP.some(e => ex.toLowerCase().includes(e.match));
       })
       .map(r => {
-        const { short, reg } = ipoExInfo(r.exchange);
+        const exStr = r.exchange || r.exchangeShortName || '';
+        const { short, reg } = ipoExInfo(exStr);
         return {
-          t:        r.symbol   || '',
-          n:        r.company  || r.name || '',
-          date:     r.date     || '',
-          exFull:   r.exchange || '',
-          ex:       short,
-          reg:      reg,
-          ipoPrice: r.price          ?? null,
-          shares:   r.numberOfShares ?? r.shares ?? null,
-          currency: r.currency       || 'USD',
-          status:   r.actions        || '',
-          sector:   r.sector         || '',
+          t:      r.symbol  || '',
+          n:      r.company || r.name || '',
+          date:   r.date    || '',
+          ex:     short,
+          reg:    reg,
+          status: r.actions || '',
         };
       })
+      .filter(r => r.t)   // skip blank tickers
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
     setStatus(`Fetched ${normalised.length} IPOs — saving to GitHub…`);
@@ -5583,15 +5629,13 @@ function ipoApplySort() {
   ipoDisp.sort((a, b) => {
     let av, bv;
     const pda = priceData[a.t] || {}, pdb = priceData[b.t] || {};
-    if      (ipoSortKey === 'date')     { av = a.date;     bv = b.date; }
-    else if (ipoSortKey === 'ticker')   { av = a.t;        bv = b.t; }
-    else if (ipoSortKey === 'name')     { av = a.n;        bv = b.n; }
-    else if (ipoSortKey === 'status')   { av = a.status;   bv = b.status; }
-    else if (ipoSortKey === 'sector')   { av = a.sector;   bv = b.sector; }
-    else if (ipoSortKey === 'region')   { av = a.reg;      bv = b.reg; }
-    else if (ipoSortKey === 'exchange') { av = a.ex;       bv = b.ex; }
-    else if (ipoSortKey === 'ipoprice') { av = a.ipoPrice ?? 0; bv = b.ipoPrice ?? 0; }
-    else if (ipoSortKey === 'price')    { av = pda.price   ?? 0; bv = pdb.price   ?? 0; }
+    if      (ipoSortKey === 'date')     { av = a.date;   bv = b.date; }
+    else if (ipoSortKey === 'ticker')   { av = a.t;      bv = b.t; }
+    else if (ipoSortKey === 'name')     { av = a.n;      bv = b.n; }
+    else if (ipoSortKey === 'status')   { av = a.status; bv = b.status; }
+    else if (ipoSortKey === 'region')   { av = a.reg;    bv = b.reg; }
+    else if (ipoSortKey === 'exchange') { av = a.ex;     bv = b.ex; }
+    else if (ipoSortKey === 'price')    { av = pda.price ?? 0; bv = pdb.price ?? 0; }
     else if (ipoSortKey === 'mcap')     { av = pda.mcap    ?? 0; bv = pdb.mcap    ?? 0; }
     else if (ipoSortKey === 'chg1d')    { av = pda.chg1d   ?? -9999; bv = pdb.chg1d   ?? -9999; }
     else if (ipoSortKey === 'chg30d')   { av = pda.chg30d  ?? -9999; bv = pdb.chg30d  ?? -9999; }
@@ -5637,12 +5681,10 @@ function buildIpoThead() {
     <th onclick="ipoSort('ticker')" style="cursor:pointer">Ticker</th>
     <th onclick="ipoSort('name')" style="cursor:pointer">Company</th>
     <th onclick="ipoSort('status')" style="cursor:pointer">Status</th>
-    <th class="cgrp-toggle" onclick="toggleIpoColGroup('details')" style="${dClr}" title="Sector, Region, Exchange, IPO Price, Shares">${dLbl}</th>
-    <th class="cgrp-hdr${dH}" onclick="ipoSort('sector')" style="cursor:pointer">Sector</th>
+    <th class="cgrp-toggle" onclick="toggleIpoColGroup('details')" style="${dClr}" title="Region, Exchange">${dLbl}</th>
     <th class="cgrp-hdr${dH}" onclick="ipoSort('region')" style="cursor:pointer">Region</th>
     <th class="cgrp-hdr${dH}" onclick="ipoSort('exchange')" style="cursor:pointer">Exch.</th>
-    <th class="cgrp-hdr${dH}" style="text-align:right" onclick="ipoSort('ipoprice')">IPO Price</th>
-    <th style="text-align:right" onclick="ipoSort('price')" style="cursor:pointer">Live Price</th>
+    <th style="text-align:right" onclick="ipoSort('price')" style="cursor:pointer">Price</th>
     <th class="cgrp-toggle" onclick="toggleIpoColGroup('perf')" style="${pClr}" title="Mkt Cap, 1D, 30D, 1Y">${pLbl}</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('mcap')">Mkt Cap</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg1d')">1D</th>
@@ -5659,10 +5701,10 @@ function renderIpoTable() {
   if (!thead || !tb || !tf) return;
   thead.innerHTML = buildIpoThead();
   const days = document.getElementById('ipo-window')?.value || '90';
-  const COLS = 16;
+  const COLS = 13;
 
   if (!ipoDisp.length) {
-    tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch & Save IPOs (requires FMP API key)' : 'No IPOs match filters'}</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch & Save IPO List (requires FMP API key)' : 'No IPOs match filters'}</td></tr>`;
     tf.innerHTML = '';
     return;
   }
@@ -5676,9 +5718,6 @@ function renderIpoTable() {
     const liveCell = pd.price != null
       ? fmtPrice(pd.price, s.ex)
       : `<span style="color:var(--txt3)">—</span>`;
-    const isoPriceCell = s.ipoPrice != null
-      ? `<span class="price-cell" style="color:var(--txt2)">${s.currency} ${s.ipoPrice}</span>`
-      : `<span style="color:var(--txt3)">—</span>`;
     const statusClr = s.status === 'priced' ? 'var(--grn)' : s.status === 'upcoming' ? 'var(--ylw)' : 'var(--txt3)';
     const actionCell = inList
       ? `<span style="font-size:9px;color:var(--grn);padding:2px 5px;">✓ In List</span>`
@@ -5689,10 +5728,8 @@ function renderIpoTable() {
       <td><span class="nm" title="${s.n}">${s.n}</span></td>
       <td><span style="font-size:9px;color:${statusClr}">${s.status||'—'}</span></td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleIpoColGroup('details')"></td>
-      <td class="cgrp-cell ipo-details${detH}"><span style="font-size:10px;color:var(--txt2)">${s.sector||'—'}</span></td>
       <td class="cgrp-cell ipo-details${detH}"><span class="mono" style="font-size:10px;color:var(--txt2)">${s.reg||'—'}</span></td>
       <td class="cgrp-cell ipo-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex||'—'}</span></td>
-      <td class="cgrp-cell ipo-details${detH}" style="text-align:right">${isoPriceCell}</td>
       <td class="price-cell" style="text-align:right">${liveCell}</td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleIpoColGroup('perf')"></td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtMcap(pd.mcap)}</td>
