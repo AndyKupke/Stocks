@@ -8750,6 +8750,71 @@
       "chgytd": null,
       "listDate": "2026-01-27",
       "sector": null
+    },
+    "ARCIU": {
+      "sym": "ARCIU",
+      "price": 10.109999656677246,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0.19821113763041895,
+      "chg30d": 1.2012000831672758,
+      "chg90d": 0.6972081184281129,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-23",
+      "sector": null
+    },
+    "HLXC": {
+      "sym": "HLXC",
+      "price": 10.210000038146973,
+      "mcap": null,
+      "chg1d": -0.09784959511300714,
+      "chg7d": -0.09784959511300714,
+      "chg30d": 0.09804146145916848,
+      "chg90d": -0.7774531001227358,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-23",
+      "sector": null
+    },
+    "PTORU": {
+      "sym": "PTORU",
+      "price": 10,
+      "mcap": null,
+      "chg1d": -0.3984059960658085,
+      "chg7d": -0.29910003758598874,
+      "chg30d": 0.6036259773603081,
+      "chg90d": 0.3009000217422434,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-23",
+      "sector": null
+    },
+    "EQPT": {
+      "sym": "EQPT",
+      "price": 20.84000015258789,
+      "mcap": null,
+      "chg1d": -8.836397217106665,
+      "chg7d": -8.556387383077608,
+      "chg30d": 13.260872742629523,
+      "chg90d": -29.973118305413042,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-23",
+      "sector": null
+    },
+    "BTGO": {
+      "sym": "BTGO",
+      "price": 6.010000228881836,
+      "mcap": null,
+      "chg1d": -0.6611563734210189,
+      "chg7d": -3.064509455296592,
+      "chg30d": -47.73912844450577,
+      "chg90d": -46.53024598519225,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-21",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -14529,5 +14594,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:25:41.448Z"
+  "lastUpdated": "2026-05-30T21:26:00.345Z"
 }
