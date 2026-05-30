@@ -3089,14 +3089,18 @@ async function yahooFetchOne(sym) {
   const qUrl  = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(ySym)}`;
   const qUrl2 = qUrl.replace('query1', 'query2');
 
-  // Kick off a parallel quote fetch for sharesOutstanding — the v8 chart API meta does NOT
-  // reliably include this field, so we fetch v7/quote concurrently with the chart requests.
-  // sharesOutstanding × price = mcap in local currency (cleaner than using Yahoo's marketCap
-  // field whose currency is ambiguous for non-US stocks).
-  const sharesPromise = (async () => {
-    for (const u of [qUrl, qUrl2,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(qUrl2)}`,
-      `https://corsproxy.io/?${encodeURIComponent(qUrl2)}`]) {
+  // Kick off a parallel mcap fetch via v10/quoteSummary?modules=price — the v8 chart API
+  // meta never reliably includes marketCap/sharesOutstanding. The price module returns both
+  // fields in the stock's local trading currency, matching how toEur() converts them.
+  // Uses the same CORS proxy chain that works for _fetchYahooSector.
+  const sumBase = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(ySym)}?modules=price`;
+  const mcapPromise = (async () => {
+    for (const u of [
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(sumBase)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(sumBase.replace('query2','query1'))}`,
+      `https://corsproxy.io/?${encodeURIComponent(sumBase)}`,
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(sumBase)}`,
+    ]) {
       try {
         const r = await fetch(u, { signal: AbortSignal.timeout(8000) });
         if (!r.ok) continue;
@@ -3104,8 +3108,12 @@ async function yahooFetchOne(sym) {
         if (!text || text.length < 20) continue;
         const wrapper = JSON.parse(text);
         const json = wrapper.contents ? JSON.parse(wrapper.contents) : wrapper;
-        const q = json?.quoteResponse?.result?.[0];
-        if (q?.sharesOutstanding > 0) return q.sharesOutstanding;
+        const pm = json?.quoteSummary?.result?.[0]?.price;
+        if (!pm) continue;
+        // Prefer direct marketCap; fall back to price × sharesOutstanding
+        if (pm.marketCap?.raw > 0) return pm.marketCap.raw;
+        if (pm.regularMarketPrice?.raw > 0 && pm.sharesOutstanding?.raw > 0)
+          return pm.regularMarketPrice.raw * pm.sharesOutstanding.raw;
       } catch(e) {}
     }
     return null;
@@ -3146,10 +3154,10 @@ async function yahooFetchOne(sym) {
       }
       const result = json?.chart?.result?.[0];
       if (result && result.timestamp?.length > 2) {
-        // Patch sharesOutstanding from parallel quote fetch when chart meta lacks it
-        if (!(result.meta?.sharesOutstanding > 0)) {
-          const shares = await sharesPromise;
-          if (shares > 0) { result.meta = result.meta || {}; result.meta.sharesOutstanding = shares; }
+        // Patch marketCap from parallel quoteSummary fetch when chart meta lacks it
+        if (!(result.meta?.marketCap > 0) && !(result.meta?.sharesOutstanding > 0)) {
+          const rawMcap = await mcapPromise;
+          if (rawMcap > 0) { result.meta = result.meta || {}; result.meta.marketCap = rawMcap; }
         }
         return result;
       }
