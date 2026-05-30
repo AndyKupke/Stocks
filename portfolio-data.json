@@ -14,7 +14,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
+      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
       "id": 1
     },
     {
@@ -6941,6 +6941,71 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-13"
+    },
+    "PECEU": {
+      "sym": "PECEU",
+      "price": 10.0600004196167,
+      "mcap": null,
+      "chg1d": 0.09950476310493198,
+      "chg7d": 0.19920774740700797,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-22",
+      "sector": null
+    },
+    "FXACU": {
+      "sym": "FXACU",
+      "price": 10,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0.10010239350302436,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-22",
+      "sector": null
+    },
+    "BRKHU": {
+      "sym": "BRKHU",
+      "price": 10.010000228881836,
+      "mcap": null,
+      "chg1d": 0.2002047870060487,
+      "chg7d": 0.300608096408642,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-22",
+      "sector": null
+    },
+    "OHACU": {
+      "sym": "OHACU",
+      "price": 10.020000457763672,
+      "mcap": null,
+      "chg1d": 0.09990238414762764,
+      "chg7d": 0.09990238414762764,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-21",
+      "sector": null
+    },
+    "APURU": {
+      "sym": "APURU",
+      "price": 10.010000228881836,
+      "mcap": null,
+      "chg1d": 0.10000228881835936,
+      "chg7d": 0.10000228881835936,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-21",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -6948,5 +7013,5 @@
     "USD": 0.86
   },
   "financialData": {},
-  "lastUpdated": "2026-05-30T19:37:04.886Z"
+  "lastUpdated": "2026-05-30T20:17:46.684Z"
 }
