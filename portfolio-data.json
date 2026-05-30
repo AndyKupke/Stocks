@@ -7892,6 +7892,58 @@
       "chgytd": null,
       "listDate": "2026-04-01",
       "sector": null
+    },
+    "IPFXU": {
+      "sym": "IPFXU",
+      "price": 10.180000305175781,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": -0.19607357316996205,
+      "chg30d": 0.4935852928923962,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-27",
+      "sector": null
+    },
+    "QADRU": {
+      "sym": "QADRU",
+      "price": 9.979999542236328,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-27",
+      "sector": null
+    },
+    "FMACU": {
+      "sym": "FMACU",
+      "price": 10.149999618530273,
+      "mcap": null,
+      "chg1d": 0.09861217819488644,
+      "chg7d": 0.09861217819488644,
+      "chg30d": 1.2973967547663727,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-27",
+      "sector": null
+    },
+    "GMTL": {
+      "sym": "GMTL",
+      "price": 15.800000190734863,
+      "mcap": null,
+      "chg1d": -3.2455586983916485,
+      "chg7d": -4.589367751916592,
+      "chg30d": 0.8939996467872867,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-20",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13671,5 +13723,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:23:17.278Z"
+  "lastUpdated": "2026-05-30T21:23:23.089Z"
 }
