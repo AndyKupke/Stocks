@@ -7671,6 +7671,84 @@
       "chgytd": null,
       "listDate": "2026-04-24",
       "sector": null
+    },
+    "LABT": {
+      "sym": "LABT",
+      "price": 0.6800000071525574,
+      "mcap": null,
+      "chg1d": -6.849316522537741,
+      "chg7d": -6.849316522537741,
+      "chg30d": -79.14110401405469,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-23",
+      "sector": null
+    },
+    "ELMT": {
+      "sym": "ELMT",
+      "price": 15.279999732971191,
+      "mcap": null,
+      "chg1d": -5.679018436054256,
+      "chg7d": -1.7994902255433567,
+      "chg30d": -0.5855572755888598,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-23",
+      "sector": null
+    },
+    "NHP": {
+      "sym": "NHP",
+      "price": 14.449999809265137,
+      "mcap": null,
+      "chg1d": -1.8342422069681845,
+      "chg7d": -2.298851612338289,
+      "chg30d": 11.66924480562547,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-22",
+      "sector": null
+    },
+    "YSWY": {
+      "sym": "YSWY",
+      "price": 22.5,
+      "mcap": null,
+      "chg1d": 3.686632299233984,
+      "chg7d": 2.0871100969355383,
+      "chg30d": -19.499107743016342,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-22",
+      "sector": null
+    },
+    "DETX": {
+      "sym": "DETX",
+      "price": 4.5,
+      "mcap": null,
+      "chg1d": 4.408354054360543,
+      "chg7d": -4.862579664820779,
+      "chg30d": 0,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-21",
+      "sector": null
+    },
+    "KLRA": {
+      "sym": "KLRA",
+      "price": 22.940000534057617,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 4.701052915649226,
+      "chg30d": -8.569149483677915,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-17",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13450,5 +13528,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:23:00.755Z"
+  "lastUpdated": "2026-05-30T21:23:04.608Z"
 }
