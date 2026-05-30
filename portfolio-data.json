@@ -7489,6 +7489,58 @@
       "chgytd": null,
       "listDate": "2026-05-05",
       "sector": null
+    },
+    "COAG": {
+      "sym": "COAG",
+      "price": 28.5,
+      "mcap": null,
+      "chg1d": 1.7857142857142856,
+      "chg7d": -0.3496516787968925,
+      "chg30d": 12.470401848396946,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-01",
+      "sector": null
+    },
+    "SPTX": {
+      "sym": "SPTX",
+      "price": 18.190000534057617,
+      "mcap": null,
+      "chg1d": -3.2446740838182357,
+      "chg7d": 0.7756304870618355,
+      "chg30d": 7.000003141515395,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-01",
+      "sector": null
+    },
+    "ARCLU": {
+      "sym": "ARCLU",
+      "price": 10.220000267028809,
+      "mcap": null,
+      "chg1d": 0.8884516443350288,
+      "chg7d": 0.988146073128162,
+      "chg30d": 1.9960059893028583,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-30",
+      "sector": null
+    },
+    "SBMT": {
+      "sym": "SBMT",
+      "price": 10,
+      "mcap": null,
+      "chg1d": 8.932458252336813,
+      "chg7d": 13.122169993091257,
+      "chg30d": -5.838040416574286,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-04-30",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13268,5 +13320,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:22:11.857Z"
+  "lastUpdated": "2026-05-30T21:22:42.069Z"
 }
