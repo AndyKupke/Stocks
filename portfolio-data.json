@@ -8009,6 +8009,58 @@
       "chgytd": null,
       "listDate": "2026-03-12",
       "sector": null
+    },
+    "SUMAU": {
+      "sym": "SUMAU",
+      "price": 10.100000381469727,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": -0.4926033393071871,
+      "chg30d": 0.09911029465416876,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-11",
+      "sector": null
+    },
+    "CAST": {
+      "sym": "CAST",
+      "price": 0.8299999833106995,
+      "mcap": null,
+      "chg1d": 1.219511042741837,
+      "chg7d": 10.666664441426594,
+      "chg30d": -56.99481834881788,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-10",
+      "sector": null
+    },
+    "MMED": {
+      "sym": "MMED",
+      "price": 12.039999961853027,
+      "mcap": null,
+      "chg1d": 4.604689161006901,
+      "chg7d": 11.481479159435004,
+      "chg30d": 1.4321826279102632,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-06",
+      "sector": null
+    },
+    "ILLUU": {
+      "sym": "ILLUU",
+      "price": 10,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0.4016060411629196,
+      "chg30d": 0.20040539760576132,
+      "chg90d": 0.6036259773603081,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-02-27",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13788,5 +13840,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:23:35.675Z"
+  "lastUpdated": "2026-05-30T21:23:58.676Z"
 }
