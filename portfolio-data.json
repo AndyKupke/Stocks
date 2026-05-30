@@ -8815,6 +8815,84 @@
       "chgytd": null,
       "listDate": "2026-01-21",
       "sector": null
+    },
+    "ALOVU": {
+      "sym": "ALOVU",
+      "price": 10.050000190734863,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.5000019073486328,
+      "chg90d": 1.0050289787604745,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-21",
+      "sector": null
+    },
+    "XCBEU": {
+      "sym": "XCBEU",
+      "price": 10.020000457763672,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.09990238414762764,
+      "chg90d": 0.8048378345835518,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-21",
+      "sector": null
+    },
+    "FGIIU": {
+      "sym": "FGIIU",
+      "price": 10,
+      "mcap": null,
+      "chg1d": 0.20040539760576132,
+      "chg7d": -0.29910003758598874,
+      "chg30d": 0.3009000217422434,
+      "chg90d": 0.20040539760576132,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-16",
+      "sector": null
+    },
+    "IEAGU": {
+      "sym": "IEAGU",
+      "price": 10.260000228881836,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.48971783102890065,
+      "chg90d": 0.686954380580083,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-01-16",
+      "sector": null
+    },
+    "OIMAU": {
+      "sym": "OIMAU",
+      "price": 10.109999656677246,
+      "mcap": null,
+      "chg1d": -0.29586474980016575,
+      "chg7d": -0.29586474980016575,
+      "chg30d": -0.09881649204468812,
+      "chg90d": -0.14815153899016203,
+      "chg1y": null,
+      "chgytd": 0.3972190969736229,
+      "listDate": "2026-01-14",
+      "sector": null
+    },
+    "GCDT": {
+      "sym": "GCDT",
+      "price": 0.9800000190734863,
+      "mcap": null,
+      "chg1d": -10.909091106131052,
+      "chg7d": 20.83847493834116,
+      "chg30d": 8.287298348589049,
+      "chg90d": -61.26482094246206,
+      "chg1y": null,
+      "chgytd": -82.37410019498009,
+      "listDate": "2026-01-13",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -14594,5 +14672,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:26:00.345Z"
+  "lastUpdated": "2026-05-30T21:26:03.201Z"
 }
