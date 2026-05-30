@@ -3338,23 +3338,23 @@ async function fetchIpoPrices() {
         fetched++;
         if (result._quoteOnly) {
           const q = result.quote;
+          // capture sector while we have the quote data
+          const sector = q.industryDisp || q.industry || q.sector || null;
           return { sym, price: q.regularMarketPrice, mcap: q.marketCap ? q.marketCap/1e9 : null,
             chg1d: q.regularMarketChangePercent ?? null,
-            chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null, listDate: null };
+            chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null, listDate: null, sector };
         }
         const d = processYahooCandles(sym, result);
-        return d ? { sym, ...d } : null;
+        return d ? { sym, ...d, sector: null } : null;
       } catch(e) { return null; }
     }));
 
-    // Backfill missing IPO dates from Yahoo's firstTradeDate
+    // Backfill missing IPO dates + industry/thesis from Yahoo data
     results.filter(Boolean).forEach(d => {
-      if (!d.listDate) return;
       const rec = ipoAllData.find(s => s.t === d.sym);
-      if (rec && !rec.date) {
-        rec.date = d.listDate;
-        datesEnriched++;
-      }
+      if (!rec) return;
+      if (!rec.date && d.listDate)  { rec.date = d.listDate; datesEnriched++; }
+      if (!rec.ind  && d.sector)    { rec.ind  = d.sector; rec.th = ipoMatchThesis(d.sector); datesEnriched++; }
     });
 
     applyFetchedPrices(results.filter(Boolean));
@@ -5767,13 +5767,20 @@ function ipoApplySort() {
     else if (ipoSortKey === 'ticker')   { av = a.t;      bv = b.t; }
     else if (ipoSortKey === 'name')     { av = a.n;      bv = b.n; }
     else if (ipoSortKey === 'status')   { av = a.status; bv = b.status; }
+    else if (ipoSortKey === 'industry') { av = a.ind||''; bv = b.ind||''; }
+    else if (ipoSortKey === 'thesis')   { av = a.th||'';  bv = b.th||''; }
     else if (ipoSortKey === 'region')   { av = a.reg;    bv = b.reg; }
     else if (ipoSortKey === 'exchange') { av = a.ex;     bv = b.ex; }
+    else if (ipoSortKey === 'conv')     { av = 1; bv = 1; }   // all IPOs are L
+    else if (ipoSortKey === 'risk')     { av = ipoRkFromMcap((priceData[a.t]||{}).mcap); bv = ipoRkFromMcap((priceData[b.t]||{}).mcap); }
     else if (ipoSortKey === 'price')    { av = pda.price ?? 0; bv = pdb.price ?? 0; }
     else if (ipoSortKey === 'mcap')     { av = pda.mcap    ?? 0; bv = pdb.mcap    ?? 0; }
     else if (ipoSortKey === 'chg1d')    { av = pda.chg1d   ?? -9999; bv = pdb.chg1d   ?? -9999; }
+    else if (ipoSortKey === 'chg7d')    { av = pda.chg7d   ?? -9999; bv = pdb.chg7d   ?? -9999; }
     else if (ipoSortKey === 'chg30d')   { av = pda.chg30d  ?? -9999; bv = pdb.chg30d  ?? -9999; }
+    else if (ipoSortKey === 'chg90d')   { av = pda.chg90d  ?? -9999; bv = pdb.chg90d  ?? -9999; }
     else if (ipoSortKey === 'chg1y')    { av = pda.chg1y   ?? -9999; bv = pdb.chg1y   ?? -9999; }
+    else if (ipoSortKey === 'chgytd')   { av = pda.chgytd  ?? -9999; bv = pdb.chgytd  ?? -9999; }
     else                                { av = a.date;     bv = b.date; }
     if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
     return av < bv ? -ipoSortDir : av > bv ? ipoSortDir : 0;
@@ -5789,7 +5796,7 @@ function addIpoToLongList(t) {
   ST.push({
     id: ST.length + 1,
     t:    ipo.t,  n: ipo.n,
-    th:   '', ind: ipo.sector || '',
+    th:   ipo.th || '', ind: ipo.ind || '',
     reg:  ipo.reg || '', ex: ipo.ex || '',
     cv:   'M', rk: 3,
     dp: false, etf: false, hr: false, priv: false, ipo: true,
@@ -5798,6 +5805,31 @@ function addIpoToLongList(t) {
   markDirty(); syncToGitHub();
   wlFilter();
   renderIpoTable();
+}
+
+// Thesis auto-match from Yahoo sector/industry string
+function ipoMatchThesis(ind) {
+  if (!ind) return '';
+  const s = ind.toLowerCase();
+  if (/defense|defence|aerospace|military|weapon|missile|ammo|naval|army|artillery/i.test(s))                           return 'T1';
+  if (/semiconductor|chip|gpu|data.?center|electronic.comp|computer.hard|network.*equip|comm.*infra/i.test(s))          return 'T2';
+  if (/biotech|drug.manuf|pharma|therapeut|genomic|gene.therapy|medical.device|diagnostic|health.*tech/i.test(s))       return 'T8';
+  if (/solar|wind|nuclear|renewable|oil.gas|lng|uranium|space|satellite|rocket|drone|clean.energy/i.test(s))            return 'T8';
+  if (/gold|silver|copper|mining|material|lithium|platinum|royalt|nickel|zinc|iron.ore/i.test(s))                       return 'T7';
+  if (/software|saas|cybersec|cloud.?service|enterprise.*soft|erp|observ|application/i.test(s))                         return 'T5';
+  if (/artificial.intell|machine.learn|internet.*content|information.tech|interactive.media/i.test(s))                  return 'T3';
+  if (/luxury|travel|leisure|hospitality|entertain|restaurant|consumer.cyclic|apparel|footwear/i.test(s))               return 'T4';
+  if (/fintech|payment|crypto|blockchain|insurance|financial.serv|bank(?!rupt)|mortgage/i.test(s))                      return 'T6';
+  if (/emerging.market|vietnam|argentina|ukraine|poland|eastern.europe/i.test(s))                                        return 'T10';
+  return '';
+}
+
+function ipoRkFromMcap(mcapB) {
+  if (!mcapB || mcapB <= 0) return 3;
+  if (mcapB >= 100) return 1;
+  if (mcapB >= 10)  return 2;
+  if (mcapB >= 1)   return 3;
+  return 4;
 }
 
 function buildIpoThead() {
@@ -5809,21 +5841,27 @@ function buildIpoThead() {
   const pLbl = prf ? '&minus; Perf.'   : '+ Perf.';
   const dClr = det ? 'color:var(--acc)' : '';
   const pClr = prf ? 'color:var(--acc)' : '';
-  const days = document.getElementById('ipo-window')?.value || '90';
   return `<tr>
     <th onclick="ipoSort('date')" style="cursor:pointer;min-width:82px">IPO Date</th>
     <th onclick="ipoSort('ticker')" style="cursor:pointer">Ticker</th>
     <th onclick="ipoSort('name')" style="cursor:pointer">Company</th>
     <th onclick="ipoSort('status')" style="cursor:pointer">Status</th>
-    <th class="cgrp-toggle" onclick="toggleIpoColGroup('details')" style="${dClr}" title="Region, Exchange">${dLbl}</th>
+    <th class="cgrp-toggle" onclick="toggleIpoColGroup('details')" style="${dClr}" title="Industry, Thesis, Region, Exchange, Conviction, Risk">${dLbl}</th>
+    <th class="cgrp-hdr${dH}" onclick="ipoSort('industry')" style="cursor:pointer">Industry</th>
+    <th class="cgrp-hdr${dH}" onclick="ipoSort('thesis')" style="cursor:pointer">Thesis</th>
     <th class="cgrp-hdr${dH}" onclick="ipoSort('region')" style="cursor:pointer">Region</th>
     <th class="cgrp-hdr${dH}" onclick="ipoSort('exchange')" style="cursor:pointer">Exch.</th>
-    <th style="text-align:right" onclick="ipoSort('price')" style="cursor:pointer">Price</th>
-    <th class="cgrp-toggle" onclick="toggleIpoColGroup('perf')" style="${pClr}" title="Mkt Cap, 1D, 30D, 1Y">${pLbl}</th>
+    <th class="cgrp-hdr${dH}" onclick="ipoSort('conv')" style="cursor:pointer">Conv.</th>
+    <th class="cgrp-hdr${dH}" onclick="ipoSort('risk')" style="cursor:pointer">Risk</th>
+    <th style="text-align:right" onclick="ipoSort('price')">Price</th>
+    <th class="cgrp-toggle" onclick="toggleIpoColGroup('perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y, YTD">${pLbl}</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('mcap')">Mkt Cap</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg1d')">1D</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg7d')">7D</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg30d')">30D</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg90d')">90D</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg1y')">1Y</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chgytd')">YTD</th>
     <th></th>
   </tr>`;
 }
@@ -5835,10 +5873,10 @@ function renderIpoTable() {
   if (!thead || !tb || !tf) return;
   thead.innerHTML = buildIpoThead();
   const days = document.getElementById('ipo-window')?.value || '90';
-  const COLS = 13;
+  const COLS = 21;
 
   if (!ipoDisp.length) {
-    tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch & Save IPO List' : 'No IPOs match filters'}</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch new IPOs' : 'No IPOs match filters'}</td></tr>`;
     tf.innerHTML = '';
     return;
   }
@@ -5856,20 +5894,30 @@ function renderIpoTable() {
     const actionCell = inList
       ? `<span style="font-size:9px;color:var(--grn);padding:2px 5px;">✓ In List</span>`
       : `<button class="ab-btn" style="color:var(--acc);border-color:var(--acc);font-size:9px;" onclick="addIpoToLongList('${s.t}')" title="Add to Long List">+ List</button>`;
+    const thColor = s.th ? 'var(--pur)' : 'var(--txt3)';
+    // Conviction is always Low for unresearched IPOs; Risk derived from live market cap
+    const rk = ipoRkFromMcap(pd.mcap);
     return `<tr>
       <td><span class="mono" style="font-size:10px;color:var(--acc)">${s.date}</span></td>
       <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
       <td><span class="nm" title="${s.n}">${s.n}</span></td>
       <td><span style="font-size:9px;color:${statusClr}">${s.status||'—'}</span></td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleIpoColGroup('details')"></td>
+      <td class="cgrp-cell ipo-details${detH}"><span style="font-size:10px;color:var(--txt2)">${s.ind||'—'}</span></td>
+      <td class="cgrp-cell ipo-details${detH}"><span style="font-size:10px;color:${thColor}">${s.th||'—'}</span></td>
       <td class="cgrp-cell ipo-details${detH}"><span class="mono" style="font-size:10px;color:var(--txt2)">${s.reg||'—'}</span></td>
       <td class="cgrp-cell ipo-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex||'—'}</span></td>
+      <td class="cgrp-cell ipo-details${detH}">${cvH('L')}</td>
+      <td class="cgrp-cell ipo-details${detH}">${rkH(rk)}</td>
       <td class="price-cell" style="text-align:right">${liveCell}</td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleIpoColGroup('perf')"></td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtMcap(pd.mcap)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg1d)}</td>
+      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg7d)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg30d)}</td>
+      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg90d)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg1y)}</td>
+      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chgytd)}</td>
       <td style="white-space:nowrap">
         <button class="ab-btn" style="margin-right:3px" onclick="fetchSinglePrice('${s.t}',this)" title="Fetch live price">&#9889;</button>
         ${actionCell}
