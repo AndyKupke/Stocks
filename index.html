@@ -1743,8 +1743,6 @@ function renderPortfolioTab(){
     else if(portSortKey==='industry'){av=a.ind;      bv=b.ind; }
     else if(portSortKey==='region'){ av=a.reg;       bv=b.reg; }
     else if(portSortKey==='exchange'){av=a.ex;       bv=b.ex; }
-    else if(portSortKey==='conv')  { const o={H:3,M:2,L:1}; av=o[a.cv]; bv=o[b.cv]; }
-    else if(portSortKey==='risk')  { av=a.rk;        bv=b.rk; }
     else if(portSortKey==='price') { av=pd_a.price??-Infinity; bv=pd_b.price??-Infinity; }
     else if(portSortKey==='mcap')  { av=pd_a.mcap??-Infinity;  bv=pd_b.mcap??-Infinity; }
     else if(portSortKey==='chg1d') { av=pd_a.chg1d??-Infinity; bv=pd_b.chg1d??-Infinity; }
@@ -1824,8 +1822,6 @@ function renderPortfolioTab(){
       <td class="pc-grpcell cgrp-cell port-details${detH}"><span style="font-size:10px;color:var(--txt2)">${s.ind}</span></td>
       <td class="pc-grpcell cgrp-cell port-details${detH}"><span class="mono" style="font-size:10px;color:var(--txt2)">${s.reg}</span></td>
       <td class="pc-grpcell cgrp-cell port-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex}</span></td>
-      <td class="pc-grpcell cgrp-cell port-details${detH}">${cvH(s.cv)}</td>
-      <td class="pc-grpcell cgrp-cell port-details${detH}">${rkH(s.rk)}</td>
       <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('port','perf')"></td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtMcap(pd.mcap)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg1d)}</td>
@@ -4733,13 +4729,11 @@ function buildPortThead() {
     <th class="pc-addl-sh" title="Additional shares to buy (positive) or sell (negative) — depot positions only" onclick="portSort('addlsh')" style="cursor:pointer">Add'l Shares</th>
     <th class="pc-addl-inv" title="Additional investment or divestment = add'l shares × price, converted to €" onclick="portSort('addlinv')" style="cursor:pointer">Add'l Inv. (€)</th>
     <th class="pc-total-hold" title="Total holding = (current + add'l shares) × price, converted to €; or €25K for Buy positions" onclick="portSort('tothold')" style="cursor:pointer">Total Holding (€)</th>
-    <th class="pc-grptog cgrp-toggle" onclick="toggleColGroup('port','details')" style="${dClr}" title="Thesis, Industry, Region, Exchange, Conviction, Risk">${dLbl}</th>
+    <th class="pc-grptog cgrp-toggle" onclick="toggleColGroup('port','details')" style="${dClr}" title="Thesis, Industry, Region, Exchange">${dLbl}</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('thesis')">Thesis</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('industry')">Industry</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('region')">Region</th>
     <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('exchange')">Exch.</th>
-    <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('conv')">Conv.</th>
-    <th class="pc-grpcell cgrp-hdr${dH}" onclick="portSort('risk')">Risk</th>
     <th class="pc-grptog cgrp-toggle" onclick="toggleColGroup('port','perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y">${pLbl}</th>
     <th class="pc-grpcell cgrp-hdr${pH}" style="text-align:right" onclick="portSort('mcap')">Mkt Cap</th>
     <th class="pc-grpcell cgrp-hdr${pH}" style="text-align:right" onclick="portSort('chg1d')">1D</th>
