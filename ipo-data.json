@@ -1,4 +1,3133 @@
 {
-  "lastFetched": "2026-05-30T19:11:12.096Z",
-  "ipos": []
+  "lastFetched": "2026-05-30T19:26:13.557Z",
+  "ipos": [
+    {
+      "t": "DGACU",
+      "n": "DISCIPLINED GROWTH ACQUISITION Corp",
+      "date": "2026-05-27",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PECEU",
+      "n": "Peace Acquisition Corp.",
+      "date": "2026-05-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FXACU",
+      "n": "FortuneX Acquisition Corp",
+      "date": "2026-05-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BRKHU",
+      "n": "BurTech Acquisition Corp II",
+      "date": "2026-05-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OHACU",
+      "n": "Oceanhawk Acquisition Corp.",
+      "date": "2026-05-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "APURU",
+      "n": "Aperture AC",
+      "date": "2026-05-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CNXU",
+      "n": "Conexeu Sciences Inc.",
+      "date": "2026-05-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AMSS",
+      "n": "AMASS BRANDS",
+      "date": "2026-05-20",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OPTH",
+      "n": "Optimi Health Corp.",
+      "date": "2026-05-20",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "RACC",
+      "n": "Research Alliance Corp III",
+      "date": "2026-05-20",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LCLN",
+      "n": "Lincoln International, Inc.",
+      "date": "2026-05-20",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AMAN",
+      "n": "Amanat Acquisition Corp.",
+      "date": "2026-05-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DUKR",
+      "n": "DUKE Robotics Corp.",
+      "date": "2026-05-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GUACU",
+      "n": "Berto Acquisition Corp. II",
+      "date": "2026-05-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PTACU",
+      "n": "Patriot Acquisition Corp./CI",
+      "date": "2026-05-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EXYN",
+      "n": "Exyn Technologies, Inc.",
+      "date": "2026-05-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IDACU",
+      "n": "Iron Dome Acquisition I Corp.",
+      "date": "2026-05-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VIDA",
+      "n": "Vida Global Inc.",
+      "date": "2026-05-15",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ETSSU",
+      "n": "Energy Transition Special Opportunities",
+      "date": "2026-05-15",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CBRS",
+      "n": "Cerebras Systems Inc.",
+      "date": "2026-05-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AIAI",
+      "n": "AIAI Holdings Corp",
+      "date": "2026-05-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MWC",
+      "n": "Micware Co., Ltd.",
+      "date": "2026-05-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GSRVU",
+      "n": "GSR V Acquisition Corp.",
+      "date": "2026-05-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BXDC",
+      "n": "Blackstone Digital Infrastructure Trust Inc.",
+      "date": "2026-05-14",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EROK",
+      "n": "EagleRock Land, LLC",
+      "date": "2026-05-14",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GMRS",
+      "n": "GMR Solutions Inc.",
+      "date": "2026-05-13",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FRVO",
+      "n": "Fervo Energy Co",
+      "date": "2026-05-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BREZU",
+      "n": "Breeze Acquisition Corp. II",
+      "date": "2026-05-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OTAIU",
+      "n": "Starlink AI Acquisition Corp",
+      "date": "2026-05-08",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ODTX",
+      "n": "Odyssey Therapeutics, Inc.",
+      "date": "2026-05-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MOBI",
+      "n": "Mobia Medical, Inc.",
+      "date": "2026-05-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SUJA",
+      "n": "SUJA LIFE, INC.",
+      "date": "2026-05-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HAWK",
+      "n": "HawkEye 360, Inc.",
+      "date": "2026-05-07",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SAGUU",
+      "n": "Shreya Acquisition Group",
+      "date": "2026-05-07",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VECAU",
+      "n": "Vernal Capital Acquisition Corp.",
+      "date": "2026-05-06",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "REA",
+      "n": "Rare Earths Americas, Inc.",
+      "date": "2026-05-06",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "COAG",
+      "n": "Hemab Therapeutics Holdings, Inc.",
+      "date": "2026-05-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "QLEPU",
+      "n": "Quantum Leap Acquisition Corp",
+      "date": "2026-05-01",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SPTX",
+      "n": "Seaport Therapeutics, Inc.",
+      "date": "2026-05-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MTNEU",
+      "n": "CH4 Natural Solutions Corp",
+      "date": "2026-05-01",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ARCLU",
+      "n": "ARC Group Acquisition I Corp.",
+      "date": "2026-04-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SBMT",
+      "n": "SILVER BOW MINING CORP.",
+      "date": "2026-04-30",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FTHAU",
+      "n": "Forefront Tech Holdings Acquisition Corp",
+      "date": "2026-04-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WENCU",
+      "n": "West Enclave Merger Corp.",
+      "date": "2026-04-30",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MCAHU",
+      "n": "Mountain Crest Acquisition 6 Corp.",
+      "date": "2026-04-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "RREVU",
+      "n": "RRE Ventures Acquisition Corp.",
+      "date": "2026-04-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GCGRU",
+      "n": "General Catalyst Global Resilience Merger Corp.",
+      "date": "2026-04-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AVLN",
+      "n": "Avalyn Pharma Inc.",
+      "date": "2026-04-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CAIIU",
+      "n": "Collective Acquisition Corp. II",
+      "date": "2026-04-29",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PS",
+      "n": "PERSHING SQUARE INC.",
+      "date": "2026-04-29",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PLUNU",
+      "n": "Plutonian Acquisition Corp. II",
+      "date": "2026-04-28",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CXIIU",
+      "n": "Churchill Capital Corp XII",
+      "date": "2026-04-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IACQU",
+      "n": "Irenic Acquisition Corp.",
+      "date": "2026-04-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "XE",
+      "n": "X-Energy, Inc.",
+      "date": "2026-04-24",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LABT",
+      "n": "Lakewood-Amedex Biotherapeutics Inc.",
+      "date": "2026-04-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ELMT",
+      "n": "Elmet Group Co.",
+      "date": "2026-04-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NHP",
+      "n": "National Healthcare Properties, Inc.",
+      "date": "2026-04-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "YSWY",
+      "n": "Yesway, Inc.",
+      "date": "2026-04-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DETX",
+      "n": "LIBERTY DEFENSE HOLDINGS, LTD.",
+      "date": "2026-04-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KLRA",
+      "n": "Kailera Therapeutics, Inc.",
+      "date": "2026-04-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ALMR",
+      "n": "Alamar Biosciences, Inc.",
+      "date": "2026-04-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "JATT",
+      "n": "JATT II Acquisition Corp.",
+      "date": "2026-04-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AVEX",
+      "n": "AEVEX Corp.",
+      "date": "2026-04-17",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ARXS",
+      "n": "Arxis, Inc.",
+      "date": "2026-04-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MAIR",
+      "n": "Madison Air Solutions Corp",
+      "date": "2026-04-16",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NHIVU",
+      "n": "NewHold Investment Corp IV",
+      "date": "2026-04-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "QREDU",
+      "n": "QuasarEdge Acquisition Corp",
+      "date": "2026-04-15",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MYXXU",
+      "n": "Maywood Acquisition Corp. 2",
+      "date": "2026-04-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TMCR",
+      "n": "Metals Royalty Co Inc.",
+      "date": "2026-04-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AACPU",
+      "n": "Apogee Acquisition Corp",
+      "date": "2026-04-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ACGCU",
+      "n": "ACP Holdings Acquisition Corp.",
+      "date": "2026-04-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HMH",
+      "n": "HMH Holding Inc",
+      "date": "2026-04-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KPETU",
+      "n": "KPET Ultra Paceline Corp",
+      "date": "2026-03-31",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IPFXU",
+      "n": "Inflection Point Acquisition Corp. VI",
+      "date": "2026-03-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "QADRU",
+      "n": "QDRO Acquisition Corp.",
+      "date": "2026-03-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FMACU",
+      "n": "Future Money Acquisition Corp",
+      "date": "2026-03-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BWIVU",
+      "n": "Blue Water Acquisition Corp. IV",
+      "date": "2026-03-20",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GMTL",
+      "n": "Guardian Metal Resources PLC",
+      "date": "2026-03-20",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "JAN",
+      "n": "Janus Living, Inc.",
+      "date": "2026-03-20",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BHAVU",
+      "n": "BHAV Acquisition Corp",
+      "date": "2026-03-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SWMR",
+      "n": "Swarmer, Inc",
+      "date": "2026-03-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PONOU",
+      "n": "Pono Capital Four, Inc.",
+      "date": "2026-03-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MTALU",
+      "n": "Metals Acquisition Corp. II",
+      "date": "2026-03-12",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PAYP",
+      "n": "PayPay Corp",
+      "date": "2026-03-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SUMAU",
+      "n": "SUMA Acquisition Corp",
+      "date": "2026-03-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CAST",
+      "n": "Freecast, Inc.",
+      "date": "2026-03-10",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MMED",
+      "n": "MiniMed Group, Inc.",
+      "date": "2026-03-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GLEDU",
+      "n": "GalaxyEdge Acquisition Corp",
+      "date": "2026-03-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KCACU",
+      "n": "Kensington Capital Acquisition Corp. VI",
+      "date": "2026-03-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ILLUU",
+      "n": "Illumination Acquisition Corp. I",
+      "date": "2026-02-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GENB",
+      "n": "Generate Biomedicines, Inc.",
+      "date": "2026-02-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FVAV",
+      "n": "Fortress Value Acquisition Corp. V",
+      "date": "2026-02-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TRGSU",
+      "n": "TRG Latin America Acquisitions Corp.",
+      "date": "2026-02-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TRADU",
+      "n": "APEX Tech Acquisition Inc.",
+      "date": "2026-02-26",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MZYXU",
+      "n": "MOZAYYX Acquisition Corp.",
+      "date": "2026-02-25",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CTAAU",
+      "n": "Clearthink 1 Acquisition Corp.",
+      "date": "2026-02-24",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ROC",
+      "n": "Rank One Computing Corp",
+      "date": "2026-02-20",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AACOU",
+      "n": "Abony Acquisition Corp. I",
+      "date": "2026-02-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ACAAU",
+      "n": "Averin Capital Acquisition Corp.",
+      "date": "2026-02-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PALOU",
+      "n": "PALOMA ACQUISITION CORP I",
+      "date": "2026-02-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AIDX",
+      "n": "20/20 Biolabs, Inc.",
+      "date": "2026-02-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SHAZ",
+      "n": "SharonAI Holdings Inc.",
+      "date": "2026-02-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AACIU",
+      "n": "Armada Acquisition Corp. III",
+      "date": "2026-02-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "RFAMU",
+      "n": "RF Acquisition Corp III",
+      "date": "2026-02-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WLIIU",
+      "n": "Willow Lane Acquisition Corp. II",
+      "date": "2026-02-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PAACU",
+      "n": "Proem Acquisition Corp. I",
+      "date": "2026-02-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "APC",
+      "n": "ARKO Petroleum Corp.",
+      "date": "2026-02-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "XFLHU",
+      "n": "XFLH Capital Corp",
+      "date": "2026-02-12",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HACQU",
+      "n": "HCM IV Acquisition Corp.",
+      "date": "2026-02-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BRAI",
+      "n": "Braiin Ltd",
+      "date": "2026-02-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DBCAU",
+      "n": "D. Boral Acquisition I Corp.",
+      "date": "2026-02-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IACOU",
+      "n": "Idea Acquisition Corp.",
+      "date": "2026-02-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TMTSU",
+      "n": "Spartacus Acquisition Corp. II",
+      "date": "2026-02-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AGBK",
+      "n": "AGI Inc",
+      "date": "2026-02-11",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MWH",
+      "n": "SOLV Energy, Inc.",
+      "date": "2026-02-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CMIIU",
+      "n": "Columbus Circle Capital Corp II",
+      "date": "2026-02-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SVIVU",
+      "n": "Spring Valley Acquisition Corp. IV",
+      "date": "2026-02-10",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "JAGU",
+      "n": "Jaguar Uranium Corp.",
+      "date": "2026-02-10",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CAQUU",
+      "n": "Cambridge Acquisition Corp.",
+      "date": "2026-02-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AGMB",
+      "n": "Agomab Therapeutics NV",
+      "date": "2026-02-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SSACU",
+      "n": "SPACSphere Acquisition Corp.",
+      "date": "2026-02-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OFRM",
+      "n": "Once Upon a Farm, PBC",
+      "date": "2026-02-06",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SGP",
+      "n": "SpyGlass Pharma, Inc.",
+      "date": "2026-02-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EIKN",
+      "n": "Eikon Therapeutics, Inc.",
+      "date": "2026-02-05",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HCICU",
+      "n": "Hennessy Capital Investment Corp. VIII",
+      "date": "2026-02-05",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CEPS",
+      "n": "Cantor Equity Partners VI, Inc.",
+      "date": "2026-02-05",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BOBS",
+      "n": "Bob's Discount Furniture, Inc.",
+      "date": "2026-02-05",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FPS",
+      "n": "Forgent Power Solutions, Inc.",
+      "date": "2026-02-05",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MANE",
+      "n": "VeraDermics, Inc",
+      "date": "2026-02-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OBAI",
+      "n": "Our Bond, Inc.",
+      "date": "2026-02-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CLBRU",
+      "n": "Colombier Acquisition Corp. III",
+      "date": "2026-02-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IRABU",
+      "n": "Iris Acquisition Corp II",
+      "date": "2026-02-03",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PLYX",
+      "n": "Polaryx Therapeutics, Inc.",
+      "date": "2026-02-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WPACU",
+      "n": "White Pearl Acquisition Corp.",
+      "date": "2026-02-02",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VHUB",
+      "n": "VenHub Global, Inc.",
+      "date": "2026-01-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NBRGU",
+      "n": "Newbridge Acquisition Ltd",
+      "date": "2026-01-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MUZEU",
+      "n": "Muzero Acquisition Corp",
+      "date": "2026-01-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MEVOU",
+      "n": "M Evo Global Acquisition Corp II",
+      "date": "2026-01-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "UACU",
+      "n": "United Acquisition Corp. I",
+      "date": "2026-01-29",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "YSS",
+      "n": "York Space Systems Inc.",
+      "date": "2026-01-29",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KTWOU",
+      "n": "K2 Capital Acquisition Corp",
+      "date": "2026-01-29",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "XSLLU",
+      "n": "Xsolla SPAC 1",
+      "date": "2026-01-29",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LIFE",
+      "n": "Ethos Technologies Inc.",
+      "date": "2026-01-29",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PICS",
+      "n": "PicS N.V.",
+      "date": "2026-01-29",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PPHC",
+      "n": "Public Policy Holding Company, Inc.",
+      "date": "2026-01-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SAAQU",
+      "n": "Space Asset Acquisition Corp.",
+      "date": "2026-01-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KRAQU",
+      "n": "KRAKacquisition Corp",
+      "date": "2026-01-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VTIX",
+      "n": "Virtuix Holdings Inc.",
+      "date": "2026-01-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MLAAU",
+      "n": "Mountain Lake Acquisition Corp. II",
+      "date": "2026-01-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GIXXU",
+      "n": "GigCapital9 Corp.",
+      "date": "2026-01-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ARCIU",
+      "n": "Archimedes Tech SPAC Partners III Co.",
+      "date": "2026-01-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LEGOU",
+      "n": "Legato Merger Corp. IV",
+      "date": "2026-01-23",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HLXC",
+      "n": "Helix Acquisition Corp. III",
+      "date": "2026-01-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PTORU",
+      "n": "Praetorian Acquisition Corp.",
+      "date": "2026-01-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EQPT",
+      "n": "EquipmentShare.com Inc",
+      "date": "2026-01-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BTGO",
+      "n": "BITGO HOLDINGS, INC.",
+      "date": "2026-01-22",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ALOVU",
+      "n": "Aldabra 4 Liquidity Opportunity Vehicle, Inc.",
+      "date": "2026-01-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "XCBEU",
+      "n": "X3 Acquisition Corp. Ltd.",
+      "date": "2026-01-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FGIIU",
+      "n": "FG Imperii Acquisition Corp.",
+      "date": "2026-01-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IEAGU",
+      "n": "Infinite Eagle Acquisition Corp.",
+      "date": "2026-01-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OIMAU",
+      "n": "OneIM Acquisition Corp.",
+      "date": "2026-01-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GCDT",
+      "n": "Green Circle Decarbonize Technology Ltd",
+      "date": "2026-01-13",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AKTS",
+      "n": "Aktis Oncology, Inc.",
+      "date": "2026-01-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ZKPU",
+      "n": "Lafayette Digital Acquisition Corp. I",
+      "date": "2026-01-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BBCQU",
+      "n": "Bleichroeder Acquisition Corp. II",
+      "date": "2026-01-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BUDA",
+      "n": "BUDA JUICE, INC.",
+      "date": "2026-01-08",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SORNU",
+      "n": "Soren Acquisition Corp.",
+      "date": "2026-01-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ARTCU",
+      "n": "Art Technology Acquisition Corp.",
+      "date": "2026-01-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BIIIU",
+      "n": "Black Spade Acquisition III Co",
+      "date": "2026-01-06",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SVAQU",
+      "n": "Silicon Valley Acquisition Corp.",
+      "date": "2025-12-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SCPQU",
+      "n": "Social Commerce Partners Corp",
+      "date": "2025-12-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BEBEU",
+      "n": "TGE Value Creative Solutions Corp",
+      "date": "2025-12-19",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FJET",
+      "n": "Starfighters Space, Inc.",
+      "date": "2025-12-18",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VHCPU",
+      "n": "Vine Hill Capital Investment Corp. II",
+      "date": "2025-12-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LPCVU",
+      "n": "Launchpad Cadenza Acquisition Corp I",
+      "date": "2025-12-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ADACU",
+      "n": "American Drive Acquisition Co",
+      "date": "2025-12-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MDLN",
+      "n": "Medline Inc.",
+      "date": "2025-12-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CCXIU",
+      "n": "Churchill Capital Corp XI",
+      "date": "2025-12-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IRHOU",
+      "n": "Iron Horse Acquisition II Corp.",
+      "date": "2025-12-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ANDG",
+      "n": "Andersen Group Inc.",
+      "date": "2025-12-17",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CRANU",
+      "n": "Crane Harbor Acquisition Corp. II",
+      "date": "2025-12-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ITHAU",
+      "n": "ITHAX Acquisition Corp III",
+      "date": "2025-12-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WLTH",
+      "n": "WEALTHFRONT CORP",
+      "date": "2025-12-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TWLVU",
+      "n": "Twelve Seas Investment Co III/Cayman",
+      "date": "2025-12-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LMRI",
+      "n": "Lumexa Imaging Holdings, Inc.",
+      "date": "2025-12-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BLRKU",
+      "n": "Bluerock Acquisition Corp.",
+      "date": "2025-12-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KBONU",
+      "n": "Karbon Capital Partners Corp.",
+      "date": "2025-12-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CDNL",
+      "n": "Cardinal Infrastructure Group Inc.",
+      "date": "2025-12-10",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MESHU",
+      "n": "Meshflow Acquisition Corp",
+      "date": "2025-12-10",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "JMG",
+      "n": "JM Group Ltd",
+      "date": "2025-12-10",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DSACU",
+      "n": "Daedalus Special Acquisition Corp.",
+      "date": "2025-12-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LFACU",
+      "n": "Leapfrog Acquisition Corp",
+      "date": "2025-12-05",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "REED",
+      "n": "REED'S, INC.",
+      "date": "2025-12-05",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AEAQU",
+      "n": "Activate Energy Acquisition Corp.",
+      "date": "2025-12-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SAC'U",
+      "n": "Safeguard Acquisition Corp.",
+      "date": "2025-12-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SMJF",
+      "n": "SMJ International Holdings Inc.",
+      "date": "2025-12-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HYNE",
+      "n": "Hoyne Bancorp, Inc.",
+      "date": "2025-12-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NWAXU",
+      "n": "New America Acquisition I Corp.",
+      "date": "2025-12-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "RGNT",
+      "n": "REGENTIS BIOMATERIALS LTD.",
+      "date": "2025-12-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SBXEU",
+      "n": "SilverBox Corp V",
+      "date": "2025-12-03",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PARK",
+      "n": "Park Dental Partners, Inc.",
+      "date": "2025-12-03",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GPACU",
+      "n": "General Purpose Acquisition Corp.",
+      "date": "2025-12-03",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BIXIU",
+      "n": "Bitcoin Infrastructure Acquisition Corp Ltd",
+      "date": "2025-12-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SCIIU",
+      "n": "SC II Acquisition Corp.",
+      "date": "2025-11-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "IGACU",
+      "n": "Invest Green Acquisition Corp",
+      "date": "2025-11-25",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HCACU",
+      "n": "Hall Chadwick Acquisition Corp",
+      "date": "2025-11-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CBC",
+      "n": "Central Bancompany, Inc.",
+      "date": "2025-11-20",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GLOO",
+      "n": "Gloo Holdings, Inc.",
+      "date": "2025-11-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WSHP",
+      "n": "WeShop Holdings Ltd",
+      "date": "2025-11-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ALUBU",
+      "n": "Alussa Energy Acquisition Corp. II",
+      "date": "2025-11-13",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OTH",
+      "n": "NextBoat Inc.",
+      "date": "2025-11-13",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CABR",
+      "n": "Caring Brands, Inc.",
+      "date": "2025-11-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "POAS",
+      "n": "PHAOS TECHNOLOGY HOLDINGS (CAYMAN) Ltd",
+      "date": "2025-11-13",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BPACU",
+      "n": "Blueport Acquisition Ltd",
+      "date": "2025-11-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EVOXU",
+      "n": "Evolution Global Acquisition Corp",
+      "date": "2025-11-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TDWDU",
+      "n": "Tailwind 2.0 Acquisition Corp.",
+      "date": "2025-11-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CRACU",
+      "n": "Crown Reserve Acquisition Corp. I",
+      "date": "2025-11-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EVMN",
+      "n": "Evommune, Inc.",
+      "date": "2025-11-06",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AERO",
+      "n": "Grupo Aeromexico, S.A.B. de C.V.",
+      "date": "2025-11-06",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BLLN",
+      "n": "BillionToOne, Inc.",
+      "date": "2025-11-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MEHA",
+      "n": "Functional Brands Inc.",
+      "date": "2025-11-05",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "XZO",
+      "n": "Exzeo Group, Inc.",
+      "date": "2025-11-05",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ELWT",
+      "n": "Elauwit Connection, Inc.",
+      "date": "2025-11-05",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CEPV",
+      "n": "Cantor Equity Partners V, Inc.",
+      "date": "2025-11-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WSTNU",
+      "n": "Westin Acquisition Corp",
+      "date": "2025-11-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BETA",
+      "n": "BETA Technologies, Inc.",
+      "date": "2025-11-04",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NOMA",
+      "n": "Nomadar Corp.",
+      "date": "2025-10-31",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VACIU",
+      "n": "Viking Acquisition Corp I",
+      "date": "2025-10-31",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DNMXU",
+      "n": "Dynamix Corp III",
+      "date": "2025-10-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NAVN",
+      "n": "Navan, Inc.",
+      "date": "2025-10-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DYORU",
+      "n": "Insight Digital Partners II",
+      "date": "2025-10-29",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "APXTU",
+      "n": "Apex Treasury Corp",
+      "date": "2025-10-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MPLT",
+      "n": "MapLight Therapeutics, Inc.",
+      "date": "2025-10-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LAFAU",
+      "n": "LaFayette Acquisition Corp.",
+      "date": "2025-10-24",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MMTXU",
+      "n": "Miluna Acquisition Corp",
+      "date": "2025-10-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HAVAU",
+      "n": "Harvard Ave Acquisition Corp",
+      "date": "2025-10-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ALISU",
+      "n": "Calisa Acquisition Corp",
+      "date": "2025-10-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NPT",
+      "n": "Texxon Holding Ltd",
+      "date": "2025-10-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AGCC",
+      "n": "Agencia Comercial Spirits Ltd.",
+      "date": "2025-10-22",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MCTA",
+      "n": "Charming Medical Ltd",
+      "date": "2025-10-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BGIN",
+      "n": "BGIN BLOCKCHAIN Ltd",
+      "date": "2025-10-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AHMA",
+      "n": "AMBITIONS ENTERPRISE MANAGEMENT CO. L.L.C",
+      "date": "2025-10-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ACCL",
+      "n": "Acco Group Holdings Ltd",
+      "date": "2025-10-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OWLS",
+      "n": "OBOOK HOLDINGS INC.",
+      "date": "2025-10-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SEV",
+      "n": "Aptera Motors Corp",
+      "date": "2025-10-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SLGB",
+      "n": "Smart Logistics Global Ltd",
+      "date": "2025-10-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TCGL",
+      "n": "TechCreate Group Ltd.",
+      "date": "2025-10-15",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "RPGL",
+      "n": "Republic Power Group Ltd",
+      "date": "2025-10-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LFS",
+      "n": "LEIFRAS Co., Ltd.",
+      "date": "2025-10-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "YDDL",
+      "n": "One & one Green Technologies. INC",
+      "date": "2025-10-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ALH",
+      "n": "Alliance Laundry Holdings Inc.",
+      "date": "2025-10-09",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PXED",
+      "n": "Phoenix Education Partners, Inc.",
+      "date": "2025-10-09",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TTRX",
+      "n": "Turn Therapeutics Inc.",
+      "date": "2025-10-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "POM",
+      "n": "POMDOCTOR Ltd",
+      "date": "2025-10-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LKSPU",
+      "n": "Lake Superior Acquisition Corp",
+      "date": "2025-10-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GIWWU",
+      "n": "GigCapital8 Corp.",
+      "date": "2025-10-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AIIAU",
+      "n": "AI Infrastructure Acquisition Corp.",
+      "date": "2025-10-03",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CCHH",
+      "n": "CCH Holdings Ltd",
+      "date": "2025-10-03",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "RNGTU",
+      "n": "Range Capital Acquisition Corp II",
+      "date": "2025-10-03",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CBK",
+      "n": "Commercial Bancgroup, Inc.",
+      "date": "2025-10-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AGRZ",
+      "n": "Agroz Inc.",
+      "date": "2025-10-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NP",
+      "n": "Neptune Insurance Holdings Inc.",
+      "date": "2025-10-01",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KRSPU",
+      "n": "Rice Acquisition Corp 3",
+      "date": "2025-10-01",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "YCYU",
+      "n": "AA Mission Acquisition Corp. II",
+      "date": "2025-10-01",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FRMI",
+      "n": "Fermi Inc.",
+      "date": "2025-10-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "APACU",
+      "n": "StoneBridge Acquisition II Corp",
+      "date": "2025-09-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BDCIU",
+      "n": "BTC Development Corp.",
+      "date": "2025-09-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BCSSU",
+      "n": "Bain Capital GSS Investment Corp.",
+      "date": "2025-09-30",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KNRX",
+      "n": "KNOREX LTD.",
+      "date": "2025-09-29",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MGN",
+      "n": "Megan Holdings Ltd.",
+      "date": "2025-09-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FCRSU",
+      "n": "FutureCrest Acquisition Corp.",
+      "date": "2025-09-26",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AEXA",
+      "n": "American Exceptionalism Acquisition Corp. A",
+      "date": "2025-09-26",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EMISU",
+      "n": "Emmis Acquisition Corp.",
+      "date": "2025-09-25",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DMIIU",
+      "n": "Drugs Made In America Acquisition II Corp.",
+      "date": "2025-09-25",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PLTS",
+      "n": "Platinum Analytics Cayman Ltd",
+      "date": "2025-09-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PTRN",
+      "n": "Pattern Group Inc.",
+      "date": "2025-09-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LATAU",
+      "n": "Galata Acquisition Corp. II",
+      "date": "2025-09-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NTSK",
+      "n": "Netskope Inc",
+      "date": "2025-09-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WBI",
+      "n": "WaterBridge Infrastructure LLC",
+      "date": "2025-09-17",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "STUB",
+      "n": "StubHub Holdings, Inc.",
+      "date": "2025-09-17",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CHECU",
+      "n": "Chenghe Acquisition III Co.",
+      "date": "2025-09-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CHOW",
+      "n": "ChowChow Cloud International Holdings Ltd",
+      "date": "2025-09-16",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FOFO",
+      "n": "Hang Feng Technology Innovation Co., Ltd.",
+      "date": "2025-09-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LGN",
+      "n": "Legence Corp.",
+      "date": "2025-09-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GEMI",
+      "n": "Gemini Space Station, Inc.",
+      "date": "2025-09-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BRCB",
+      "n": "Black Rock Coffee Bar, Inc.",
+      "date": "2025-09-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OTGAU",
+      "n": "OTG Acquisition Corp. I",
+      "date": "2025-09-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VIA",
+      "n": "Via Transportation, Inc.",
+      "date": "2025-09-12",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FIGR",
+      "n": "Figure Technology Solutions, Inc.",
+      "date": "2025-09-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LBRX",
+      "n": "LB PHARMACEUTICALS INC",
+      "date": "2025-09-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KLAR",
+      "n": "Klarna Group plc",
+      "date": "2025-09-10",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BLZRU",
+      "n": "Trailblazer Acquisition Corp.",
+      "date": "2025-09-10",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TLNCU",
+      "n": "Talon Capital Corp.",
+      "date": "2025-09-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ZGM",
+      "n": "Zenta Group Co Ltd",
+      "date": "2025-09-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FCHL",
+      "n": "Fitness Champs Holdings Ltd",
+      "date": "2025-09-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GSRFU",
+      "n": "GSR IV Acquisition Corp.",
+      "date": "2025-09-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SVACU",
+      "n": "Spring Valley Acquisition Corp. III",
+      "date": "2025-09-04",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PMI",
+      "n": "Picard Medical, Inc.",
+      "date": "2025-08-29",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ELOG",
+      "n": "Eastern International Ltd.",
+      "date": "2025-08-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TGHL",
+      "n": "GrowHub Ltd",
+      "date": "2025-08-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "THH",
+      "n": "TryHard Holdings Ltd",
+      "date": "2025-08-28",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KOYNU",
+      "n": "CSLM Digital Asset Acquisition Corp III, Ltd",
+      "date": "2025-08-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MBVIU",
+      "n": "M3-Brigade Acquisition VI Corp.",
+      "date": "2025-08-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CURX",
+      "n": "Curanex Pharmaceuticals Inc",
+      "date": "2025-08-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ETS",
+      "n": "Elite Express Holding Inc.",
+      "date": "2025-08-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CEPF",
+      "n": "Cantor Equity Partners IV, Inc.",
+      "date": "2025-08-21",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "YMT",
+      "n": "Yimutian Inc.",
+      "date": "2025-08-19",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NUTR",
+      "n": "NUSATRIP Inc",
+      "date": "2025-08-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PPCB",
+      "n": "Propanc Biopharma, Inc.",
+      "date": "2025-08-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "RYOJ",
+      "n": "rYojbaba Co., Ltd.",
+      "date": "2025-08-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MIAX",
+      "n": "MIAMI INTERNATIONAL HOLDINGS, INC.",
+      "date": "2025-08-14",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BUUU",
+      "n": "BUUU Group Ltd",
+      "date": "2025-08-14",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BLSH",
+      "n": "Bullish",
+      "date": "2025-08-13",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NSRX",
+      "n": "Nasus Pharma Ltd",
+      "date": "2025-08-13",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MKLYU",
+      "n": "McKinley Acquisition Corp",
+      "date": "2025-08-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HVMCU",
+      "n": "Highview Merger Corp.",
+      "date": "2025-08-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MAGH",
+      "n": "Magnitude International Ltd",
+      "date": "2025-08-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SSEAU",
+      "n": "STARRY SEA ACQUISITION CORP",
+      "date": "2025-08-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DKI",
+      "n": "DarkIris Inc.",
+      "date": "2025-08-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EFTY",
+      "n": "ETOILES CAPITAL GROUP CO., LTD",
+      "date": "2025-08-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HTFL",
+      "n": "Heartflow, Inc.",
+      "date": "2025-08-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "WYFI",
+      "n": "WhiteFiber, Inc.",
+      "date": "2025-08-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FLY",
+      "n": "Firefly Aerospace Inc.",
+      "date": "2025-08-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CTW",
+      "n": "CTW Cayman",
+      "date": "2025-08-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "QUMSU",
+      "n": "Quantumsphere Acquisition Corp",
+      "date": "2025-08-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HCMAU",
+      "n": "HCM III ACQUISITION CORP.",
+      "date": "2025-08-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SI",
+      "n": "SHOULDER INNOVATIONS, INC.",
+      "date": "2025-07-31",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BCARU",
+      "n": "D. Boral ARC Acquisition I Corp.",
+      "date": "2025-07-31",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FIG",
+      "n": "Figma, Inc.",
+      "date": "2025-07-31",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "APADU",
+      "n": "Enhanced Group Inc.",
+      "date": "2025-07-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AMBQ",
+      "n": "Ambiq Micro, Inc.",
+      "date": "2025-07-30",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "YMAT",
+      "n": "J-Star Holding Co., Ltd.",
+      "date": "2025-07-30",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LHAI",
+      "n": "Linkhome Holdings Inc.",
+      "date": "2025-07-24",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ARX",
+      "n": "Accelerant Holdings",
+      "date": "2025-07-24",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MH",
+      "n": "McGraw Hill, Inc.",
+      "date": "2025-07-24",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NIQ",
+      "n": "NIQ Global Intelligence plc",
+      "date": "2025-07-23",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CRE",
+      "n": "Cre8 Enterprise Ltd",
+      "date": "2025-07-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CARL",
+      "n": "CARLSMED, INC.",
+      "date": "2025-07-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TDIC",
+      "n": "Dreamland Ltd",
+      "date": "2025-07-23",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MJID",
+      "n": "Ping An Biomedical Co., Ltd.",
+      "date": "2025-07-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LAWR",
+      "n": "Robot Consulting Co., Ltd.",
+      "date": "2025-07-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PAIIU",
+      "n": "Pyrophyte Acquisition Corp. II",
+      "date": "2025-07-17",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "KMRK",
+      "n": "K-TECH SOLUTIONS CO LTD",
+      "date": "2025-07-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SOCAU",
+      "n": "Solarius Capital Acquisition Corp.",
+      "date": "2025-07-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AUGO",
+      "n": "Aura Minerals Inc.",
+      "date": "2025-07-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MGRT",
+      "n": "Mega Fortune Co Ltd",
+      "date": "2025-07-16",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SPEGU",
+      "n": "Silver Pegasus Acquisition Corp.",
+      "date": "2025-07-15",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BMHL",
+      "n": "Bluemount Holdings Ltd",
+      "date": "2025-07-11",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GTERU",
+      "n": "Globa Terra Acquisition Corp",
+      "date": "2025-07-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "DLXY",
+      "n": "Delixy Holdings Ltd",
+      "date": "2025-07-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ANPA",
+      "n": "Rich Sparkle Holdings Ltd",
+      "date": "2025-07-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MSGY",
+      "n": "Masonglory Ltd",
+      "date": "2025-07-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "TLIH",
+      "n": "Ten-League International Holdings Ltd",
+      "date": "2025-07-08",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MAMK",
+      "n": "MaxsMaking Inc.",
+      "date": "2025-07-07",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EMPG",
+      "n": "Empro Group Inc.",
+      "date": "2025-07-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VNMEU",
+      "n": "Vendome Acquisition Corp I",
+      "date": "2025-07-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ORIQU",
+      "n": "Origin Investment Corp I",
+      "date": "2025-07-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EVACU",
+      "n": "EQV Ventures Acquisition Corp. II",
+      "date": "2025-07-02",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ONCHU",
+      "n": "1RT Acquisition Corp.",
+      "date": "2025-07-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "COSO",
+      "n": "CoastalSouth Bancshares, Inc.",
+      "date": "2025-07-02",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CV",
+      "n": "CapsoVision, Inc",
+      "date": "2025-07-02",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "INACU",
+      "n": "Indigo Acquisition Corp.",
+      "date": "2025-07-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CCIIU",
+      "n": "Cohen Circle Acquisition Corp. II",
+      "date": "2025-07-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "NMPAU",
+      "n": "NMP Acquisition Corp.",
+      "date": "2025-07-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "GRAN",
+      "n": "Grande Group Ltd/HK",
+      "date": "2025-07-01",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "YORKU",
+      "n": "Yorkville Acquisition Corp.",
+      "date": "2025-06-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FIGXU",
+      "n": "FIGX Capital Acquisition Corp.",
+      "date": "2025-06-27",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "JCAP",
+      "n": "Jefferson Capital, Inc. / DE",
+      "date": "2025-06-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CAEP",
+      "n": "Cantor Equity Partners III, Inc.",
+      "date": "2025-06-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "JLHL",
+      "n": "Julong Holding Ltd",
+      "date": "2025-06-26",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "FMFC",
+      "n": "Kandal M Venture Ltd",
+      "date": "2025-06-25",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "LWACU",
+      "n": "LightWave Acquisition Corp.",
+      "date": "2025-06-25",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OBAWU",
+      "n": "Oxley Bridge Acquisition Ltd",
+      "date": "2025-06-25",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "HCHL",
+      "n": "Happy City Holdings Ltd",
+      "date": "2025-06-24",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AXINU",
+      "n": "Axiom Intelligence Acquisition Corp 1",
+      "date": "2025-06-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "SLDE",
+      "n": "Slide Insurance Holdings, Inc.",
+      "date": "2025-06-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "EGG",
+      "n": "ENIGMATIG LTD",
+      "date": "2025-06-18",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CAI",
+      "n": "Caris Life Sciences, Inc.",
+      "date": "2025-06-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "PACHU",
+      "n": "Pioneer Acquisition I Corp",
+      "date": "2025-06-18",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "MENS",
+      "n": "Jyong Biotech Ltd.",
+      "date": "2025-06-17",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BACCU",
+      "n": "Blue Acquisition Corp/Cayman",
+      "date": "2025-06-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BSAAU",
+      "n": "BEST SPAC I Acquisition Corp.",
+      "date": "2025-06-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "AIRO",
+      "n": "AIRO Group Holdings, Inc.",
+      "date": "2025-06-13",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VNTG",
+      "n": "Vantage Corp (Singapore)",
+      "date": "2025-06-12",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CHYM",
+      "n": "Chime Financial, Inc.",
+      "date": "2025-06-12",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "VOYG",
+      "n": "Voyager Technologies, Inc./DE",
+      "date": "2025-06-11",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "ASIC",
+      "n": "Ategrity Specialty Insurance Co Holdings",
+      "date": "2025-06-11",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "BLUWU",
+      "n": "Blue Water Acquisition Corp. III",
+      "date": "2025-06-10",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "JEM",
+      "n": "707 Cayman Holdings Ltd.",
+      "date": "2025-06-09",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "OMDA",
+      "n": "Omada Health, Inc.",
+      "date": "2025-06-06",
+      "ex": "NASDAQ",
+      "reg": "US",
+      "status": "Priced"
+    },
+    {
+      "t": "CRCL",
+      "n": "Circle Internet Group, Inc.",
+      "date": "2025-06-05",
+      "ex": "NYSE",
+      "reg": "US",
+      "status": "Priced"
+    }
+  ]
 }
