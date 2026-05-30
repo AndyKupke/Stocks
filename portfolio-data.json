@@ -7944,6 +7944,71 @@
       "chgytd": null,
       "listDate": "2026-03-20",
       "sector": null
+    },
+    "JAN": {
+      "sym": "JAN",
+      "price": 26.770000457763672,
+      "mcap": null,
+      "chg1d": -2.795934757320714,
+      "chg7d": -1.2177118784533303,
+      "chg30d": 1.7097293622991376,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-20",
+      "sector": null
+    },
+    "BHAVU": {
+      "sym": "BHAVU",
+      "price": 10.109999656677246,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0.19821113763041895,
+      "chg30d": 0.4970102880219554,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-19",
+      "sector": null
+    },
+    "SWMR": {
+      "sym": "SWMR",
+      "price": 56.209999084472656,
+      "mcap": null,
+      "chg1d": -1.021309775848419,
+      "chg7d": 15.75370159562906,
+      "chg30d": 67.29167153911007,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-17",
+      "sector": null
+    },
+    "PONOU": {
+      "sym": "PONOU",
+      "price": 10.079999923706055,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.5987970379372006,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-13",
+      "sector": null
+    },
+    "PAYP": {
+      "sym": "PAYP",
+      "price": 19.520000457763672,
+      "mcap": null,
+      "chg1d": -1.0643643656610726,
+      "chg7d": 1.0352006526844453,
+      "chg30d": -7.837581791754995,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-03-12",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -13723,5 +13788,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-30T21:23:23.089Z"
+  "lastUpdated": "2026-05-30T21:23:35.675Z"
 }
