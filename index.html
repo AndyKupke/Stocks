@@ -636,9 +636,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 <!-- IPO TAB -->
 <div class="sec" id="sec-ipos">
   <div class="fetch-bar" id="fetch-bar-ipo">
-    <button class="fetch-btn" id="ipo-fetch-btn" onclick="fetchIpos()">&#9889; Fetch &amp; Save IPO List (360 days)</button>
+    <button class="fetch-btn" id="ipo-fetch-btn" onclick="fetchIpos()">&#9889; Fetch new IPOs</button>
     <button class="fetch-btn" id="ipo-price-btn" onclick="fetchIpoPrices()" style="margin-left:8px;">&#9889; Fetch Live Prices</button>
-    <span class="fetch-status" id="ipo-status">Click to load IPOs from FMP and save to GitHub — then fetch live prices from Yahoo Finance</span>
+    <span class="fetch-status" id="ipo-status">Click to load IPOs from Yahoo Finance and save to GitHub — then fetch live prices</span>
   </div>
   <div class="fbar">
     <input type="text" id="ipo-q" placeholder="Search ticker or name..." oninput="ipoFilter()">
@@ -5453,7 +5453,7 @@ function fsRender() {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// IPO TAB — FMP ipo-calendar, last 90 days, NASDAQ/NYSE + core Europe
+// IPO TAB — Yahoo Finance ipo-calendar, NASDAQ/NYSE + core Europe
 // ══════════════════════════════════════════════════════════════════════
 let ipoAllData = [];    // full 360-day database loaded from GitHub
 let ipoData    = [];   // subset filtered by time window
@@ -5462,15 +5462,18 @@ let ipoSortKey = 'date';
 let ipoSortDir = -1;   // newest first
 const ipoColState = { details: false, perf: false };
 
-// Map exchange full-name fragments → short code and region
+// Map exchange full-name / code fragments → short code and region
+// Covers both Yahoo Finance API names (NasdaqGS, NYSEArca…) and plain strings
 const IPO_EX_MAP = [
-  // US
+  // US — Yahoo uses "NasdaqGS", "NasdaqCM", "NasdaqGM", "NYSEArca", "NYSEAmer", "NYSEMKT", "NYSE"
   { match: 'nasdaq',       short: 'NASDAQ', reg: 'US'     },
   { match: 'nyse',         short: 'NYSE',   reg: 'US'     },
-  // Europe
+  { match: 'otc',          short: 'OTC',    reg: 'US'     },
+  // Europe — Yahoo uses full city names and some short codes
   { match: 'frankfurt',    short: 'XETRA',  reg: 'Europe' },
   { match: 'xetra',        short: 'XETRA',  reg: 'Europe' },
   { match: 'london',       short: 'LSE',    reg: 'Europe' },
+  { match: 'lse',          short: 'LSE',    reg: 'Europe' },
   { match: 'paris',        short: 'EPA',    reg: 'Europe' },
   { match: 'amsterdam',    short: 'AMS',    reg: 'Europe' },
   { match: 'milan',        short: 'BIT',    reg: 'Europe' },
@@ -5537,68 +5540,125 @@ async function ghSaveIpos(records, lastFetched) {
   } catch(e) { return false; }
 }
 
-async function fetchIpos() {
-  const key = getFmpKey();
-  if (!key) {
-    document.getElementById('ipo-status').textContent = 'No FMP API key — add one in Stock Financial Analysis → settings';
-    return;
+// ── Yahoo Finance IPO calendar fetch (no API key required) ─────────────────
+// Queries multiple regions to capture NASDAQ/NYSE + core European exchanges.
+// Uses the same CORS proxy chain as price fetches.
+async function _yahooFetchIpoRegion(fromStr, toStr, region) {
+  const base = `https://query1.finance.yahoo.com/v2/finance/calendar/ipo?from=${fromStr}&to=${toStr}&lang=en-US&region=${region}`;
+  const base2 = base.replace('query1', 'query2');
+  const proxies = [
+    base,
+    base2,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(base2)}`,
+    `https://corsproxy.io/?${encodeURIComponent(base)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`,
+    `https://thingproxy.freeboard.io/fetch/${base}`,
+  ];
+  for (const url of proxies) {
+    try {
+      const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!r.ok) continue;
+      const j = await r.json();
+      // Response shape: { finance: { result: [{ ipoCalendar: [...] }] } }
+      const events = j?.finance?.result?.[0]?.ipoCalendar || j?.result?.[0]?.ipoCalendar || [];
+      if (Array.isArray(events)) return events;
+    } catch(e) { /* try next proxy */ }
   }
+  return [];
+}
+
+async function fetchIpos() {
   const btn = document.getElementById('ipo-fetch-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Fetching from FMP…'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Fetching…'; }
   setSyncStatus('Fetching IPO data…', 'var(--org)');
 
-  const today   = new Date();
-  const from    = new Date(today); from.setDate(from.getDate() - 360);
-  const toStr   = today.toISOString().slice(0, 10);
-  const fromStr = from.toISOString().slice(0, 10);
-
   const setStatus = t => { const el = document.getElementById('ipo-status'); if (el) el.textContent = t; };
-  setStatus('Fetching 360 days of IPOs from FMP…');
+
+  const today      = new Date();
+  const maxFrom    = new Date(today); maxFrom.setDate(maxFrom.getDate() - 360);
+  const maxFromStr = maxFrom.toISOString().slice(0, 10);
+  const toStr      = today.toISOString().slice(0, 10);
+
+  // Start from the day after the most recent IPO already in the database,
+  // but never go further back than 360 days.
+  let fromStr = maxFromStr;
+  let isIncremental = false;
+  if (ipoAllData.length) {
+    const latestDate = ipoAllData.reduce((max, s) => (s.date > max ? s.date : max), '');
+    if (latestDate && latestDate > maxFromStr) {
+      // Start one day after the latest known IPO date
+      const d = new Date(latestDate);
+      d.setDate(d.getDate() + 1);
+      fromStr = d.toISOString().slice(0, 10);
+      isIncremental = true;
+    }
+  }
+
+  setStatus(isIncremental
+    ? `Fetching new IPOs from ${fromStr} to ${toStr}…`
+    : `No existing data — fetching up to 360 days (${fromStr} – ${toStr})…`);
 
   try {
-    // FMP v3 IPO calendar — returns ticker, company, date, exchange, status
-    const url = `https://financialmodelingprep.com/api/v3/ipo_calendar?from=${fromStr}&to=${toStr}&apikey=${key}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`FMP HTTP ${res.status}`);
-    const raw = await res.json();
-    if (!Array.isArray(raw)) throw new Error('Unexpected response from FMP — check API key plan');
+    // Query US + core European regions
+    const regions = ['US', 'DE', 'GB', 'FR', 'NL', 'IT', 'CH', 'SE', 'NO', 'ES', 'BE', 'AT', 'DK', 'FI', 'PL'];
+    const allEvents = [];
+    // Seed seen-set with tickers already in database to avoid duplicates
+    const seen = new Set(ipoAllData.map(s => s.t));
 
-    const normalised = raw
-      .filter(r => {
-        const ex = r.exchange || r.exchangeShortName || '';
-        if (!ex) return false;
-        return IPO_EX_MAP.some(e => ex.toLowerCase().includes(e.match));
-      })
-      .map(r => {
-        const exStr = r.exchange || r.exchangeShortName || '';
+    for (let i = 0; i < regions.length; i++) {
+      const regionCode = regions[i];
+      if (btn) btn.textContent = `Fetching… (${i + 1}/${regions.length})`;
+      const events = await _yahooFetchIpoRegion(fromStr, toStr, regionCode);
+      for (const ev of events) {
+        const sym = ev.symbol || '';
+        if (!sym || seen.has(sym)) continue;
+        seen.add(sym);
+        allEvents.push(ev);
+      }
+      // small pause between regions to be polite
+      if (i < regions.length - 1) await new Promise(r => setTimeout(r, 300));
+    }
+
+    const newRecords = allEvents
+      .map(ev => {
+        const exStr = ev.exchange || ev.exchangeName || '';
         const { short, reg } = ipoExInfo(exStr);
-        // FMP v3 uses 'date'; also check 'ipoDate' and 'offeringDate' just in case
-        const date = r.date || r.ipoDate || r.offeringDate || '';
+        if (!short) return null;
+        const rawDate = ev.startdatetime || ev.date || '';
+        const date = rawDate ? rawDate.slice(0, 10) : '';
         return {
-          t:      r.symbol  || '',
-          n:      r.company || r.name || '',
+          t:      ev.symbol || '',
+          n:      ev.companyShortName || ev.name || ev.company || '',
           date,
           ex:     short,
-          reg:    reg,
-          status: r.actions || '',
+          reg,
+          status: ev.actions || '',
         };
       })
-      .filter(r => r.t)   // skip blank tickers
+      .filter(r => r && r.t);
+
+    // Merge: new records first, then existing, re-sort newest first
+    const merged = [...newRecords, ...ipoAllData]
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
-    setStatus(`Fetched ${normalised.length} IPOs — saving to GitHub…`);
-    const saved = await ghSaveIpos(normalised, today.toISOString());
-    ipoAllData = normalised;
+    const addedTxt = newRecords.length
+      ? `+${newRecords.length} new`
+      : 'no new IPOs found';
+    setStatus(`${addedTxt} — saving to GitHub…`);
+
+    const saved = await ghSaveIpos(merged, today.toISOString());
+    ipoAllData = merged;
     const savedTxt = saved ? ' ✓ Saved to GitHub.' : ' (GitHub save failed — check token)';
-    setStatus(`${normalised.length} IPOs (${fromStr} – ${toStr})${savedTxt}`);
-    setSyncStatus(saved ? `IPO data saved` : 'IPO GitHub save failed', saved ? 'var(--grn)' : 'var(--red)');
+    setStatus(`${addedTxt} · ${merged.length} total in database${savedTxt}`);
+    setSyncStatus(saved ? 'IPO data saved' : 'IPO GitHub save failed', saved ? 'var(--grn)' : 'var(--red)');
     ipoApplyWindow();
     ipoFilter();
   } catch(e) {
     setStatus(`Fetch failed: ${e.message}`);
     setSyncStatus('IPO fetch error', 'var(--red)');
   }
-  if (btn) { btn.disabled = false; btn.textContent = '⚡ Fetch & Save IPOs (360 days)'; }
+  if (btn) { btn.disabled = false; btn.textContent = '⚡ Fetch new IPOs'; }
 }
 
 async function ipoLoadFromGitHub() {
@@ -5611,7 +5671,7 @@ async function ipoLoadFromGitHub() {
     ipoApplyWindow();
     ipoFilter();
   } else {
-    setStatus('No IPO data in GitHub yet — click ⚡ Fetch & Save IPOs (requires FMP API key)');
+    setStatus('No IPO data in GitHub yet — click ⚡ Fetch & Save IPO List to load from Yahoo Finance');
   }
 }
 
@@ -5730,7 +5790,7 @@ function renderIpoTable() {
   const COLS = 13;
 
   if (!ipoDisp.length) {
-    tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch & Save IPO List (requires FMP API key)' : 'No IPOs match filters'}</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch & Save IPO List' : 'No IPOs match filters'}</td></tr>`;
     tf.innerHTML = '';
     return;
   }
