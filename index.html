@@ -5974,6 +5974,7 @@ function buildIpoThead() {
   const pClr = prf ? 'color:var(--acc)' : '';
   return `<tr>
     <th onclick="ipoSort('assessed')" style="cursor:pointer;width:38px;text-align:center;font-size:8px;color:var(--acc)" title="Assessed">Assessed</th>
+    <th style="width:38px;text-align:center;font-size:8px;color:var(--grn)" title="Already in Long List">Listed</th>
     <th onclick="ipoSort('date')" style="cursor:pointer;min-width:82px">IPO Date</th>
     <th onclick="ipoSort('ticker')" style="cursor:pointer">Ticker</th>
     <th onclick="ipoSort('name')" style="cursor:pointer">Company</th>
@@ -6003,7 +6004,7 @@ function renderIpoTable() {
   if (!thead || !tb || !tf) return;
   thead.innerHTML = buildIpoThead();
   const days = document.getElementById('ipo-window')?.value || '90';
-  const COLS = 20;
+  const COLS = 21;
 
   if (!ipoDisp.length) {
     tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch new IPOs' : 'No IPOs match filters'}</td></tr>`;
@@ -6022,11 +6023,12 @@ function renderIpoTable() {
       : `<span style="color:var(--txt3)">—</span>`;
     const statusClr = s.status === 'priced' ? 'var(--grn)' : s.status === 'upcoming' ? 'var(--ylw)' : 'var(--txt3)';
     const actionCell = inList
-      ? `<span style="font-size:9px;color:var(--grn);padding:2px 5px;">✓ In List</span>`
+      ? `<button class="ab-btn" style="font-size:9px;opacity:0.3;cursor:not-allowed;pointer-events:none" disabled title="Already in Long List">+ List</button>`
       : `<button class="ab-btn" style="color:var(--acc);border-color:var(--acc);font-size:9px;" onclick="addIpoToLongList('${s.t}')" title="Add to Long List">+ List</button>`;
     const thColor = s.th ? 'var(--pur)' : 'var(--txt3)';
     return `<tr>
       <td style="text-align:center"><input type="checkbox" class="port-chk" ${s.assessed?'checked':''} onchange="toggleIpoAssessed('${s.t}')" title="${s.assessed?'Mark as not assessed':'Mark as assessed'}" style="accent-color:var(--acc)"></td>
+      <td style="text-align:center"><input type="checkbox" class="port-chk" ${inList?'checked':''} disabled style="accent-color:var(--grn);opacity:${inList?'1':'0.2'}" title="${inList?'In Long List':'Not in Long List'}"></td>
       <td><span class="mono" style="font-size:10px;color:var(--acc)">${s.date}</span></td>
       <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
       <td><span class="nm" title="${s.n}">${s.n}</span></td>
