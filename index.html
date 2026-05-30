@@ -5903,10 +5903,19 @@ function ipoApplySort() {
     else if (ipoSortKey === 'chg90d')   { av = pda.chg90d  ?? -9999; bv = pdb.chg90d  ?? -9999; }
     else if (ipoSortKey === 'chg1y')    { av = pda.chg1y   ?? -9999; bv = pdb.chg1y   ?? -9999; }
     else if (ipoSortKey === 'chgytd')   { av = pda.chgytd  ?? -9999; bv = pdb.chgytd  ?? -9999; }
+    else if (ipoSortKey === 'assessed') { av = a.assessed ? 1 : 0; bv = b.assessed ? 1 : 0; }
     else                                { av = a.date;     bv = b.date; }
     if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
     return av < bv ? -ipoSortDir : av > bv ? ipoSortDir : 0;
   });
+}
+
+function toggleIpoAssessed(t) {
+  const rec = ipoAllData.find(x => x.t === t);
+  if (!rec) return;
+  rec.assessed = !rec.assessed;
+  ghSaveIpos(ipoAllData, new Date().toISOString());
+  renderIpoTable();
 }
 
 function addIpoToLongList(t) {
@@ -5964,6 +5973,7 @@ function buildIpoThead() {
   const dClr = det ? 'color:var(--acc)' : '';
   const pClr = prf ? 'color:var(--acc)' : '';
   return `<tr>
+    <th onclick="ipoSort('assessed')" style="cursor:pointer;width:38px;text-align:center;font-size:8px;color:var(--acc)" title="Assessed">Assessed</th>
     <th onclick="ipoSort('date')" style="cursor:pointer;min-width:82px">IPO Date</th>
     <th onclick="ipoSort('ticker')" style="cursor:pointer">Ticker</th>
     <th onclick="ipoSort('name')" style="cursor:pointer">Company</th>
@@ -5993,7 +6003,7 @@ function renderIpoTable() {
   if (!thead || !tb || !tf) return;
   thead.innerHTML = buildIpoThead();
   const days = document.getElementById('ipo-window')?.value || '90';
-  const COLS = 19;
+  const COLS = 20;
 
   if (!ipoDisp.length) {
     tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch new IPOs' : 'No IPOs match filters'}</td></tr>`;
@@ -6016,6 +6026,7 @@ function renderIpoTable() {
       : `<button class="ab-btn" style="color:var(--acc);border-color:var(--acc);font-size:9px;" onclick="addIpoToLongList('${s.t}')" title="Add to Long List">+ List</button>`;
     const thColor = s.th ? 'var(--pur)' : 'var(--txt3)';
     return `<tr>
+      <td style="text-align:center"><input type="checkbox" class="port-chk" ${s.assessed?'checked':''} onchange="toggleIpoAssessed('${s.t}')" title="${s.assessed?'Mark as not assessed':'Mark as assessed'}" style="accent-color:var(--acc)"></td>
       <td><span class="mono" style="font-size:10px;color:var(--acc)">${s.date}</span></td>
       <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
       <td><span class="nm" title="${s.n}">${s.n}</span></td>
