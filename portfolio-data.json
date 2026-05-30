@@ -7006,6 +7006,84 @@
       "chgytd": null,
       "listDate": "2026-05-21",
       "sector": null
+    },
+    "CNXU": {
+      "sym": "CNXU",
+      "price": 11.729999542236328,
+      "mcap": null,
+      "chg1d": 1.2953335018871717,
+      "chg7d": -13.939842672426309,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-21",
+      "sector": null
+    },
+    "AMSS": {
+      "sym": "AMSS",
+      "price": 4.099999904632568,
+      "mcap": null,
+      "chg1d": -3.5294140086454506,
+      "chg7d": -28.07017470477505,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-20",
+      "sector": null
+    },
+    "OPTH": {
+      "sym": "OPTH",
+      "price": 5.96999979019165,
+      "mcap": null,
+      "chg1d": 5.663711317219163,
+      "chg7d": 8.348449041773701,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-20",
+      "sector": null
+    },
+    "RACC": {
+      "sym": "RACC",
+      "price": 10.380000114440918,
+      "mcap": null,
+      "chg1d": -0.19230293098973975,
+      "chg7d": 0.09643422364702167,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-20",
+      "sector": null
+    },
+    "LCLN": {
+      "sym": "LCLN",
+      "price": 22.81999969482422,
+      "mcap": null,
+      "chg1d": -3.017428691467278,
+      "chg7d": 0.35180265836089303,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-20",
+      "sector": null
+    },
+    "AMAN": {
+      "sym": "AMAN",
+      "price": 10.130000114440918,
+      "mcap": null,
+      "chg1d": -0.09862158326672192,
+      "chg7d": -0.1970394565615896,
+      "chg30d": null,
+      "chg90d": null,
+      "chg1y": null,
+      "chgytd": null,
+      "listDate": "2026-05-19",
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -7013,5 +7091,5 @@
     "USD": 0.86
   },
   "financialData": {},
-  "lastUpdated": "2026-05-30T20:17:46.684Z"
+  "lastUpdated": "2026-05-30T20:17:57.683Z"
 }
