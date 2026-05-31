@@ -7185,6 +7185,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-21",
+      "firstClose": 13.069999694824219,
       "sector": null
     },
     "AMSS": {
@@ -7198,6 +7199,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-20",
+      "firstClose": 11.350000381469727,
       "sector": null
     },
     "OPTH": {
@@ -7211,6 +7213,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-20",
+      "firstClose": 6.079999923706055,
       "sector": null
     },
     "RACC": {
@@ -7224,6 +7227,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-20",
+      "firstClose": 10.300000190734863,
       "sector": null
     },
     "LCLN": {
@@ -7237,6 +7241,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-20",
+      "firstClose": 22.520000457763672,
       "sector": null
     },
     "AMAN": {
@@ -7250,6 +7255,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-19",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "DUKR": {
@@ -16669,5 +16675,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:10:55.882Z"
+  "lastUpdated": "2026-05-31T05:11:06.669Z"
 }
