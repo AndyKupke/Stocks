@@ -10665,6 +10665,7 @@
       "chg1y": null,
       "chgytd": -10.501568405577649,
       "listDate": "2025-07-23",
+      "firstClose": 14.5,
       "sector": null
     },
     "KMRK": {
@@ -11652,6 +11653,48 @@
       "chgytd": -52.55972588861236,
       "listDate": "2025-07-23",
       "firstClose": 19.010000228881836,
+      "sector": null
+    },
+    "CRE": {
+      "sym": "CRE",
+      "price": 2.640000104904175,
+      "mcap": null,
+      "chg1d": 17.804559529375968,
+      "chg7d": 23.943660237648462,
+      "chg30d": -28.065393732358974,
+      "chg90d": -3.2967001296892264,
+      "chg1y": null,
+      "chgytd": -21.985813953897992,
+      "listDate": "2025-07-23",
+      "firstClose": 52.79999923706055,
+      "sector": null
+    },
+    "TDIC": {
+      "sym": "TDIC",
+      "price": 0.3930000066757202,
+      "mcap": null,
+      "chg1d": -8.177569198659425,
+      "chg7d": -12.666662869629935,
+      "chg30d": -64.59459444946519,
+      "chg90d": -54.03508796390538,
+      "chg1y": null,
+      "chgytd": -60.50251208117254,
+      "listDate": "2025-07-23",
+      "firstClose": 21.899999618530273,
+      "sector": null
+    },
+    "LAWR": {
+      "sym": "LAWR",
+      "price": 3.75,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0,
+      "chg1y": null,
+      "chgytd": 0,
+      "listDate": "2025-07-17",
+      "firstClose": 3.5199999809265137,
       "sector": null
     }
   },
@@ -17432,5 +17475,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:25:28.890Z"
+  "lastUpdated": "2026-05-31T05:26:10.892Z"
 }
