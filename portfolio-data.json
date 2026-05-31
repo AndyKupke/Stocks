@@ -5219,6 +5219,7 @@
       "chg1y": null,
       "chgytd": 44.23412509963036,
       "listDate": "2025-06-11",
+      "firstClose": 56.47999954223633,
       "sector": null
     },
     "MRX": {
@@ -5905,6 +5906,7 @@
       "chg1y": null,
       "chgytd": -36.71461292554287,
       "listDate": "2025-06-18",
+      "firstClose": 28,
       "sector": null
     },
     "LMT": {
@@ -5978,6 +5980,7 @@
       "chg1y": null,
       "chgytd": 33.254712185600134,
       "listDate": "2025-06-05",
+      "firstClose": 83.2300033569336,
       "sector": null
     },
     "TTE": {
@@ -10833,6 +10836,7 @@
       "chg1y": null,
       "chgytd": -1.7224818639888828,
       "listDate": "2025-06-26",
+      "firstClose": 10,
       "sector": null
     },
     "JCAP": {
@@ -10846,6 +10850,7 @@
       "chg1y": null,
       "chgytd": -26.48204533794816,
       "listDate": "2025-06-26",
+      "firstClose": 18.540000915527344,
       "sector": null
     },
     "CAEP": {
@@ -10859,6 +10864,7 @@
       "chg1y": null,
       "chgytd": 46.62757254357537,
       "listDate": "2025-06-26",
+      "firstClose": 10.5,
       "sector": null
     },
     "JLHL": {
@@ -10872,6 +10878,7 @@
       "chg1y": null,
       "chgytd": 349.31191634614135,
       "listDate": "2025-06-26",
+      "firstClose": 4.230000019073486,
       "sector": null
     },
     "FMFC": {
@@ -10885,6 +10892,7 @@
       "chg1y": null,
       "chgytd": 11.801247754760574,
       "listDate": "2025-06-25",
+      "firstClose": 4.400000095367432,
       "sector": null
     },
     "LWACU": {
@@ -10898,6 +10906,7 @@
       "chg1y": null,
       "chgytd": 0.980395915094935,
       "listDate": "2025-06-25",
+      "firstClose": 10.029999732971191,
       "sector": null
     },
     "OBAWU": {
@@ -10911,6 +10920,7 @@
       "chg1y": null,
       "chgytd": 0.34263188339984935,
       "listDate": "2025-06-25",
+      "firstClose": 10,
       "sector": null
     },
     "HCHL": {
@@ -10924,6 +10934,7 @@
       "chg1y": null,
       "chgytd": -8.144799260190398,
       "listDate": "2025-06-24",
+      "firstClose": 5,
       "sector": null
     },
     "AXINU": {
@@ -10937,6 +10948,7 @@
       "chg1y": null,
       "chgytd": 5.273437245341478,
       "listDate": "2025-06-18",
+      "firstClose": 10.039999961853027,
       "sector": null
     },
     "SLDE": {
@@ -10950,6 +10962,7 @@
       "chg1y": null,
       "chgytd": 8.549066972393629,
       "listDate": "2025-06-18",
+      "firstClose": 20.25,
       "sector": null
     },
     "EGG": {
@@ -10963,6 +10976,7 @@
       "chg1y": null,
       "chgytd": 37.34176314714582,
       "listDate": "2025-06-18",
+      "firstClose": 6.53000020980835,
       "sector": null
     },
     "PACHU": {
@@ -10976,6 +10990,7 @@
       "chg1y": null,
       "chgytd": 1.4778382053408397,
       "listDate": "2025-06-18",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "MENS": {
@@ -10989,6 +11004,7 @@
       "chg1y": null,
       "chgytd": -35.860058167181194,
       "listDate": "2025-06-17",
+      "firstClose": 10.109999656677246,
       "sector": null
     },
     "BACCU": {
@@ -11002,6 +11018,7 @@
       "chg1y": null,
       "chgytd": 1.1406832731696614,
       "listDate": "2025-06-13",
+      "firstClose": 10.029999732971191,
       "sector": null
     },
     "BSAAU": {
@@ -11015,6 +11032,7 @@
       "chg1y": null,
       "chgytd": 40.67960682323406,
       "listDate": "2025-06-13",
+      "firstClose": 10.020000457763672,
       "sector": null
     },
     "AIRO": {
@@ -11028,6 +11046,7 @@
       "chg1y": null,
       "chgytd": -32.12396180689211,
       "listDate": "2025-06-13",
+      "firstClose": 24,
       "sector": null
     },
     "VNTG": {
@@ -11041,6 +11060,7 @@
       "chg1y": null,
       "chgytd": -20.650949637150863,
       "listDate": "2025-06-11",
+      "firstClose": 4,
       "sector": null
     },
     "CHYM": {
@@ -11054,6 +11074,7 @@
       "chg1y": null,
       "chgytd": -27.598287291541983,
       "listDate": "2025-06-12",
+      "firstClose": 37.11000061035156,
       "sector": null
     },
     "ASIC": {
@@ -11067,6 +11088,7 @@
       "chg1y": null,
       "chgytd": 5.573596927269533,
       "listDate": "2025-06-11",
+      "firstClose": 24.68000030517578,
       "sector": null
     },
     "BLUWU": {
@@ -11080,6 +11102,7 @@
       "chg1y": null,
       "chgytd": -1.5932528123560437,
       "listDate": "2025-06-10",
+      "firstClose": 10,
       "sector": null
     },
     "JEM": {
@@ -11093,6 +11116,7 @@
       "chg1y": null,
       "chgytd": -57.62711818745843,
       "listDate": "2025-06-09",
+      "firstClose": 77,
       "sector": null
     },
     "OMDA": {
@@ -11106,6 +11130,7 @@
       "chg1y": null,
       "chgytd": 15.935479440996724,
       "listDate": "2025-06-06",
+      "firstClose": 23,
       "sector": null
     },
     "ONCHU": {
@@ -17628,5 +17653,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:28:52.892Z"
+  "lastUpdated": "2026-05-31T05:29:14.892Z"
 }
