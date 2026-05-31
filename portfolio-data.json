@@ -10504,6 +10504,7 @@
       "chg1y": null,
       "chgytd": -98.89062503352761,
       "listDate": "2025-08-27",
+      "firstClose": 24.190000534057617,
       "sector": null
     },
     "KOYNU": {
@@ -10517,6 +10518,7 @@
       "chg1y": null,
       "chgytd": 0.7897327028852649,
       "listDate": "2025-08-27",
+      "firstClose": 10,
       "sector": null
     },
     "MBVIU": {
@@ -10530,6 +10532,7 @@
       "chg1y": null,
       "chgytd": 0,
       "listDate": "2025-08-27",
+      "firstClose": 10,
       "sector": null
     },
     "CURX": {
@@ -10543,6 +10546,7 @@
       "chg1y": null,
       "chgytd": -6.983241688419725,
       "listDate": "2025-08-26",
+      "firstClose": 4.019999980926514,
       "sector": null
     },
     "ETS": {
@@ -10556,6 +10560,7 @@
       "chg1y": null,
       "chgytd": 3.969759599474803,
       "listDate": "2025-08-21",
+      "firstClose": 3.5,
       "sector": null
     },
     "CEPF": {
@@ -10569,6 +10574,7 @@
       "chg1y": null,
       "chgytd": -0.09662056534548533,
       "listDate": "2025-08-21",
+      "firstClose": 10.119999885559082,
       "sector": null
     },
     "YMT": {
@@ -17120,5 +17126,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:22:02.888Z"
+  "lastUpdated": "2026-05-31T05:22:22.890Z"
 }
