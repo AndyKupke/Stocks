@@ -4831,6 +4831,7 @@
       "chg1y": null,
       "chgytd": 0,
       "listDate": "2025-08-15",
+      "firstClose": 3.9100000858306885,
       "sector": null
     },
     "VEEV": {
@@ -10588,6 +10589,7 @@
       "chg1y": null,
       "chgytd": -95.7914339695448,
       "listDate": "2025-08-19",
+      "firstClose": 42,
       "sector": null
     },
     "PPCB": {
@@ -10601,6 +10603,7 @@
       "chg1y": -97.62091496411492,
       "chgytd": -82.82613749792573,
       "listDate": "2013-01-07",
+      "firstClose": 72.75,
       "sector": null
     },
     "RYOJ": {
@@ -10614,6 +10617,7 @@
       "chg1y": null,
       "chgytd": 18.484852797838453,
       "listDate": "2025-08-14",
+      "firstClose": 2.9000000953674316,
       "sector": null
     },
     "MIAX": {
@@ -10627,6 +10631,7 @@
       "chg1y": null,
       "chgytd": 10.50047206434456,
       "listDate": "2025-08-14",
+      "firstClose": 30.739999771118164,
       "sector": null
     },
     "BUUU": {
@@ -10640,6 +10645,7 @@
       "chg1y": null,
       "chgytd": 128.72466923472925,
       "listDate": "2025-08-14",
+      "firstClose": 4,
       "sector": null
     },
     "CARL": {
@@ -17126,5 +17132,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:22:22.890Z"
+  "lastUpdated": "2026-05-31T05:22:59.889Z"
 }
