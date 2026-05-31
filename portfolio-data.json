@@ -7082,7 +7082,9 @@
       "chg90d": -13.967609564439815,
       "chg1y": null,
       "chgytd": -21.199012611134293,
-      "listDate": "2025-07-31"
+      "listDate": "2025-07-31",
+      "firstClose": 115.5,
+      "sector": null
     },
     "ETL": {
       "sym": "ETL",
@@ -11496,6 +11498,76 @@
       "chgytd": 39.35339792651592,
       "listDate": "2025-08-06",
       "firstClose": 4.440000057220459,
+      "sector": null
+    },
+    "QUMSU": {
+      "sym": "QUMSU",
+      "price": 10.34000015258789,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": -0.09662056534548533,
+      "chg90d": 0.9765662471182551,
+      "chg1y": null,
+      "chgytd": 1.372552411183234,
+      "listDate": "2025-08-06",
+      "firstClose": 10.020000457763672,
+      "sector": null
+    },
+    "HCMAU": {
+      "sym": "HCMAU",
+      "price": 10.40999984741211,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 1.0679578120415363,
+      "chg90d": 0.5797049635843853,
+      "chg1y": null,
+      "chgytd": 1.7595338536685046,
+      "listDate": "2025-08-01",
+      "firstClose": 10.09000015258789,
+      "sector": null
+    },
+    "SI": {
+      "sym": "SI",
+      "price": 14.699999809265137,
+      "mcap": null,
+      "chg1d": -2.8420376862083754,
+      "chg7d": -1.8036102401303469,
+      "chg30d": 12.81657797788105,
+      "chg90d": 12.128147934603982,
+      "chg1y": null,
+      "chgytd": 8.487081936106637,
+      "listDate": "2025-07-31",
+      "firstClose": 15.050000190734863,
+      "sector": null
+    },
+    "BCARU": {
+      "sym": "BCARU",
+      "price": 11.859999656677246,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 10.841120262522479,
+      "chg90d": 9.308748752971992,
+      "chg1y": null,
+      "chgytd": 4.955747402566768,
+      "listDate": "2025-07-31",
+      "firstClose": 9.960000038146973,
+      "sector": null
+    },
+    "APADU": {
+      "sym": "APADU",
+      "price": 10,
+      "mcap": null,
+      "chg1d": -16.3879601329052,
+      "chg7d": -16.3879601329052,
+      "chg30d": -7.235619223491459,
+      "chg90d": -2.6290208931739953,
+      "chg1y": null,
+      "chgytd": -2.9126231570822863,
+      "listDate": "2025-07-30",
+      "firstClose": 10.010000228881836,
       "sector": null
     }
   },
@@ -17276,5 +17348,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:24:16.890Z"
+  "lastUpdated": "2026-05-31T05:24:45.890Z"
 }
