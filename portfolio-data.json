@@ -10336,6 +10336,7 @@
       "chg1y": null,
       "chgytd": -36.67144631425205,
       "listDate": "2025-09-11",
+      "firstClose": 31.110000610351562,
       "sector": null
     },
     "LBRX": {
@@ -10349,6 +10350,7 @@
       "chg1y": null,
       "chgytd": 44.47313239442392,
       "listDate": "2025-09-11",
+      "firstClose": 17.299999237060547,
       "sector": null
     },
     "KLAR": {
@@ -10362,6 +10364,7 @@
       "chg1y": null,
       "chgytd": -39.29637761376563,
       "listDate": "2025-09-11",
+      "firstClose": 42.7400016784668,
       "sector": null
     },
     "BLZRU": {
@@ -10375,6 +10378,7 @@
       "chg1y": null,
       "chgytd": 0.784312992176598,
       "listDate": "2025-09-09",
+      "firstClose": 10,
       "sector": null
     },
     "TLNCU": {
@@ -10388,6 +10392,7 @@
       "chg1y": null,
       "chgytd": 1.068995695675759,
       "listDate": "2025-09-09",
+      "firstClose": 10,
       "sector": null
     },
     "ZGM": {
@@ -10401,6 +10406,7 @@
       "chg1y": null,
       "chgytd": 9.65250997238671,
       "listDate": "2025-09-09",
+      "firstClose": 3.690000057220459,
       "sector": null
     },
     "FCHL": {
@@ -17108,5 +17114,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:21:16.889Z"
+  "lastUpdated": "2026-05-31T05:21:39.889Z"
 }
