@@ -9916,6 +9916,7 @@
       "chg1y": null,
       "chgytd": 9.704642623610482,
       "listDate": "2025-10-08",
+      "firstClose": 7,
       "sector": null
     },
     "POM": {
@@ -9929,6 +9930,7 @@
       "chg1y": null,
       "chgytd": -66.23376535412271,
       "listDate": "2025-10-08",
+      "firstClose": 4.03000020980835,
       "sector": null
     },
     "LKSPU": {
@@ -9942,6 +9944,7 @@
       "chg1y": null,
       "chgytd": 0.19665195613885875,
       "listDate": "2025-10-07",
+      "firstClose": 10,
       "sector": null
     },
     "GIWWU": {
@@ -9955,6 +9958,7 @@
       "chg1y": null,
       "chgytd": 0.3891046973934726,
       "listDate": "2025-10-06",
+      "firstClose": 10.020000457763672,
       "sector": null
     },
     "CCHH": {
@@ -9968,6 +9972,7 @@
       "chg1y": null,
       "chgytd": 14.285715299398753,
       "listDate": "2025-10-03",
+      "firstClose": 4.440000057220459,
       "sector": null
     },
     "RNGTU": {
@@ -9981,6 +9986,7 @@
       "chg1y": null,
       "chgytd": 3.55029235195547,
       "listDate": "2025-10-03",
+      "firstClose": 10,
       "sector": null
     },
     "CBK": {
@@ -9994,6 +10000,7 @@
       "chg1y": null,
       "chgytd": 14.415839166924505,
       "listDate": "2025-10-02",
+      "firstClose": 24,
       "sector": null
     },
     "AGRZ": {
@@ -10007,6 +10014,7 @@
       "chg1y": null,
       "chgytd": -32.42718453343913,
       "listDate": "2025-10-01",
+      "firstClose": 3.119999885559082,
       "sector": null
     },
     "NP": {
@@ -10020,6 +10028,7 @@
       "chg1y": null,
       "chgytd": 4.895364180634467,
       "listDate": "2025-10-01",
+      "firstClose": 24.799999237060547,
       "sector": null
     },
     "FRMI": {
@@ -10033,6 +10042,7 @@
       "chg1y": null,
       "chgytd": -28.115345091125988,
       "listDate": "2025-10-01",
+      "firstClose": 32.529998779296875,
       "sector": null
     },
     "APACU": {
@@ -10046,6 +10056,7 @@
       "chg1y": null,
       "chgytd": 2.0750992146416527,
       "listDate": "2025-09-30",
+      "firstClose": 9.970000267028809,
       "sector": null
     },
     "BDCIU": {
@@ -10059,6 +10070,7 @@
       "chg1y": null,
       "chgytd": -0.39331328960622536,
       "listDate": "2025-09-30",
+      "firstClose": 10.100000381469727,
       "sector": null
     },
     "KNRX": {
@@ -10072,6 +10084,7 @@
       "chg1y": null,
       "chgytd": -62.515337225894505,
       "listDate": "2025-09-29",
+      "firstClose": 3.200000047683716,
       "sector": null
     },
     "MGN": {
@@ -10085,6 +10098,7 @@
       "chg1y": null,
       "chgytd": -92.01086971662332,
       "listDate": "2025-09-26",
+      "firstClose": 4.849999904632568,
       "sector": null
     },
     "AEXA": {
@@ -10098,6 +10112,7 @@
       "chg1y": null,
       "chgytd": -1.9844736228005013,
       "listDate": "2025-09-26",
+      "firstClose": 10.609999656677246,
       "sector": null
     },
     "DMIIU": {
@@ -10111,6 +10126,7 @@
       "chg1y": null,
       "chgytd": 1.4485464612776797,
       "listDate": "2025-09-25",
+      "firstClose": 9.989999771118164,
       "sector": null
     },
     "PLTS": {
@@ -10124,6 +10140,7 @@
       "chg1y": null,
       "chgytd": 0,
       "listDate": "2025-09-19",
+      "firstClose": 7.130000114440918,
       "sector": null
     },
     "PTRN": {
@@ -10137,6 +10154,7 @@
       "chg1y": null,
       "chgytd": 44.42736806271585,
       "listDate": "2025-09-19",
+      "firstClose": 15.630000114440918,
       "sector": null
     },
     "LATAU": {
@@ -10150,6 +10168,7 @@
       "chg1y": null,
       "chgytd": 0.34313576535871476,
       "listDate": "2025-09-19",
+      "firstClose": 9.989999771118164,
       "sector": null
     },
     "NTSK": {
@@ -10163,6 +10182,7 @@
       "chg1y": null,
       "chgytd": -22.724377378456758,
       "listDate": "2025-09-18",
+      "firstClose": 22.489999771118164,
       "sector": null
     },
     "WBI": {
@@ -10176,6 +10196,7 @@
       "chg1y": null,
       "chgytd": 31.283658431537958,
       "listDate": "2025-09-17",
+      "firstClose": 22.829999923706055,
       "sector": null
     },
     "STUB": {
@@ -10189,6 +10210,7 @@
       "chg1y": null,
       "chgytd": -27.76556826205322,
       "listDate": "2025-09-17",
+      "firstClose": 22,
       "sector": null
     },
     "CHECU": {
@@ -10202,6 +10224,7 @@
       "chg1y": null,
       "chgytd": 2.286277660464466,
       "listDate": "2025-09-16",
+      "firstClose": 9.989999771118164,
       "sector": null
     },
     "CHOW": {
@@ -10215,6 +10238,7 @@
       "chg1y": null,
       "chgytd": -47.674418302437246,
       "listDate": "2025-09-16",
+      "firstClose": 12.609999656677246,
       "sector": null
     },
     "FOFO": {
@@ -17078,5 +17102,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:20:42.889Z"
+  "lastUpdated": "2026-05-31T05:20:53.889Z"
 }
