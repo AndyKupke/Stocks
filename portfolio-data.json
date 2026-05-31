@@ -9678,6 +9678,7 @@
       "chg1y": null,
       "chgytd": 0.2944130312160359,
       "listDate": "2025-11-07",
+      "firstClose": 10.0600004196167,
       "sector": null
     },
     "EVMN": {
@@ -9691,6 +9692,7 @@
       "chg1y": null,
       "chgytd": 9.317644904641543,
       "listDate": "2025-11-06",
+      "firstClose": 20.229999542236328,
       "sector": null
     },
     "AERO": {
@@ -9704,6 +9706,7 @@
       "chg1y": null,
       "chgytd": -11.666674945089223,
       "listDate": "2025-11-06",
+      "firstClose": 20.350000381469727,
       "sector": null
     },
     "BLLN": {
@@ -9717,6 +9720,7 @@
       "chg1y": null,
       "chgytd": 4.8956182925986305,
       "listDate": "2025-11-06",
+      "firstClose": 108.94000244140625,
       "sector": null
     },
     "MEHA": {
@@ -9730,6 +9734,7 @@
       "chg1y": null,
       "chgytd": -60.95237865469616,
       "listDate": "2025-11-05",
+      "firstClose": 2.75,
       "sector": null
     },
     "XZO": {
@@ -9743,6 +9748,7 @@
       "chg1y": null,
       "chgytd": -36.027710736699106,
       "listDate": "2025-11-05",
+      "firstClose": 21.010000228881836,
       "sector": null
     },
     "ELWT": {
@@ -16809,5 +16815,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:18:13.886Z"
+  "lastUpdated": "2026-05-31T05:18:46.887Z"
 }
