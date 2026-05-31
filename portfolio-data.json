@@ -7102,6 +7102,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-13",
+      "firstClose": 36.540000915527344,
       "sector": null
     },
     "PECEU": {
@@ -7423,6 +7424,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-14",
+      "firstClose": 21.84000015258789,
       "sector": null
     },
     "GMRS": {
@@ -7436,6 +7438,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-13",
+      "firstClose": 13.979999542236328,
       "sector": null
     },
     "BREZU": {
@@ -7449,6 +7452,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-13",
+      "firstClose": 10,
       "sector": null
     },
     "ODTX": {
@@ -7462,6 +7466,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-08",
+      "firstClose": 16.420000076293945,
       "sector": null
     },
     "MOBI": {
@@ -7475,6 +7480,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-08",
+      "firstClose": 11.75,
       "sector": null
     },
     "SUJA": {
@@ -7488,6 +7494,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-07",
+      "firstClose": 17.850000381469727,
       "sector": null
     },
     "HAWK": {
@@ -7501,6 +7508,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-07",
+      "firstClose": 34,
       "sector": null
     },
     "REA": {
@@ -7514,6 +7522,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-05",
+      "firstClose": 19,
       "sector": null
     },
     "COAG": {
@@ -7527,6 +7536,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-01",
+      "firstClose": 34,
       "sector": null
     },
     "SPTX": {
@@ -7540,6 +7550,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-01",
+      "firstClose": 19.84000015258789,
       "sector": null
     },
     "ARCLU": {
@@ -7553,6 +7564,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-30",
+      "firstClose": 10.020000457763672,
       "sector": null
     },
     "SBMT": {
@@ -7566,6 +7578,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-30",
+      "firstClose": 10.75,
       "sector": null
     },
     "FTHAU": {
@@ -7579,6 +7592,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-30",
+      "firstClose": 9.970000267028809,
       "sector": null
     },
     "MCAHU": {
@@ -7592,6 +7606,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-30",
+      "firstClose": 9.979999542236328,
       "sector": null
     },
     "RREVU": {
@@ -7605,6 +7620,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-30",
+      "firstClose": 9.979999542236328,
       "sector": null
     },
     "GCGRU": {
@@ -7618,6 +7634,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-30",
+      "firstClose": 10.050000190734863,
       "sector": null
     },
     "AVLN": {
@@ -7631,6 +7648,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-30",
+      "firstClose": 29.489999771118164,
       "sector": null
     },
     "CAIIU": {
@@ -16686,5 +16704,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:12:22.883Z"
+  "lastUpdated": "2026-05-31T05:12:30.883Z"
 }
