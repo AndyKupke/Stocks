@@ -9762,6 +9762,7 @@
       "chg1y": null,
       "chgytd": 30.608699632727582,
       "listDate": "2025-11-05",
+      "firstClose": 7.199999809265137,
       "sector": null
     },
     "CEPV": {
@@ -9775,6 +9776,7 @@
       "chg1y": null,
       "chgytd": 0.48780673887671494,
       "listDate": "2025-11-04",
+      "firstClose": 10.300000190734863,
       "sector": null
     },
     "WSTNU": {
@@ -9788,6 +9790,7 @@
       "chg1y": null,
       "chgytd": 1.3902715746328307,
       "listDate": "2026-01-13",
+      "firstClose": 10.069999694824219,
       "sector": null
     },
     "BETA": {
@@ -9801,6 +9804,7 @@
       "chg1y": null,
       "chgytd": -32.9433276168666,
       "listDate": "2025-11-04",
+      "firstClose": 36,
       "sector": null
     },
     "NOMA": {
@@ -9814,6 +9818,7 @@
       "chg1y": null,
       "chgytd": -22.394682430697905,
       "listDate": "2025-11-03",
+      "firstClose": 11.5,
       "sector": null
     },
     "TCGL": {
@@ -16815,5 +16820,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:18:46.887Z"
+  "lastUpdated": "2026-05-31T05:19:25.888Z"
 }
