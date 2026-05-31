@@ -10420,6 +10420,7 @@
       "chg1y": null,
       "chgytd": -98.81136949752913,
       "listDate": "2025-09-04",
+      "firstClose": 1912.5,
       "sector": null
     },
     "GSRFU": {
@@ -10433,6 +10434,7 @@
       "chg1y": null,
       "chgytd": 1.2560304925142558,
       "listDate": "2025-09-04",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "SVACU": {
@@ -10446,6 +10448,7 @@
       "chg1y": null,
       "chgytd": 6.777252508637983,
       "listDate": "2025-09-04",
+      "firstClose": 10,
       "sector": null
     },
     "PMI": {
@@ -10459,6 +10462,7 @@
       "chg1y": null,
       "chgytd": -91.63841788123199,
       "listDate": "2025-08-29",
+      "firstClose": 4.590000152587891,
       "sector": null
     },
     "ELOG": {
@@ -10472,6 +10476,7 @@
       "chg1y": null,
       "chgytd": -44.80519188980479,
       "listDate": "2025-08-28",
+      "firstClose": 2.9600000381469727,
       "sector": null
     },
     "TGHL": {
@@ -10485,6 +10490,7 @@
       "chg1y": null,
       "chgytd": -19.069771116781713,
       "listDate": "2025-08-28",
+      "firstClose": 3.380000114440918,
       "sector": null
     },
     "THH": {
@@ -17114,5 +17120,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:21:39.889Z"
+  "lastUpdated": "2026-05-31T05:22:02.888Z"
 }
