@@ -8642,6 +8642,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-02",
+      "firstClose": 35,
       "sector": null
     },
     "VHUB": {
@@ -8655,6 +8656,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-30",
+      "firstClose": 6.420000076293945,
       "sector": null
     },
     "NBRGU": {
@@ -8668,6 +8670,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-30",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "MUZEU": {
@@ -8681,6 +8684,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-30",
+      "firstClose": 10,
       "sector": null
     },
     "MEVOU": {
@@ -8694,6 +8698,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-30",
+      "firstClose": 10.039999961853027,
       "sector": null
     },
     "YSS": {
@@ -8707,6 +8712,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-29",
+      "firstClose": 33.61000061035156,
       "sector": null
     },
     "KTWOU": {
@@ -8720,6 +8726,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-29",
+      "firstClose": 10.029999732971191,
       "sector": null
     },
     "XSLLU": {
@@ -8733,6 +8740,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-29",
+      "firstClose": 9.920000076293945,
       "sector": null
     },
     "LIFE": {
@@ -8746,6 +8754,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-29",
+      "firstClose": 16.850000381469727,
       "sector": null
     },
     "PICS": {
@@ -8759,6 +8768,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-29",
+      "firstClose": 19,
       "sector": null
     },
     "PPHC": {
@@ -8772,6 +8782,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-28",
+      "firstClose": 11.279999732971191,
       "sector": null
     },
     "SAAQU": {
@@ -8785,6 +8796,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-28",
+      "firstClose": 10.199999809265137,
       "sector": null
     },
     "KRAQU": {
@@ -8798,6 +8810,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-28",
+      "firstClose": 10.100000381469727,
       "sector": null
     },
     "VTIX": {
@@ -8811,6 +8824,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-27",
+      "firstClose": 24.389999389648438,
       "sector": null
     },
     "MLAAU": {
@@ -8824,6 +8838,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-27",
+      "firstClose": 10,
       "sector": null
     },
     "GIXXU": {
@@ -8837,6 +8852,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-01-27",
+      "firstClose": 10.029999732971191,
       "sector": null
     },
     "ARCIU": {
@@ -16748,5 +16764,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:14:56.891Z"
+  "lastUpdated": "2026-05-31T05:15:24.886Z"
 }
