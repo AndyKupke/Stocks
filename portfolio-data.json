@@ -5096,7 +5096,9 @@
       "chg90d": -5.290289556836918,
       "chg1y": null,
       "chgytd": -11.976802870083587,
-      "listDate": "2025-08-13"
+      "listDate": "2025-08-13",
+      "firstClose": 68,
+      "sector": null
     },
     "HLT": {
       "sym": "HLT",
@@ -11353,6 +11355,76 @@
       "listDate": "2025-10-15",
       "firstClose": 5.28000020980835,
       "sector": null
+    },
+    "NSRX": {
+      "sym": "NSRX",
+      "price": 3.359999895095825,
+      "mcap": null,
+      "chg1d": 4.999995157122685,
+      "chg7d": 11.258275374723747,
+      "chg30d": 24.444438361336772,
+      "chg90d": -32.800002098083496,
+      "chg1y": null,
+      "chgytd": -52.67605717989501,
+      "listDate": "2025-08-13",
+      "firstClose": 8.25,
+      "sector": null
+    },
+    "MKLYU": {
+      "sym": "MKLYU",
+      "price": 10.270000457763672,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.5876632653528254,
+      "chg90d": 1.1822743225952421,
+      "chg1y": null,
+      "chgytd": 1.382036937227425,
+      "listDate": "2025-08-12",
+      "firstClose": 9.979999542236328,
+      "sector": null
+    },
+    "HVMCU": {
+      "sym": "HVMCU",
+      "price": 10.350000381469727,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 1.4904925272444312,
+      "chg1y": null,
+      "chgytd": 1.9704509404544526,
+      "listDate": "2025-08-12",
+      "firstClose": 10.010000228881836,
+      "sector": null
+    },
+    "MAGH": {
+      "sym": "MAGH",
+      "price": 6.760000228881836,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0,
+      "chg1y": null,
+      "chgytd": 0,
+      "listDate": "2025-08-12",
+      "firstClose": 4.059999942779541,
+      "sector": null
+    },
+    "SSEAU": {
+      "sym": "SSEAU",
+      "price": 10.350000381469727,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 1.9704509404544526,
+      "chg1y": null,
+      "chgytd": 1.2720167421161137,
+      "listDate": "2025-08-08",
+      "firstClose": 10.029999732971191,
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -17132,5 +17204,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:22:59.889Z"
+  "lastUpdated": "2026-05-31T05:23:34.890Z"
 }
