@@ -7662,6 +7662,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-29",
+      "firstClose": 9.949999809265137,
       "sector": null
     },
     "PS": {
@@ -7675,6 +7676,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-29",
+      "firstClose": 24.200000762939453,
       "sector": null
     },
     "CXIIU": {
@@ -7688,6 +7690,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-28",
+      "firstClose": 10.079999923706055,
       "sector": null
     },
     "IACQU": {
@@ -7701,6 +7704,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-28",
+      "firstClose": 10,
       "sector": null
     },
     "XE": {
@@ -7714,6 +7718,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-24",
+      "firstClose": 29.200000762939453,
       "sector": null
     },
     "LABT": {
@@ -7727,6 +7732,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-23",
+      "firstClose": 8.649999618530273,
       "sector": null
     },
     "ELMT": {
@@ -7740,6 +7746,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-23",
+      "firstClose": 17.90999984741211,
       "sector": null
     },
     "NHP": {
@@ -7753,6 +7760,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-22",
+      "firstClose": 12,
       "sector": null
     },
     "YSWY": {
@@ -7766,6 +7774,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-22",
+      "firstClose": 21.229999542236328,
       "sector": null
     },
     "DETX": {
@@ -7779,6 +7788,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-21",
+      "firstClose": 5.710000038146973,
       "sector": null
     },
     "KLRA": {
@@ -7792,6 +7802,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-04-17",
+      "firstClose": 26,
       "sector": null
     },
     "ALMR": {
@@ -16704,5 +16715,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:12:30.883Z"
+  "lastUpdated": "2026-05-31T05:12:36.884Z"
 }
