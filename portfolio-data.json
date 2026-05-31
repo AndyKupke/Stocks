@@ -9594,6 +9594,7 @@
       "chg1y": null,
       "chgytd": 19.584837525705847,
       "listDate": "2025-11-13",
+      "firstClose": 3.799999952316284,
       "sector": null
     },
     "CABR": {
@@ -9607,6 +9608,7 @@
       "chg1y": null,
       "chgytd": 24.022350610111825,
       "listDate": "2025-11-17",
+      "firstClose": 0.8330000042915344,
       "sector": null
     },
     "POAS": {
@@ -9620,6 +9622,7 @@
       "chg1y": null,
       "chgytd": -83.88888848007788,
       "listDate": "2025-11-13",
+      "firstClose": 3.8499999046325684,
       "sector": null
     },
     "BPACU": {
@@ -9633,6 +9636,7 @@
       "chg1y": null,
       "chgytd": 5.729880069554473,
       "listDate": "2025-11-12",
+      "firstClose": 10.050000190734863,
       "sector": null
     },
     "EVOXU": {
@@ -9646,6 +9650,7 @@
       "chg1y": null,
       "chgytd": 0.5922948199857373,
       "listDate": "2025-11-11",
+      "firstClose": 10.130000114440918,
       "sector": null
     },
     "TDWDU": {
@@ -9659,6 +9664,7 @@
       "chg1y": null,
       "chgytd": 0,
       "listDate": "2025-11-07",
+      "firstClose": 10.039999961853027,
       "sector": null
     },
     "CRACU": {
@@ -16803,5 +16809,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:17:33.888Z"
+  "lastUpdated": "2026-05-31T05:18:13.886Z"
 }
