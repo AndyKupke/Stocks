@@ -8180,6 +8180,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-23",
+      "firstClose": 5.300000190734863,
       "sector": null
     },
     "AACOU": {
@@ -8193,6 +8194,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-19",
+      "firstClose": 9.970000267028809,
       "sector": null
     },
     "ACAAU": {
@@ -8206,6 +8208,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-19",
+      "firstClose": 10,
       "sector": null
     },
     "PALOU": {
@@ -8219,6 +8222,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-19",
+      "firstClose": 10,
       "sector": null
     },
     "AIDX": {
@@ -8232,6 +8236,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-19",
+      "firstClose": 23.850000381469727,
       "sector": null
     },
     "SHAZ": {
@@ -8245,6 +8250,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-18",
+      "firstClose": 31.700000762939453,
       "sector": null
     },
     "AACIU": {
@@ -16715,5 +16721,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:13:23.884Z"
+  "lastUpdated": "2026-05-31T05:14:04.901Z"
 }
