@@ -9454,6 +9454,7 @@
       "chg1y": null,
       "chgytd": -72.13015937552866,
       "listDate": "2025-12-04",
+      "firstClose": 7.5,
       "sector": null
     },
     "PARK": {
@@ -9467,6 +9468,7 @@
       "chg1y": null,
       "chgytd": 18.17072933873268,
       "listDate": "2025-12-03",
+      "firstClose": 10.25,
       "sector": null
     },
     "GPACU": {
@@ -9480,6 +9482,7 @@
       "chg1y": null,
       "chgytd": 0.7992000187495605,
       "listDate": "2025-12-03",
+      "firstClose": 10,
       "sector": null
     },
     "BIXIU": {
@@ -9493,6 +9496,7 @@
       "chg1y": null,
       "chgytd": 0.2973214322845878,
       "listDate": "2025-12-02",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "SCIIU": {
@@ -9506,6 +9510,7 @@
       "chg1y": null,
       "chgytd": 0.5928895286087692,
       "listDate": "2025-11-26",
+      "firstClose": 10.039999961853027,
       "sector": null
     },
     "IGACU": {
@@ -16793,5 +16798,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:16:51.886Z"
+  "lastUpdated": "2026-05-31T05:16:57.885Z"
 }
