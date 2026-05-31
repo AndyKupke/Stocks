@@ -8586,6 +8586,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-05",
+      "firstClose": 17.020000457763672,
       "sector": null
     },
     "FPS": {
@@ -8599,6 +8600,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-05",
+      "firstClose": 29,
       "sector": null
     },
     "MANE": {
@@ -8612,6 +8614,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-04",
+      "firstClose": 37.75,
       "sector": null
     },
     "OBAI": {
@@ -8625,6 +8628,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-04",
+      "firstClose": 33,
       "sector": null
     },
     "PLYX": {
@@ -16744,5 +16748,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:14:23.885Z"
+  "lastUpdated": "2026-05-31T05:14:56.891Z"
 }
