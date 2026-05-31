@@ -11125,6 +11125,90 @@
       "listDate": "2025-10-24",
       "firstClose": 10.010000228881836,
       "sector": null
+    },
+    "MMTXU": {
+      "sym": "MMTXU",
+      "price": 10.100000381469727,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0.2979214255679429,
+      "chg1y": null,
+      "chgytd": 0.7984023957211434,
+      "listDate": "2025-10-23",
+      "firstClose": 9.989999771118164,
+      "sector": null
+    },
+    "HAVAU": {
+      "sym": "HAVAU",
+      "price": 10.274999618530273,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 1.431386993595884,
+      "chg90d": 1.9345207966283826,
+      "chg1y": null,
+      "chgytd": 2.6473464894020204,
+      "listDate": "2025-10-23",
+      "firstClose": 9.979999542236328,
+      "sector": null
+    },
+    "ALISU": {
+      "sym": "ALISU",
+      "price": 10.569999694824219,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.6666637602306548,
+      "chg90d": -4.343895815613763,
+      "chg1y": null,
+      "chgytd": 0.1895687557135712,
+      "listDate": "2025-10-22",
+      "firstClose": 9.989999771118164,
+      "sector": null
+    },
+    "NPT": {
+      "sym": "NPT",
+      "price": 1.25,
+      "mcap": null,
+      "chg1d": -2.343747817212667,
+      "chg7d": -0.7936500427734288,
+      "chg30d": -24.242423147756735,
+      "chg90d": -91.61073804025172,
+      "chg1y": null,
+      "chgytd": -78.26086956521739,
+      "listDate": "2025-10-22",
+      "firstClose": 4.909999847412109,
+      "sector": null
+    },
+    "AGCC": {
+      "sym": "AGCC",
+      "price": 17.989999771118164,
+      "mcap": null,
+      "chg1d": 5.081769212832133,
+      "chg7d": -2.5460419104236296,
+      "chg30d": -1.9083990106747044,
+      "chg90d": 28.31668462004991,
+      "chg1y": null,
+      "chgytd": 52.199663583711306,
+      "listDate": "2025-10-22",
+      "firstClose": 6.050000190734863,
+      "sector": null
+    },
+    "MCTA": {
+      "sym": "MCTA",
+      "price": 29.354999542236328,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0,
+      "chg1y": null,
+      "chgytd": 0,
+      "listDate": "2025-10-21",
+      "firstClose": 7,
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -16904,5 +16988,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:19:48.888Z"
+  "lastUpdated": "2026-05-31T05:19:59.419Z"
 }
