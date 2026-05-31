@@ -11702,6 +11702,90 @@
       "listDate": "2025-07-17",
       "firstClose": 3.5199999809265137,
       "sector": null
+    },
+    "GTERU": {
+      "sym": "GTERU",
+      "price": 10.390000343322754,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.19286844729404334,
+      "chg90d": -0.2400347443287511,
+      "chg1y": null,
+      "chgytd": 0.775944912221729,
+      "listDate": "2025-07-09",
+      "firstClose": 10.039999961853027,
+      "sector": null
+    },
+    "DLXY": {
+      "sym": "DLXY",
+      "price": 0.48500001430511475,
+      "mcap": null,
+      "chg1d": 3.6324828506099984,
+      "chg7d": 0.6224110004948917,
+      "chg30d": -26.62632306979244,
+      "chg90d": -66.31944478937872,
+      "chg1y": null,
+      "chgytd": -46.349555005824314,
+      "listDate": "2025-07-09",
+      "firstClose": 4.949999809265137,
+      "sector": null
+    },
+    "ANPA": {
+      "sym": "ANPA",
+      "price": 6.130000114440918,
+      "mcap": null,
+      "chg1d": -6.010422131035176,
+      "chg7d": -1.9199981689453125,
+      "chg30d": 3.9864314550425064,
+      "chg90d": -32.85870714563192,
+      "chg1y": null,
+      "chgytd": -95.72046922692037,
+      "listDate": "2025-07-08",
+      "firstClose": 3.5199999809265137,
+      "sector": null
+    },
+    "MSGY": {
+      "sym": "MSGY",
+      "price": 0.45500001311302185,
+      "mcap": null,
+      "chg1d": -3.397021931662577,
+      "chg7d": -1.9396495246786358,
+      "chg30d": -3.6016927213889502,
+      "chg90d": -7.520325092446257,
+      "chg1y": null,
+      "chgytd": -85.13071824767016,
+      "listDate": "2025-07-08",
+      "firstClose": 4.269999980926514,
+      "sector": null
+    },
+    "TLIH": {
+      "sym": "TLIH",
+      "price": 3.7699999809265137,
+      "mcap": null,
+      "chg1d": 0.8021382704083594,
+      "chg7d": 10.882349270025442,
+      "chg30d": 2.4456497971919604,
+      "chg90d": 10.557181408637058,
+      "chg1y": null,
+      "chgytd": -21.294363028176797,
+      "listDate": "2025-07-08",
+      "firstClose": 37.29999923706055,
+      "sector": null
+    },
+    "MAMK": {
+      "sym": "MAMK",
+      "price": 13,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0,
+      "chg1y": null,
+      "chgytd": 0,
+      "listDate": "2025-07-07",
+      "firstClose": 3.690000057220459,
+      "sector": null
     }
   },
   "additionalShares": {},
@@ -17481,5 +17565,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:26:55.892Z"
+  "lastUpdated": "2026-05-31T05:27:33.892Z"
 }
