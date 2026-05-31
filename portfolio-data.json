@@ -9173,6 +9173,7 @@
       "chg1y": null,
       "chgytd": 0.5000019073486328,
       "listDate": "2025-12-18",
+      "firstClose": 10,
       "sector": null
     },
     "MDLN": {
@@ -9199,6 +9200,7 @@
       "chg1y": null,
       "chgytd": 0.09765848735701636,
       "listDate": "2025-12-17",
+      "firstClose": 10.210000038146973,
       "sector": null
     },
     "IRHOU": {
@@ -9212,6 +9214,7 @@
       "chg1y": null,
       "chgytd": 2.0060160873469997,
       "listDate": "2025-12-17",
+      "firstClose": 10,
       "sector": null
     },
     "ANDG": {
@@ -9225,6 +9228,7 @@
       "chg1y": null,
       "chgytd": 56.779658482767225,
       "listDate": "2025-12-17",
+      "firstClose": 23.5,
       "sector": null
     },
     "CRANU": {
@@ -16785,5 +16789,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:15:32.375Z"
+  "lastUpdated": "2026-05-31T05:15:46.305Z"
 }
