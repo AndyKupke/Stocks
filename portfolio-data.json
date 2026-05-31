@@ -10763,6 +10763,7 @@
       "chg1y": null,
       "chgytd": 14.91525593587494,
       "listDate": "2025-07-02",
+      "firstClose": 3.5,
       "sector": null
     },
     "INACU": {
@@ -10776,6 +10777,7 @@
       "chg1y": null,
       "chgytd": 1.6732291225107319,
       "listDate": "2025-07-01",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "CCIIU": {
@@ -10789,6 +10791,7 @@
       "chg1y": null,
       "chgytd": 0.4821619217613675,
       "listDate": "2025-07-01",
+      "firstClose": 10.140000343322754,
       "sector": null
     },
     "NMPAU": {
@@ -10802,6 +10805,7 @@
       "chg1y": null,
       "chgytd": 1.3177182078071719,
       "listDate": "2025-07-01",
+      "firstClose": 9.960000038146973,
       "sector": null
     },
     "GRAN": {
@@ -10815,6 +10819,7 @@
       "chg1y": null,
       "chgytd": -75.58139754089544,
       "listDate": "2025-07-01",
+      "firstClose": 4.599999904632568,
       "sector": null
     },
     "FIGXU": {
@@ -17623,5 +17628,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:28:14.893Z"
+  "lastUpdated": "2026-05-31T05:28:52.892Z"
 }
