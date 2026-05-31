@@ -8334,6 +8334,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-12",
+      "firstClose": 10.100000381469727,
       "sector": null
     },
     "BRAI": {
@@ -8347,6 +8348,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-12",
+      "firstClose": 14.84333324432373,
       "sector": null
     },
     "DBCAU": {
@@ -8360,6 +8362,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-11",
+      "firstClose": 9.970000267028809,
       "sector": null
     },
     "IACOU": {
@@ -8373,6 +8376,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-11",
+      "firstClose": 9.9399995803833,
       "sector": null
     },
     "TMTSU": {
@@ -8386,6 +8390,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-11",
+      "firstClose": 10.0600004196167,
       "sector": null
     },
     "AGBK": {
@@ -8399,6 +8404,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-11",
+      "firstClose": 10.75,
       "sector": null
     },
     "MWH": {
@@ -8412,6 +8418,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-12",
+      "firstClose": 30.90999984741211,
       "sector": null
     },
     "CMIIU": {
@@ -8425,6 +8432,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-11",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "SVIVU": {
@@ -8438,6 +8446,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-10",
+      "firstClose": 10.079999923706055,
       "sector": null
     },
     "JAGU": {
@@ -8451,6 +8460,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-09",
+      "firstClose": 4,
       "sector": null
     },
     "CAQUU": {
@@ -8464,6 +8474,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-06",
+      "firstClose": 9.949999809265137,
       "sector": null
     },
     "AGMB": {
@@ -8477,6 +8488,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-06",
+      "firstClose": 14.649999618530273,
       "sector": null
     },
     "SSACU": {
@@ -8490,6 +8502,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-06",
+      "firstClose": 10.020000457763672,
       "sector": null
     },
     "OFRM": {
@@ -8503,6 +8516,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-06",
+      "firstClose": 21.049999237060547,
       "sector": null
     },
     "SGP": {
@@ -8516,6 +8530,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-06",
+      "firstClose": 26.399999618530273,
       "sector": null
     },
     "EIKN": {
@@ -8529,6 +8544,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-05",
+      "firstClose": 15,
       "sector": null
     },
     "HCICU": {
@@ -8542,6 +8558,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-05",
+      "firstClose": 10.029999732971191,
       "sector": null
     },
     "CEPS": {
@@ -8555,6 +8572,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-05",
+      "firstClose": 10.149999618530273,
       "sector": null
     },
     "BOBS": {
@@ -16726,5 +16744,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:14:16.142Z"
+  "lastUpdated": "2026-05-31T05:14:23.885Z"
 }
