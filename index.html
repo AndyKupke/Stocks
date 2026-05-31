@@ -3214,6 +3214,9 @@ function processYahooCandles(sym, result) {
   const ftd = meta.firstTradeDate;
   const listDate = ftd ? new Date(ftd * 1000).toISOString().slice(0, 10) : null;
 
+  // firstClose = oldest candle in our window (= IPO day price for stocks listed < 400 days ago)
+  const firstClose = candles[0]?.c || null;
+
   return {
     price, mcap,
     chg1d:  prev   ? ((price - prev) / prev) * 100 : null,
@@ -3223,6 +3226,7 @@ function processYahooCandles(sym, result) {
     chg1y:  pctVs(365),
     chgytd,
     listDate,   // YYYY-MM-DD of first trading day from Yahoo
+    firstClose, // price on first available trading day (≈ IPO price for recent listings)
   };
 }
 
@@ -5937,8 +5941,10 @@ function ipoApplySort() {
     else if (ipoSortKey === 'chg7d')    { av = pda.chg7d   ?? -9999; bv = pdb.chg7d   ?? -9999; }
     else if (ipoSortKey === 'chg30d')   { av = pda.chg30d  ?? -9999; bv = pdb.chg30d  ?? -9999; }
     else if (ipoSortKey === 'chg90d')   { av = pda.chg90d  ?? -9999; bv = pdb.chg90d  ?? -9999; }
-    else if (ipoSortKey === 'chg1y')    { av = pda.chg1y   ?? -9999; bv = pdb.chg1y   ?? -9999; }
-    else if (ipoSortKey === 'chgytd')   { av = pda.chgytd  ?? -9999; bv = pdb.chgytd  ?? -9999; }
+    else if (ipoSortKey === 'chgipo')   {
+      av = (pda.firstClose > 0 && pda.price != null) ? (pda.price - pda.firstClose) / pda.firstClose * 100 : -9999;
+      bv = (pdb.firstClose > 0 && pdb.price != null) ? (pdb.price - pdb.firstClose) / pdb.firstClose * 100 : -9999;
+    }
     else if (ipoSortKey === 'assessed') { av = a.assessed ? 1 : 0; bv = b.assessed ? 1 : 0; }
     else                                { av = a.date;     bv = b.date; }
     if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
@@ -6021,14 +6027,13 @@ function buildIpoThead() {
     <th class="cgrp-hdr${dH}" onclick="ipoSort('region')" style="cursor:pointer">Region</th>
     <th class="cgrp-hdr${dH}" onclick="ipoSort('exchange')" style="cursor:pointer">Exch.</th>
     <th style="text-align:right" onclick="ipoSort('price')">Price</th>
-    <th class="cgrp-toggle" onclick="toggleIpoColGroup('perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y, YTD">${pLbl}</th>
+    <th class="cgrp-toggle" onclick="toggleIpoColGroup('perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, vs IPO">${pLbl}</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('mcap')">Mkt Cap</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg1d')">1D</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg7d')">7D</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg30d')">30D</th>
     <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg90d')">90D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chg1y')">1Y</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chgytd')">YTD</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="ipoSort('chgipo')" title="% change from first trading day price">vs IPO</th>
     <th></th>
   </tr>`;
 }
@@ -6040,7 +6045,7 @@ function renderIpoTable() {
   if (!thead || !tb || !tf) return;
   thead.innerHTML = buildIpoThead();
   const days = document.getElementById('ipo-window')?.value || '90';
-  const COLS = 21;
+  const COLS = 20;
 
   if (!ipoDisp.length) {
     tb.innerHTML = `<tr><td colspan="${COLS}" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">${ipoAllData.length === 0 ? 'No IPO data yet — click ⚡ Fetch new IPOs' : 'No IPOs match filters'}</td></tr>`;
@@ -6054,6 +6059,8 @@ function renderIpoTable() {
   tb.innerHTML = ipoDisp.map(s => {
     const pd = priceData[s.t] || {};
     const inList = !!ST.find(st => st.t === s.t);
+    const chgIpo = (pd.firstClose > 0 && pd.price != null)
+      ? (pd.price - pd.firstClose) / pd.firstClose * 100 : null;
     const liveCell = pd.price != null
       ? fmtPrice(pd.price, s.ex)
       : `<span style="color:var(--txt3)">—</span>`;
@@ -6081,8 +6088,7 @@ function renderIpoTable() {
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg7d)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg30d)}</td>
       <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg90d)}</td>
-      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chg1y)}</td>
-      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(pd.chgytd)}</td>
+      <td class="cgrp-cell ipo-perf${perfH}" style="text-align:right">${fmtChg(chgIpo)}</td>
       <td style="white-space:nowrap">
         <button class="ab-btn" style="margin-right:3px" onclick="fetchSinglePrice('${s.t}',this)" title="Fetch live price">&#9889;</button>
         ${actionCell}
