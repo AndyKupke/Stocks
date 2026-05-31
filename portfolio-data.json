@@ -11113,7 +11113,9 @@
       "chg90d": 0.2909770295849001,
       "chg1y": null,
       "chgytd": -0.33734792686370485,
-      "listDate": "2025-07-02"
+      "listDate": "2025-07-02",
+      "firstClose": 10.239999771118164,
+      "sector": null
     },
     "DNMXU": {
       "sym": "DNMXU",
@@ -11785,6 +11787,62 @@
       "chgytd": 0,
       "listDate": "2025-07-07",
       "firstClose": 3.690000057220459,
+      "sector": null
+    },
+    "EMPG": {
+      "sym": "EMPG",
+      "price": 17.360000610351562,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0,
+      "chg90d": 0,
+      "chg1y": null,
+      "chgytd": 0,
+      "listDate": "2025-07-02",
+      "firstClose": 4.349999904632568,
+      "sector": null
+    },
+    "VNMEU": {
+      "sym": "VNMEU",
+      "price": 10.279999732971191,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0,
+      "chg30d": 0.39062463620211113,
+      "chg90d": 0.39062463620211113,
+      "chg1y": null,
+      "chgytd": 0.8832203758001061,
+      "listDate": "2025-07-02",
+      "firstClose": 9.970000267028809,
+      "sector": null
+    },
+    "ORIQU": {
+      "sym": "ORIQU",
+      "price": 10.300000190734863,
+      "mcap": null,
+      "chg1d": 0,
+      "chg7d": 0.980395915094935,
+      "chg30d": 0.980395915094935,
+      "chg90d": 0.19455698719061362,
+      "chg1y": null,
+      "chgytd": 1.0794957299441301,
+      "listDate": "2025-07-02",
+      "firstClose": 9.979999542236328,
+      "sector": null
+    },
+    "COSO": {
+      "sym": "COSO",
+      "price": 25.530000686645508,
+      "mcap": null,
+      "chg1d": -0.6614788764484902,
+      "chg7d": -0.8158472662780981,
+      "chg30d": 0,
+      "chg90d": 2.6537990556515534,
+      "chg1y": 21.571431841169083,
+      "chgytd": 7.133868100638534,
+      "listDate": "2025-05-08",
+      "firstClose": 20.899999618530273,
       "sector": null
     }
   },
@@ -17565,5 +17623,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:27:33.892Z"
+  "lastUpdated": "2026-05-31T05:28:14.893Z"
 }
