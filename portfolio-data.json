@@ -9832,6 +9832,7 @@
       "chg1y": null,
       "chgytd": 2079.5712494246236,
       "listDate": "2025-10-15",
+      "firstClose": 4.929999828338623,
       "sector": null
     },
     "RPGL": {
@@ -9845,6 +9846,7 @@
       "chg1y": null,
       "chgytd": -96.83992357954835,
       "listDate": "2025-10-14",
+      "firstClose": 3984,
       "sector": null
     },
     "LFS": {
@@ -9858,6 +9860,7 @@
       "chg1y": null,
       "chgytd": -10.43770841054844,
       "listDate": "2025-10-09",
+      "firstClose": 3.109999895095825,
       "sector": null
     },
     "YDDL": {
@@ -9871,6 +9874,7 @@
       "chg1y": null,
       "chgytd": -37.84786664907943,
       "listDate": "2025-10-09",
+      "firstClose": 5.420000076293945,
       "sector": null
     },
     "ALH": {
@@ -9884,6 +9888,7 @@
       "chg1y": null,
       "chgytd": 15.507773536123054,
       "listDate": "2025-10-09",
+      "firstClose": 24.81999969482422,
       "sector": null
     },
     "PXED": {
@@ -9897,6 +9902,7 @@
       "chg1y": null,
       "chgytd": 6.5163804904633915,
       "listDate": "2025-10-09",
+      "firstClose": 38.150001525878906,
       "sector": null
     },
     "TTRX": {
@@ -17072,5 +17078,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:20:20.192Z"
+  "lastUpdated": "2026-05-31T05:20:42.889Z"
 }
