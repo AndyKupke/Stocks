@@ -9524,6 +9524,7 @@
       "chg1y": null,
       "chgytd": 0.6400840548185723,
       "listDate": "2025-11-25",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "HCACU": {
@@ -9537,6 +9538,7 @@
       "chg1y": null,
       "chgytd": 2.7888419724606592,
       "listDate": "2025-11-21",
+      "firstClose": 10.020000457763672,
       "sector": null
     },
     "CBC": {
@@ -9550,6 +9552,7 @@
       "chg1y": null,
       "chgytd": 17.452436973092976,
       "listDate": "2025-11-21",
+      "firstClose": 23.56999969482422,
       "sector": null
     },
     "GLOO": {
@@ -9563,6 +9566,7 @@
       "chg1y": null,
       "chgytd": -13.882356531479779,
       "listDate": "2025-11-18",
+      "firstClose": 8,
       "sector": null
     },
     "WSHP": {
@@ -9576,6 +9580,7 @@
       "chg1y": null,
       "chgytd": -91.13137759269321,
       "listDate": "2025-11-14",
+      "firstClose": 30.209999084472656,
       "sector": null
     },
     "OTH": {
@@ -16798,5 +16803,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:16:57.885Z"
+  "lastUpdated": "2026-05-31T05:17:33.888Z"
 }
