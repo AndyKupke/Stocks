@@ -7269,6 +7269,7 @@
       "chg1y": 4418.072461118067,
       "chgytd": 2179.6352847906337,
       "listDate": "2021-01-08",
+      "firstClose": 0.23999999463558197,
       "sector": null
     },
     "GUACU": {
@@ -7282,6 +7283,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-15",
+      "firstClose": 10.010000228881836,
       "sector": null
     },
     "PTACU": {
@@ -7295,6 +7297,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-15",
+      "firstClose": 9.930000305175781,
       "sector": null
     },
     "EXYN": {
@@ -7308,6 +7311,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-15",
+      "firstClose": 5.199999809265137,
       "sector": null
     },
     "IDACU": {
@@ -7321,6 +7325,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-15",
+      "firstClose": 10,
       "sector": null
     },
     "VIDA": {
@@ -7334,6 +7339,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-15",
+      "firstClose": 2.5199999809265137,
       "sector": null
     },
     "CBRS": {
@@ -7347,6 +7353,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-14",
+      "firstClose": 311.07000732421875,
       "sector": null
     },
     "AIAI": {
@@ -7360,6 +7367,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-14",
+      "firstClose": 15.09000015258789,
       "sector": null
     },
     "MWC": {
@@ -7373,6 +7381,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-14",
+      "firstClose": 8.199999809265137,
       "sector": null
     },
     "GSRVU": {
@@ -7386,6 +7395,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-14",
+      "firstClose": 9.989999771118164,
       "sector": null
     },
     "BXDC": {
@@ -7399,6 +7409,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-05-14",
+      "firstClose": 19.809999465942383,
       "sector": null
     },
     "EROK": {
@@ -16675,5 +16686,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:12:10.105Z"
+  "lastUpdated": "2026-05-31T05:12:22.883Z"
 }
