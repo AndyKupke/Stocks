@@ -8264,6 +8264,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-18",
+      "firstClose": 9.970000267028809,
       "sector": null
     },
     "RFAMU": {
@@ -8277,6 +8278,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-13",
+      "firstClose": 9.90999984741211,
       "sector": null
     },
     "WLIIU": {
@@ -8290,6 +8292,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-13",
+      "firstClose": 10.079999923706055,
       "sector": null
     },
     "PAACU": {
@@ -8303,6 +8306,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-12",
+      "firstClose": 9.989999771118164,
       "sector": null
     },
     "APC": {
@@ -8316,6 +8320,7 @@
       "chg1y": null,
       "chgytd": null,
       "listDate": "2026-02-12",
+      "firstClose": 17.549999237060547,
       "sector": null
     },
     "HACQU": {
@@ -16721,5 +16726,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:14:04.901Z"
+  "lastUpdated": "2026-05-31T05:14:16.142Z"
 }
