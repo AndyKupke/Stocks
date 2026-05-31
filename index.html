@@ -662,6 +662,7 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       <option>AMS</option><option>BIT</option><option>SIX</option>
       <option>STO</option><option>OSE</option><option>BME</option>
     </select>
+    <label class="chk"><input type="checkbox" id="ipo-priced" onchange="ipoFilter()"> Priced only</label>
     <div class="spacer"></div>
     <button class="fbtn" onclick="ipoReset()">Reset</button>
   </div>
@@ -5890,19 +5891,22 @@ function ipoReset() {
   document.getElementById('ipo-q').value   = '';
   document.getElementById('ipo-reg').value = '';
   document.getElementById('ipo-ex').value  = '';
+  document.getElementById('ipo-priced').checked = false;
   // keep window selector as-is
   ipoFilter();
 }
 
 function ipoFilter() {
   ipoApplyWindow();  // recompute window slice first
-  const q   = (document.getElementById('ipo-q')?.value  || '').toLowerCase();
-  const reg = document.getElementById('ipo-reg')?.value || '';
-  const ex  = document.getElementById('ipo-ex')?.value  || '';
+  const q      = (document.getElementById('ipo-q')?.value  || '').toLowerCase();
+  const reg    = document.getElementById('ipo-reg')?.value || '';
+  const ex     = document.getElementById('ipo-ex')?.value  || '';
+  const priced = document.getElementById('ipo-priced')?.checked || false;
   ipoDisp = ipoData.filter(s => {
-    if (q   && !s.t.toLowerCase().includes(q) && !s.n.toLowerCase().includes(q)) return false;
-    if (reg && s.reg !== reg) return false;
-    if (ex  && s.ex  !== ex)  return false;
+    if (q      && !s.t.toLowerCase().includes(q) && !s.n.toLowerCase().includes(q)) return false;
+    if (reg    && s.reg !== reg) return false;
+    if (ex     && s.ex  !== ex)  return false;
+    if (priced && priceData[s.t]?.price == null) return false;
     return true;
   });
   ipoApplySort();
