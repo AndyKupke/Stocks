@@ -10252,6 +10252,7 @@
       "chg1y": null,
       "chgytd": -64.88294485059328,
       "listDate": "2025-09-12",
+      "firstClose": 12.350000381469727,
       "sector": null
     },
     "LGN": {
@@ -10265,6 +10266,7 @@
       "chg1y": null,
       "chgytd": 87.79994971341006,
       "listDate": "2025-09-12",
+      "firstClose": 30.5,
       "sector": null
     },
     "GEMI": {
@@ -10278,6 +10280,7 @@
       "chg1y": null,
       "chgytd": -51.203704742083644,
       "listDate": "2025-09-12",
+      "firstClose": 32,
       "sector": null
     },
     "BRCB": {
@@ -10291,6 +10294,7 @@
       "chg1y": null,
       "chgytd": -59.65082756449812,
       "listDate": "2025-09-12",
+      "firstClose": 27.530000686645508,
       "sector": null
     },
     "OTGAU": {
@@ -10304,6 +10308,7 @@
       "chg1y": null,
       "chgytd": 0.14612166728464265,
       "listDate": "2025-09-12",
+      "firstClose": 10,
       "sector": null
     },
     "VIA": {
@@ -10317,6 +10322,7 @@
       "chg1y": null,
       "chgytd": -36.673596568072995,
       "listDate": "2025-09-12",
+      "firstClose": 49.5099983215332,
       "sector": null
     },
     "FIGR": {
@@ -17102,5 +17108,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:20:53.889Z"
+  "lastUpdated": "2026-05-31T05:21:16.889Z"
 }
