@@ -14,7 +14,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂ¢ÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
+      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
       "id": 1
     },
     {
@@ -2037,7 +2037,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Creative software monopoly. Firefly AI embedded across suite. Gen-AI risk overstated ÃÂ¢ÃÂÃÂ displacement unlikely given deep workflow lock-in.",
+      "note": "Creative software monopoly. Firefly AI embedded across suite. Gen-AI risk overstated ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ displacement unlikely given deep workflow lock-in.",
       "id": 120
     },
     {
@@ -2071,7 +2071,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Identity & access management leader. Zero Trust backbone. Every AI agent needs identity ÃÂ¢ÃÂÃÂ structural demand driver.",
+      "note": "Identity & access management leader. Zero Trust backbone. Every AI agent needs identity ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ structural demand driver.",
       "id": 122
     },
     {
@@ -3994,6 +3994,23 @@
       "ipo": false,
       "note": "Satellite-as-a-service. Maritime AIS, weather, aviation tracking. Multi-purpose constellation. ISIN US81728A2078.",
       "id": 235
+    },
+    {
+      "t": "SIDU",
+      "n": "Sidus Space",
+      "th": "T8",
+      "ind": "Space / Satellite",
+      "reg": "US",
+      "ex": "NASDAQ",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 236
     }
   ],
   "portfolio": {
@@ -17653,5 +17670,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-05-31T05:29:14.892Z"
+  "lastUpdated": "2026-06-01T18:00:33.745Z"
 }
