@@ -1814,7 +1814,10 @@ function renderPortfolioTab(){
       }
       if(!sh||!pd.price) return `<td class="pc-posval price-cell" style="color:var(--txt3)">—</td>`;
       const eur = toEur(sh * pd.price, s.ex);
-      if(eur == null) return `<td class="pc-posval price-cell" style="color:var(--txt3)" title="FX rate unavailable">—</td>`;
+      if(eur == null) {
+        const nat = fmtNative(sh * pd.price, s.ex);
+        return `<td class="pc-posval price-cell" style="color:var(--grn)" title="Set USD rate in Settings for EUR">${nat ?? '—'}</td>`;
+      }
       return `<td class="pc-posval price-cell" style="color:var(--grn)">€ ${eur.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
     })();
     // Additional shares / investment / total holding cells (all in €)
@@ -1827,7 +1830,13 @@ function renderPortfolioTab(){
       if(buyFlag) return `<td class="pc-addl-inv price-cell" style="opacity:.25;text-align:right">—</td>`;
       if(!addl||!pd.price) return `<td class="pc-addl-inv price-cell" style="color:var(--txt3);text-align:right">—</td>`;
       const eur = toEur(addl * pd.price, s.ex);
-      if(eur == null) return `<td class="pc-addl-inv price-cell" style="color:var(--txt3);text-align:right" title="FX rate unavailable">—</td>`;
+      if(eur == null) {
+        const raw = addl * pd.price;
+        const nat = fmtNative(raw, s.ex);
+        const clrN = raw>=0?'var(--grn)':'var(--red)';
+        const signN = raw>=0?'+':'';
+        return `<td class="pc-addl-inv price-cell" style="color:${clrN};text-align:right" title="Set USD rate in Settings for EUR">${signN}${nat ?? '—'}</td>`;
+      }
       const clr = eur>=0?'var(--grn)':'var(--red)';
       const sign = eur>=0?'+':'';
       return `<td class="pc-addl-inv price-cell" style="color:${clr};text-align:right">${sign}€ ${eur.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
@@ -1837,7 +1846,10 @@ function renderPortfolioTab(){
       const totalSh = (sh||0) + addl;
       if(!totalSh||!pd.price) return `<td class="pc-total-hold price-cell" style="color:var(--txt3);text-align:right">—</td>`;
       const eur = toEur(totalSh * pd.price, s.ex);
-      if(eur == null) return `<td class="pc-total-hold price-cell" style="color:var(--txt3);text-align:right" title="FX rate unavailable">—</td>`;
+      if(eur == null) {
+        const nat = fmtNative(totalSh * pd.price, s.ex);
+        return `<td class="pc-total-hold price-cell" style="color:var(--grn);text-align:right" title="Set USD rate in Settings for EUR">${nat ?? '—'}</td>`;
+      }
       return `<td class="pc-total-hold price-cell" style="color:var(--grn);text-align:right">€ ${eur.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
     })();
     return `<tr class="rport${buyFlag?' rbuy':''}">
@@ -2804,6 +2816,13 @@ function toEur(amount, ex) {
              : KRW_EX_SET.has(ex) ? fxRates.KRW
              : fxRates.USD;
   return rate ? amount * rate : null;
+}
+
+// Format a money amount in local currency when EUR conversion isn't possible
+function fmtNative(amount, ex) {
+  if (amount == null || !isFinite(amount)) return null;
+  const sym = GBP_EX_SET.has(ex) ? '£' : CHF_EX_SET.has(ex) ? 'CHF ' : KRW_EX_SET.has(ex) ? '₩' : '$';
+  return sym + Math.abs(amount).toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
 
