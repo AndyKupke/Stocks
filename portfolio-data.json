@@ -14,7 +14,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
+      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
       "id": 1
     },
     {
@@ -2037,7 +2037,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Creative software monopoly. Firefly AI embedded across suite. Gen-AI risk overstated ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ displacement unlikely given deep workflow lock-in.",
+      "note": "Creative software monopoly. Firefly AI embedded across suite. Gen-AI risk overstated ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ displacement unlikely given deep workflow lock-in.",
       "id": 120
     },
     {
@@ -2071,7 +2071,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Identity & access management leader. Zero Trust backbone. Every AI agent needs identity ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ structural demand driver.",
+      "note": "Identity & access management leader. Zero Trust backbone. Every AI agent needs identity ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ structural demand driver.",
       "id": 122
     },
     {
@@ -4244,7 +4244,6 @@
     "IREN",
     "APLD",
     "CORZ",
-    "HUBS",
     "DOCU",
     "ADBE",
     "WDAY",
@@ -4263,7 +4262,8 @@
     "CLSK",
     "LITE",
     "BITF",
-    "SIDU"
+    "SIDU",
+    "HUBS"
   ],
   "prices": {
     "S0LR": {
@@ -17686,5 +17686,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-03T04:28:49.965Z"
+  "lastUpdated": "2026-06-03T05:12:03.664Z"
 }
