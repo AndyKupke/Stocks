@@ -14,7 +14,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
+      "note": "Top Pick. 29% sales growth FY2025, 36% backlog ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¬63.7B. 35% CAGR revenue target. Germany defense giant.",
       "id": 1
     },
     {
@@ -2037,7 +2037,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Creative software monopoly. Firefly AI embedded across suite. Gen-AI risk overstated ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ displacement unlikely given deep workflow lock-in.",
+      "note": "Creative software monopoly. Firefly AI embedded across suite. Gen-AI risk overstated ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ displacement unlikely given deep workflow lock-in.",
       "id": 120
     },
     {
@@ -2071,7 +2071,7 @@
       "hr": false,
       "priv": false,
       "ipo": false,
-      "note": "Identity & access management leader. Zero Trust backbone. Every AI agent needs identity ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ structural demand driver.",
+      "note": "Identity & access management leader. Zero Trust backbone. Every AI agent needs identity ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ structural demand driver.",
       "id": 122
     },
     {
@@ -4004,7 +4004,7 @@
       "ex": "NASDAQ",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4214,6 +4214,9 @@
     },
     "BITF": {
       "shares": 0
+    },
+    "SIDU": {
+      "shares": 0
     }
   },
   "buySet": [
@@ -4258,7 +4261,8 @@
     "URA",
     "CLSK",
     "LITE",
-    "BITF"
+    "BITF",
+    "SIDU"
   ],
   "prices": {
     "S0LR": {
@@ -11891,12 +11895,23 @@
       "listDate": "2025-05-08",
       "firstClose": 20.899999618530273,
       "sector": null
+    },
+    "SIDU": {
+      "sym": "SIDU",
+      "price": 4.474999904632568,
+      "mcap": null,
+      "chg1d": -8.859469578371055,
+      "chg7d": -8.859469578371055,
+      "chg30d": 51.69490956945081,
+      "chg90d": 135.52631372560091,
+      "chg1y": 190.58441658972248,
+      "chgytd": 19.33333079020182,
+      "listDate": "2021-12-14",
+      "firstClose": 1.600000023841858
     }
   },
   "additionalShares": {},
-  "fxRates": {
-    "USD": 0.86
-  },
+  "fxRates": {},
   "financialData": {
     "AAPL": {
       "annual": [
@@ -17670,5 +17685,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-01T18:00:33.745Z"
+  "lastUpdated": "2026-06-03T04:09:55.242Z"
 }
