@@ -1722,6 +1722,27 @@ function removeFromPortfolio(t){
   renderThesesTab();
 }
 
+// Convert an active (shares-based) position → BUY placeholder mode
+function deactivatePortfolio(t) {
+  if (!PORTFOLIO[t]) return;
+  PORTFOLIO[t]._portChecked = false;
+  savePortfolio(PORTFOLIO);
+  renderPortfolioTab();
+  renderLLTable();
+}
+
+// Convert a BUY placeholder → active position with share input fields (default 0)
+function activatePortfolio(t) {
+  if (!PORTFOLIO[t]) PORTFOLIO[t] = { shares: 0, _portChecked: true };
+  PORTFOLIO[t]._portChecked = true;
+  PORTFOLIO[t].shares = PORTFOLIO[t].shares || 0;
+  const stock = ST.find(s => s.t === t);
+  if (stock) stock.dp = true;
+  savePortfolio(PORTFOLIO);
+  renderPortfolioTab();
+  renderLLTable();
+}
+
 function renderPortfolioTab(){
   const q    = (document.getElementById('port-q')?.value||'').toLowerCase();
   const th   = document.getElementById('port-th')?.value||'';
@@ -1777,7 +1798,8 @@ function renderPortfolioTab(){
   tb.innerHTML=filtered.map(s=>{
     const pd=priceData[s.t]||{};
     const sh=getShares(s.t);
-    const buyFlag=isBuy(s.t);
+    // Active = _portChecked true (real share inputs); BUY mode = _portChecked false/absent
+    const buyFlag = !PORTFOLIO[s.t]?._portChecked;
     // Buy positions: fixed €25K standard position; shares/value inputs disabled+dimmed
     const sharesCell = buyFlag
       ? `<td class="pc-shares" style="opacity:.35;text-align:right"><input type="number" class="shares-input" disabled placeholder="—" style="cursor:not-allowed"></td>`
@@ -1836,7 +1858,16 @@ function renderPortfolioTab(){
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg90d)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chg1y)}</td>
       <td class="pc-grpcell cgrp-cell port-perf${perfH}">${fmtChg(pd.chgytd)}</td>
-      <td class="pc-remove"><button class="ab-btn" style="border-color:var(--red);color:var(--red)" onclick="removeFromPortfolio('${s.t}')">✕</button></td>
+      <td class="pc-remove" style="white-space:nowrap">
+        ${buyFlag
+          ? `<button class="ab-btn" style="color:var(--grn);border-color:var(--grn);font-size:9px;margin-right:3px" onclick="activatePortfolio('${s.t}')" title="Activate: show share input fields">▶ On</button>`
+          : `<button class="ab-btn" style="opacity:0.25;cursor:not-allowed;pointer-events:none;font-size:9px;margin-right:3px" disabled>▶ On</button>`
+        }
+        ${buyFlag
+          ? `<button class="ab-btn" style="opacity:0.25;cursor:not-allowed;pointer-events:none;border-color:var(--red);color:var(--red)" disabled>✕</button>`
+          : `<button class="ab-btn" style="border-color:var(--red);color:var(--red)" onclick="deactivatePortfolio('${s.t}')" title="Convert to BUY position">✕</button>`
+        }
+      </td>
     </tr>`;
   }).join('');
   const total = all.length;
@@ -1848,7 +1879,7 @@ function renderPortfolioTab(){
   let totalAddlInvKnown = true, totalHoldKnown = true;
   filtered.forEach(s => {
     const pd = priceData[s.t] || {};
-    if (isBuy(s.t)) {
+    if (!PORTFOLIO[s.t]?._portChecked) {
       totalBuyPositions++;
       totalBuyVolume += 25000;
       totalHoldVolume += 25000;
