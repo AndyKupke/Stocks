@@ -1798,8 +1798,12 @@ function renderPortfolioTab(){
   tb.innerHTML=filtered.map(s=>{
     const pd=priceData[s.t]||{};
     const sh=getShares(s.t);
-    // Active = _portChecked true (real share inputs); BUY mode = _portChecked false/absent
-    const buyFlag = !PORTFOLIO[s.t]?._portChecked;
+    // buyFlag logic — backward compatible with existing localStorage data:
+    //   _portChecked === true  → explicitly activated → active (share inputs)
+    //   _portChecked === false → explicitly deactivated → BUY mode
+    //   _portChecked undefined → legacy entry, fall back to original isBuy() logic
+    const _pc = PORTFOLIO[s.t]?._portChecked;
+    const buyFlag = _pc === true ? false : _pc === false ? true : isBuy(s.t);
     // Buy positions: fixed €25K standard position; shares/value inputs disabled+dimmed
     const sharesCell = buyFlag
       ? `<td class="pc-shares" style="opacity:.35;text-align:right"><input type="number" class="shares-input" disabled placeholder="—" style="cursor:not-allowed"></td>`
@@ -1879,7 +1883,9 @@ function renderPortfolioTab(){
   let totalAddlInvKnown = true, totalHoldKnown = true;
   filtered.forEach(s => {
     const pd = priceData[s.t] || {};
-    if (!PORTFOLIO[s.t]?._portChecked) {
+    const _pc2 = PORTFOLIO[s.t]?._portChecked;
+    const isBuyMode = _pc2 === true ? false : _pc2 === false ? true : isBuy(s.t);
+    if (isBuyMode) {
       totalBuyPositions++;
       totalBuyVolume += 25000;
       totalHoldVolume += 25000;
