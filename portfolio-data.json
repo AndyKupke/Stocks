@@ -4153,7 +4153,7 @@
       "shares": 0
     },
     "HUBS": {
-      "shares": 0,
+      "shares": 25,
       "_portChecked": true
     },
     "DOCU": {
@@ -17686,5 +17686,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-03T04:28:45.040Z"
+  "lastUpdated": "2026-06-03T04:28:49.965Z"
 }
