@@ -901,13 +901,14 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       </thead>
       <tbody id="fx-tbody"></tbody>
     </table>
-    <div style="margin-top:20px;display:flex;gap:10px;align-items:center;">
+    <div style="margin-top:20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="fbtn pri" onclick="saveFxRatesManual()">Save Rates</button>
+      <button class="fbtn" id="fx-auto-btn" onclick="autoFetchFxRates(true)" style="display:flex;align-items:center;gap:5px;">&#8635; Live Rates</button>
       <span id="fx-save-status" style="font-size:11px;color:var(--txt3);"></span>
     </div>
-    <p style="margin-top:24px;font-size:10px;color:var(--txt3);line-height:1.6;">
-      EUR positions (XETRA, EPA, BIT, EURONEXT, AMS, NASDAQ OMX, OSE, WSE, CPH, BME) are not converted.<br>
-      Changes take effect immediately in the Portfolio tab after saving.
+    <p style="margin-top:12px;font-size:10px;color:var(--txt3);line-height:1.6;">
+      Rates auto-fetched from ECB (Frankfurter API) on every page load. Click <strong style="color:var(--txt2)">&#8635; Live Rates</strong> to refresh manually.<br>
+      EUR positions (XETRA, EPA, BIT, EURONEXT, AMS, NASDAQ OMX, OSE, WSE, CPH, BME) are not converted.
     </p>
 
     <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--bdr);">
@@ -2802,6 +2803,33 @@ function saveFxRatesManual() {
   if (el) { el.textContent = 'Saved ✓'; el.style.color = 'var(--grn)'; setTimeout(() => { el.textContent=''; }, 2000); }
   renderPortfolioTab();
 }
+
+// Auto-fetch live EUR exchange rates from Frankfurter (ECB data, free, no key)
+async function autoFetchFxRates(manual = false) {
+  const btn = document.getElementById('fx-auto-btn');
+  const st  = document.getElementById('fx-save-status');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
+  try {
+    const url = 'https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,CHF,KRW';
+    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    const rates = data.rates; // EUR→X, we need X→EUR = 1/rate
+    if (rates.USD > 0) fxRates.USD = +(1 / rates.USD).toFixed(6);
+    if (rates.GBP > 0) fxRates.GBP = +(1 / rates.GBP).toFixed(6);
+    if (rates.CHF > 0) fxRates.CHF = +(1 / rates.CHF).toFixed(6);
+    if (rates.KRW > 0) fxRates.KRW = +(1 / rates.KRW).toFixed(8);
+    saveFxRates();
+    renderFxTab();       // refresh input fields
+    renderPortfolioTab();
+    if (manual && st) { st.textContent = `Rates updated (${data.date}) ✓`; st.style.color = 'var(--grn)'; setTimeout(()=>{ st.textContent=''; },4000); }
+  } catch(e) {
+    if (manual && st) { st.textContent = `Auto-fetch failed: ${e.message}`; st.style.color = 'var(--red)'; setTimeout(()=>{ st.textContent=''; },4000); }
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#8635; Live Rates'; }
+  }
+}
+
 let fxRates = loadFxRates(); // { USD: 0.924, GBP: 1.17, CHF: 1.06, KRW: 0.00068 }
 
 const EUR_EX_SET = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
@@ -6256,6 +6284,9 @@ async function init(){
   renderThesesTab();
   renderFw();
   bvpInit();
+
+  // Auto-fetch live FX rates from ECB (Frankfurter) — silent, no UI feedback
+  autoFetchFxRates(false);
 
   const cachedCount = Object.keys(priceData).length;
   if(cachedCount > 0){
