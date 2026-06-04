@@ -702,6 +702,12 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       <option value="10">&#8805; $10B</option>
       <option value="5">&#8805; $5B</option>
     </select>
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+      <input type="checkbox" id="sp500-pos-ebitda" onchange="sp500Filter()" style="accent-color:var(--acc)"> Positive EBITDA
+    </label>
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+      <input type="checkbox" id="sp500-pos-fcf" onchange="sp500Filter()" style="accent-color:var(--acc)"> Positive FCF
+    </label>
     <div class="spacer"></div>
     <button class="fbtn" onclick="sp500Reset()">Reset</button>
   </div>
@@ -6453,9 +6459,13 @@ function sp500Reset() {
   const q = document.getElementById('sp500-q');
   const sec = document.getElementById('sp500-sector');
   const mc = document.getElementById('sp500-mcap');
-  if (q) q.value = '';
+  const pe = document.getElementById('sp500-pos-ebitda');
+  const pf = document.getElementById('sp500-pos-fcf');
+  if (q)  q.value   = '';
   if (sec) sec.value = '';
-  if (mc) mc.value = '';
+  if (mc) mc.value  = '';
+  if (pe) pe.checked = false;
+  if (pf) pf.checked = false;
   renderSp500Tab();
 }
 
@@ -6566,10 +6576,15 @@ function renderSp500Tab() {
     };
   });
 
+  const posEbitda = document.getElementById('sp500-pos-ebitda')?.checked;
+  const posFcf    = document.getElementById('sp500-pos-fcf')?.checked;
+
   // Filters
   if (q) rows = rows.filter(r => r.t.toLowerCase().includes(q) || r.n.toLowerCase().includes(q) || (r.ind||'').toLowerCase().includes(q));
-  if (sectorF) rows = rows.filter(r => r.ind === sectorF);
+  if (sectorF)  rows = rows.filter(r => r.ind === sectorF);
   if (mcapMin > 0) rows = rows.filter(r => r.mcapB != null && r.mcapB >= mcapMin);
+  if (posEbitda) rows = rows.filter(r => r.annEbitda != null && r.annEbitda > 0);
+  if (posFcf)    rows = rows.filter(r => r.annFcf    != null && r.annFcf    > 0);
 
   // Track filtered tickers so Update Data only fetches what's visible
   sp500VisibleTickers = rows.map(r => r.t);
