@@ -499,6 +499,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="menu-nav-btn" onclick="menuNav('ipos')">
       <span class="menu-nav-icon">&#9733;</span>IPOs
     </button>
+    <button class="menu-nav-btn" onclick="menuNav('sp500')">
+      <span class="menu-nav-icon">&#9642;</span>S&amp;P 500
+    </button>
     <button class="menu-nav-btn" onclick="menuNav('financial-analysis')">
       <span class="menu-nav-icon">&#9783;</span>Stock Financial Analysis
     </button>
@@ -673,6 +676,38 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
   </div>
   <div class="tw"><table id="ipo-tbl">
     <thead id="ipo-thead"></thead><tbody id="ipo-tb"></tbody><tfoot id="ipo-tf"></tfoot>
+  </table></div>
+</div>
+
+<!-- S&P 500 TAB -->
+<div class="sec" id="sec-sp500">
+  <div class="fetch-bar" id="sp500-fetch-bar">
+    <button class="fetch-btn" id="sp500-update-btn" onclick="fetchSp500Data()">&#9889; Update Data</button>
+    <span class="fetch-status" id="sp500-status">Fetch financial data for all S&amp;P 500 stocks via FMP API (requires key in Settings)</span>
+  </div>
+  <div class="fbar">
+    <input type="text" id="sp500-q" placeholder="Search ticker or name…" oninput="sp500Filter()" style="min-width:160px">
+    <label>Sector</label>
+    <select id="sp500-sector" onchange="sp500Filter()">
+      <option value="">All Sectors</option>
+    </select>
+    <label>Mkt Cap</label>
+    <select id="sp500-mcap" onchange="sp500Filter()">
+      <option value="">All</option>
+      <option value="1000">&#8805; $1T</option>
+      <option value="250">&#8805; $250B</option>
+      <option value="100">&#8805; $100B</option>
+      <option value="25">&#8805; $25B</option>
+      <option value="10">&#8805; $10B</option>
+      <option value="5">&#8805; $5B</option>
+    </select>
+    <div class="spacer"></div>
+    <button class="fbtn" onclick="sp500Reset()">Reset</button>
+  </div>
+  <div class="tw"><table id="sp500-tbl" style="min-width:1400px">
+    <thead id="sp500-thead"></thead>
+    <tbody id="sp500-tb"></tbody>
+    <tfoot id="sp500-tf"></tfoot>
   </table></div>
 </div>
 
@@ -4451,6 +4486,7 @@ function menuNav(tabId) {
   if (tabId === 'fx') renderFxTab();
   if (tabId === 'financial-analysis') renderFinancialTab();
   if (tabId === 'ipos') requestAnimationFrame(() => { if (!ipoAllData.length) ipoLoadFromGitHub(); else renderIpoTable(); });
+  if (tabId === 'sp500') requestAnimationFrame(() => renderSp500Tab());
   syncMenuActive();
 }
 function syncMenuActive() {
@@ -6192,6 +6228,454 @@ function renderIpoTable() {
 function toggleIpoColGroup(group) {
   ipoColState[group] = !ipoColState[group];
   renderIpoTable();
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// S&P 500 TAB — 502 stocks, financial screening with EV multiples
+// ══════════════════════════════════════════════════════════════════════
+
+const SP500_LIST=[
+  {t:"NVDA",n:"NVIDIA Corporation"},{t:"AAPL",n:"Apple Inc."},{t:"GOOGL",n:"Alphabet Inc."},{t:"GOOG",n:"Alphabet Inc."},
+  {t:"MSFT",n:"Microsoft Corporation"},{t:"AMZN",n:"Amazon.com, Inc."},{t:"AVGO",n:"Broadcom Inc."},{t:"TSLA",n:"Tesla, Inc."},
+  {t:"META",n:"Meta Platforms, Inc."},{t:"MU",n:"Micron Technology, Inc."},{t:"BRK.B",n:"Berkshire Hathaway Inc."},{t:"LLY",n:"Eli Lilly and Company"},
+  {t:"WMT",n:"Walmart Inc."},{t:"AMD",n:"Advanced Micro Devices, Inc."},{t:"JPM",n:"JPMorgan Chase &amp; Co."},{t:"ORCL",n:"Oracle Corporation"},
+  {t:"XOM",n:"Exxon Mobil Corporation"},{t:"V",n:"Visa Inc."},{t:"INTC",n:"Intel Corporation"},{t:"JNJ",n:"Johnson &amp; Johnson"},
+  {t:"CSCO",n:"Cisco Systems, Inc."},{t:"LRCX",n:"Lam Research Corporation"},{t:"CAT",n:"Caterpillar Inc."},{t:"COST",n:"Costco Wholesale Corporation"},
+  {t:"MA",n:"Mastercard Incorporated"},{t:"AMAT",n:"Applied Materials, Inc."},{t:"ABBV",n:"AbbVie Inc."},{t:"CVX",n:"Chevron Corporation"},
+  {t:"BAC",n:"Bank of America Corporation"},{t:"NFLX",n:"Netflix, Inc."},{t:"UNH",n:"UnitedHealth Group Incorporated"},{t:"PLTR",n:"Palantir Technologies Inc."},
+  {t:"KO",n:"The Coca-Cola Company"},{t:"MS",n:"Morgan Stanley"},{t:"GE",n:"GE Aerospace"},{t:"PG",n:"The Procter &amp; Gamble Company"},
+  {t:"GS",n:"The Goldman Sachs Group, Inc."},{t:"HD",n:"The Home Depot, Inc."},{t:"IBM",n:"International Business Machines Corporation"},{t:"MRK",n:"Merck &amp; Co., Inc."},
+  {t:"TXN",n:"Texas Instruments Incorporated"},{t:"KLAC",n:"KLA Corporation"},{t:"PM",n:"Philip Morris International Inc."},{t:"DELL",n:"Dell Technologies Inc."},
+  {t:"SNDK",n:"Sandisk Corporation"},{t:"QCOM",n:"QUALCOMM Incorporated"},{t:"GEV",n:"GE Vernova Inc."},{t:"WFC",n:"Wells Fargo &amp; Company"},
+  {t:"LIN",n:"Linde plc"},{t:"RTX",n:"RTX Corporation"},{t:"PANW",n:"Palo Alto Networks, Inc."},{t:"C",n:"Citigroup Inc."},
+  {t:"ANET",n:"Arista Networks, Inc."},{t:"ADI",n:"Analog Devices, Inc."},{t:"STX",n:"Seagate Technology Holdings plc"},{t:"AXP",n:"American Express Company"},
+  {t:"WDC",n:"Western Digital Corporation"},{t:"TMUS",n:"T-Mobile US, Inc."},{t:"PEP",n:"PepsiCo, Inc."},{t:"VZ",n:"Verizon Communications Inc."},
+  {t:"MCD",n:"McDonald&amp;#39;s Corporation"},{t:"APP",n:"AppLovin Corporation"},{t:"CRWD",n:"CrowdStrike Holdings, Inc."},{t:"AMGN",n:"Amgen Inc."},
+  {t:"APH",n:"Amphenol Corporation"},{t:"NEE",n:"NextEra Energy, Inc."},{t:"TMO",n:"Thermo Fisher Scientific Inc."},{t:"TJX",n:"The TJX Companies, Inc."},
+  {t:"GLW",n:"Corning Incorporated"},{t:"DIS",n:"The Walt Disney Company"},{t:"BA",n:"The Boeing Company"},{t:"T",n:"AT&amp;T Inc."},
+  {t:"ETN",n:"Eaton Corporation plc"},{t:"BLK",n:"BlackRock, Inc."},{t:"GILD",n:"Gilead Sciences, Inc."},{t:"DE",n:"Deere &amp; Company"},
+  {t:"CRM",n:"Salesforce, Inc."},{t:"UNP",n:"Union Pacific Corporation"},{t:"ABT",n:"Abbott Laboratories"},{t:"SCHW",n:"The Charles Schwab Corporation"},
+  {t:"UBER",n:"Uber Technologies, Inc."},{t:"COP",n:"ConocoPhillips"},{t:"PFE",n:"Pfizer Inc."},{t:"ISRG",n:"Intuitive Surgical, Inc."},
+  {t:"HON",n:"Honeywell International Inc."},{t:"WELL",n:"Welltower Inc."},{t:"BX",n:"Blackstone Inc."},{t:"PLD",n:"Prologis, Inc."},
+  {t:"BKNG",n:"Booking Holdings Inc."},{t:"VRT",n:"Vertiv Holdings Co"},{t:"DHR",n:"Danaher Corporation"},{t:"SPGI",n:"S&amp;P Global Inc."},
+  {t:"NOW",n:"ServiceNow, Inc."},{t:"CB",n:"Chubb Limited"},{t:"LMT",n:"Lockheed Martin Corporation"},{t:"MO",n:"Altria Group, Inc."},
+  {t:"CVS",n:"CVS Health Corporation"},{t:"LOW",n:"Lowe&amp;#39;s Companies, Inc."},{t:"NEM",n:"Newmont Corporation"},{t:"SYK",n:"Stryker Corporation"},
+  {t:"PGR",n:"The Progressive Corporation"},{t:"CDNS",n:"Cadence Design Systems, Inc."},{t:"BMY",n:"Bristol-Myers Squibb Company"},{t:"COF",n:"Capital One Financial Corporation"},
+  {t:"SBUX",n:"Starbucks Corporation"},{t:"ACN",n:"Accenture plc"},{t:"VRTX",n:"Vertex Pharmaceuticals Incorporated"},{t:"PWR",n:"Quanta Services, Inc."},
+  {t:"FTNT",n:"Fortinet, Inc."},{t:"PH",n:"Parker-Hannifin Corporation"},{t:"EQIX",n:"Equinix, Inc."},{t:"ADBE",n:"Adobe Inc."},
+  {t:"TT",n:"Trane Technologies plc"},{t:"SO",n:"The Southern Company"},{t:"FCX",n:"Freeport-McMoRan Inc."},{t:"MDT",n:"Medtronic plc"},
+  {t:"HWM",n:"Howmet Aerospace Inc."},{t:"MAR",n:"Marriott International, Inc."},{t:"BNY",n:"The Bank of New York Mellon Corporation"},{t:"CEG",n:"Constellation Energy Corporation"},
+  {t:"SNPS",n:"Synopsys, Inc."},{t:"DUK",n:"Duke Energy Corporation"},{t:"CMI",n:"Cummins Inc."},{t:"UPS",n:"United Parcel Service, Inc."},
+  {t:"CME",n:"CME Group Inc."},{t:"ADP",n:"Automatic Data Processing, Inc."},{t:"GD",n:"General Dynamics Corporation"},{t:"JCI",n:"Johnson Controls International plc"},
+  {t:"DDOG",n:"Datadog, Inc."},{t:"MCK",n:"McKesson Corporation"},{t:"CIEN",n:"Ciena Corporation"},{t:"PNC",n:"The PNC Financial Services Group, Inc."},
+  {t:"WMB",n:"The Williams Companies, Inc."},{t:"WM",n:"Waste Management, Inc."},{t:"MNST",n:"Monster Beverage Corporation"},{t:"CSX",n:"CSX Corporation"},
+  {t:"INTU",n:"Intuit Inc."},{t:"SLB",n:"SLB N.V."},{t:"ELV",n:"Elevance Health, Inc."},{t:"AMT",n:"American Tower Corporation"},
+  {t:"CMCSA",n:"Comcast Corporation"},{t:"MPWR",n:"Monolithic Power Systems, Inc."},{t:"USB",n:"U.S. Bancorp"},{t:"COHR",n:"Coherent Corp."},
+  {t:"KKR",n:"KKR &amp; Co. Inc."},{t:"NXPI",n:"NXP Semiconductors N.V."},{t:"HCA",n:"HCA Healthcare, Inc."},{t:"ABNB",n:"Airbnb, Inc."},
+  {t:"MMM",n:"3M Company"},{t:"EMR",n:"Emerson Electric Co."},{t:"MDLZ",n:"Mondelez International, Inc."},{t:"ICE",n:"Intercontinental Exchange, Inc."},
+  {t:"MCO",n:"Moody&amp;#39;s Corporation"},{t:"MPC",n:"Marathon Petroleum Corporation"},{t:"VLO",n:"Valero Energy Corporation"},{t:"SPG",n:"Simon Property Group, Inc."},
+  {t:"FDX",n:"FedEx Corporation"},{t:"RCL",n:"Royal Caribbean Cruises Ltd."},{t:"MRSH",n:"Marsh &amp; McLennan Companies, Inc."},{t:"HLT",n:"Hilton Worldwide Holdings Inc."},
+  {t:"EOG",n:"EOG Resources, Inc."},{t:"NOC",n:"Northrop Grumman Corporation"},{t:"ROST",n:"Ross Stores, Inc."},{t:"HOOD",n:"Robinhood Markets, Inc."},
+  {t:"PSX",n:"Phillips 66"},{t:"GM",n:"General Motors Company"},{t:"HPE",n:"Hewlett Packard Enterprise Company"},{t:"LITE",n:"Lumentum Holdings Inc."},
+  {t:"SHW",n:"The Sherwin-Williams Company"},{t:"ORLY",n:"O&amp;#39;Reilly Automotive, Inc."},{t:"ITW",n:"Illinois Tool Works Inc."},{t:"ECL",n:"Ecolab Inc."},
+  {t:"APO",n:"Apollo Global Management, Inc."},{t:"CI",n:"The Cigna Group"},{t:"BSX",n:"Boston Scientific Corporation"},{t:"CRH",n:"CRH plc"},
+  {t:"CVNA",n:"Carvana Co."},{t:"CTAS",n:"Cintas Corporation"},{t:"KMI",n:"Kinder Morgan, Inc."},{t:"AEP",n:"American Electric Power Company, Inc."},
+  {t:"NSC",n:"Norfolk Southern Corporation"},{t:"CL",n:"Colgate-Palmolive Company"},{t:"MSI",n:"Motorola Solutions, Inc."},{t:"TDG",n:"TransDigm Group Incorporated"},
+  {t:"WBD",n:"Warner Bros. Discovery, Inc."},{t:"AON",n:"Aon plc"},{t:"DASH",n:"DoorDash, Inc."},{t:"URI",n:"United Rentals, Inc."},
+  {t:"DLR",n:"Digital Realty Trust, Inc."},{t:"FIX",n:"Comfort Systems USA, Inc."},{t:"NKE",n:"NIKE, Inc."},{t:"TER",n:"Teradyne, Inc."},
+  {t:"BKR",n:"Baker Hughes Company"},{t:"TEL",n:"TE Connectivity plc"},{t:"REGN",n:"Regeneron Pharmaceuticals, Inc."},{t:"APD",n:"Air Products and Chemicals, Inc."},
+  {t:"RSG",n:"Republic Services, Inc."},{t:"F",n:"Ford Motor Company"},{t:"TRV",n:"The Travelers Companies, Inc."},{t:"GWW",n:"W.W. Grainger, Inc."},
+  {t:"PCAR",n:"PACCAR Inc"},{t:"KEYS",n:"Keysight Technologies, Inc."},{t:"OXY",n:"Occidental Petroleum Corporation"},{t:"FANG",n:"Diamondback Energy, Inc."},
+  {t:"TFC",n:"Truist Financial Corporation"},{t:"NUE",n:"Nucor Corporation"},{t:"SRE",n:"Sempra"},{t:"AFL",n:"Aflac Incorporated"},
+  {t:"D",n:"Dominion Energy, Inc."},{t:"TGT",n:"Target Corporation"},{t:"LHX",n:"L3Harris Technologies, Inc."},{t:"TRGP",n:"Targa Resources Corp."},
+  {t:"CARR",n:"Carrier Global Corporation"},{t:"O",n:"Realty Income Corporation"},{t:"OKE",n:"ONEOK, Inc."},{t:"ALL",n:"The Allstate Corporation"},
+  {t:"FAST",n:"Fastenal Company"},{t:"DVN",n:"Devon Energy Corporation"},{t:"PSA",n:"Public Storage"},{t:"ON",n:"ON Semiconductor Corporation"},
+  {t:"MCHP",n:"Microchip Technology Incorporated"},{t:"AME",n:"AMETEK, Inc."},{t:"MET",n:"MetLife, Inc."},{t:"CTVA",n:"Corteva, Inc."},
+  {t:"AJG",n:"Arthur J. Gallagher &amp; Co."},{t:"VST",n:"Vistra Corp."},{t:"DAL",n:"Delta Air Lines, Inc."},{t:"ROK",n:"Rockwell Automation, Inc."},
+  {t:"COR",n:"Cencora, Inc."},{t:"EA",n:"Electronic Arts Inc."},{t:"AZO",n:"AutoZone, Inc."},{t:"ETR",n:"Entergy Corporation"},
+  {t:"EW",n:"Edwards Lifesciences Corporation"},{t:"NDAQ",n:"Nasdaq, Inc."},{t:"ODFL",n:"Old Dominion Freight Line, Inc."},{t:"ADSK",n:"Autodesk, Inc."},
+  {t:"EBAY",n:"eBay Inc."},{t:"XEL",n:"Xcel Energy Inc."},{t:"EXC",n:"Exelon Corporation"},{t:"GRMN",n:"Garmin Ltd."},
+  {t:"CAH",n:"Cardinal Health, Inc."},{t:"FITB",n:"Fifth Third Bancorp"},{t:"MSCI",n:"MSCI Inc."},{t:"WAB",n:"Westinghouse Air Brake Technologies Corporation"},
+  {t:"IDXX",n:"IDEXX Laboratories, Inc."},{t:"STT",n:"State Street Corporation"},{t:"COIN",n:"Coinbase Global, Inc."},{t:"KDP",n:"Keurig Dr Pepper Inc."},
+  {t:"XYZ",n:"Block, Inc."},{t:"DHI",n:"D.R. Horton, Inc."},{t:"YUM",n:"Yum! Brands, Inc."},{t:"ARES",n:"Ares Management Corporation"},
+  {t:"ADM",n:"Archer-Daniels-Midland Company"},{t:"BDX",n:"Becton, Dickinson and Company"},{t:"TTWO",n:"Take-Two Interactive Software, Inc."},{t:"JBL",n:"Jabil Inc."},
+  {t:"STLD",n:"Steel Dynamics, Inc."},{t:"AMP",n:"Ameriprise Financial, Inc."},{t:"HUM",n:"Humana Inc."},{t:"IBKR",n:"Interactive Brokers Group, Inc."},
+  {t:"AXON",n:"Axon Enterprise, Inc."},{t:"A",n:"Agilent Technologies, Inc."},{t:"PEG",n:"Public Service Enterprise Group Incorporated"},{t:"VTR",n:"Ventas, Inc."},
+  {t:"CCI",n:"Crown Castle Inc."},{t:"AIG",n:"American International Group, Inc."},{t:"LYV",n:"Live Nation Entertainment, Inc."},{t:"ED",n:"Consolidated Edison, Inc."},
+  {t:"IRM",n:"Iron Mountain Incorporated"},{t:"TKO",n:"TKO Group Holdings, Inc."},{t:"PYPL",n:"PayPal Holdings, Inc."},{t:"CCL",n:"Carnival Corporation Ltd."},
+  {t:"KR",n:"The Kroger Co."},{t:"EME",n:"EMCOR Group, Inc."},{t:"WAT",n:"Waters Corporation"},{t:"HSY",n:"The Hershey Company"},
+  {t:"PCG",n:"PG&amp;E Corporation"},{t:"VMC",n:"Vulcan Materials Company"},{t:"CBRE",n:"CBRE Group, Inc."},{t:"CMG",n:"Chipotle Mexican Grill, Inc."},
+  {t:"WDAY",n:"Workday, Inc."},{t:"SYY",n:"Sysco Corporation"},{t:"WEC",n:"WEC Energy Group, Inc."},{t:"NTAP",n:"NetApp, Inc."},
+  {t:"PAYX",n:"Paychex, Inc."},{t:"SATS",n:"EchoStar Corporation"},{t:"MLM",n:"Martin Marietta Materials, Inc."},{t:"PRU",n:"Prudential Financial, Inc."},
+  {t:"HIG",n:"The Hartford Insurance Group, Inc."},{t:"HAL",n:"Halliburton Company"},{t:"FSLR",n:"First Solar, Inc."},{t:"UAL",n:"United Airlines Holdings, Inc."},
+  {t:"EQT",n:"EQT Corporation"},{t:"LVS",n:"Las Vegas Sands Corp."},{t:"ROP",n:"Roper Technologies, Inc."},{t:"ZTS",n:"Zoetis Inc."},
+  {t:"Q",n:"Qnity Electronics, Inc."},{t:"KVUE",n:"Kenvue Inc."},{t:"HBAN",n:"Huntington Bancshares Incorporated"},{t:"EXR",n:"Extra Space Storage Inc."},
+  {t:"KMB",n:"Kimberly-Clark Corporation"},{t:"MTB",n:"M&amp;T Bank Corporation"},{t:"NTRS",n:"Northern Trust Corporation"},{t:"ACGL",n:"Arch Capital Group Ltd."},
+  {t:"IQV",n:"IQVIA Holdings Inc."},{t:"CBOE",n:"Cboe Global Markets, Inc."},{t:"VICI",n:"VICI Properties Inc."},{t:"EL",n:"The Estée Lauder Companies Inc."},
+  {t:"DTE",n:"DTE Energy Company"},{t:"CNC",n:"Centene Corporation"},{t:"AEE",n:"Ameren Corporation"},{t:"FISV",n:"Fiserv, Inc."},
+  {t:"BIIB",n:"Biogen Inc."},{t:"DOV",n:"Dover Corporation"},{t:"TDY",n:"Teledyne Technologies Incorporated"},{t:"CASY",n:"Casey&amp;#39;s General Stores, Inc."},
+  {t:"RJF",n:"Raymond James Financial, Inc."},{t:"SMCI",n:"Super Micro Computer, Inc."},{t:"NRG",n:"NRG Energy, Inc."},{t:"GEHC",n:"GE HealthCare Technologies Inc."},
+  {t:"TPR",n:"Tapestry, Inc."},{t:"CPRT",n:"Copart, Inc."},{t:"ATO",n:"Atmos Energy Corporation"},{t:"DXCM",n:"DexCom, Inc."},
+  {t:"TPL",n:"Texas Pacific Land Corporation"},{t:"IR",n:"Ingersoll Rand Inc."},{t:"EIX",n:"Edison International"},{t:"FICO",n:"Fair Isaac Corporation"},
+  {t:"CNP",n:"CenterPoint Energy, Inc."},{t:"VRSN",n:"VeriSign, Inc."},{t:"EXPE",n:"Expedia Group, Inc."},{t:"RMD",n:"ResMed Inc."},
+  {t:"FOXA",n:"Fox Corporation"},{t:"KHC",n:"The Kraft Heinz Company"},{t:"OTIS",n:"Otis Worldwide Corporation"},{t:"JBHT",n:"J.B. Hunt Transport Services, Inc."},
+  {t:"PPL",n:"PPL Corporation"},{t:"FE",n:"FirstEnergy Corp."},{t:"AVB",n:"AvalonBay Communities, Inc."},{t:"XYL",n:"Xylem Inc."},
+  {t:"CFG",n:"Citizens Financial Group, Inc."},{t:"ES",n:"Eversource Energy"},{t:"HUBB",n:"Hubbell Incorporated"},{t:"DOW",n:"Dow Inc."},
+  {t:"FOX",n:"Fox Corporation"},{t:"BG",n:"Bunge Global SA"},{t:"WRB",n:"W. R. Berkley Corporation"},{t:"EQR",n:"Equity Residential"},
+  {t:"CTSH",n:"Cognizant Technology Solutions Corporation"},{t:"PPG",n:"PPG Industries, Inc."},{t:"CINF",n:"Cincinnati Financial Corporation"},{t:"WSM",n:"Williams-Sonoma, Inc."},
+  {t:"AWK",n:"American Water Works Company, Inc."},{t:"HPQ",n:"HP Inc."},{t:"WTW",n:"Willis Towers Watson Public Limited Company"},{t:"MTD",n:"Mettler-Toledo International Inc."},
+  {t:"RF",n:"Regions Financial Corporation"},{t:"VRSK",n:"Verisk Analytics, Inc."},{t:"AKAM",n:"Akamai Technologies, Inc."},{t:"STZ",n:"Constellation Brands, Inc."},
+  {t:"DG",n:"Dollar General Corporation"},{t:"SYF",n:"Synchrony Financial"},{t:"CPAY",n:"Corpay, Inc."},{t:"FFIV",n:"F5, Inc."},
+  {t:"DRI",n:"Darden Restaurants, Inc."},{t:"KEY",n:"KeyCorp"},{t:"WST",n:"West Pharmaceutical Services, Inc."},{t:"PHM",n:"PulteGroup, Inc."},
+  {t:"TROW",n:"T. Rowe Price Group, Inc."},{t:"SW",n:"Smurfit Westrock Plc"},{t:"ROL",n:"Rollins, Inc."},{t:"LEN",n:"Lennar Corporation"},
+  {t:"CHD",n:"Church &amp; Dwight Co., Inc."},{t:"PFG",n:"Principal Financial Group, Inc."},{t:"NI",n:"NiSource Inc."},{t:"EXE",n:"Expand Energy Corporation"},
+  {t:"LYB",n:"LyondellBasell Industries N.V."},{t:"CMS",n:"CMS Energy Corporation"},{t:"DLTR",n:"Dollar Tree, Inc."},{t:"L",n:"Loews Corporation"},
+  {t:"DGX",n:"Quest Diagnostics Incorporated"},{t:"RL",n:"Ralph Lauren Corporation"},{t:"CHRW",n:"C.H. Robinson Worldwide, Inc."},{t:"LH",n:"Labcorp Holdings Inc."},
+  {t:"FIS",n:"Fidelity National Information Services, Inc."},{t:"OMC",n:"Omnicom Group Inc."},{t:"SBAC",n:"SBA Communications Corporation"},{t:"VLTO",n:"Veralto Corporation"},
+  {t:"EXPD",n:"Expeditors International of Washington, Inc."},{t:"STE",n:"STERIS plc"},{t:"EFX",n:"Equifax Inc."},{t:"ULTA",n:"Ulta Beauty, Inc."},
+  {t:"TSN",n:"Tyson Foods, Inc."},{t:"LUV",n:"Southwest Airlines Co."},{t:"PKG",n:"Packaging Corporation of America"},{t:"ALB",n:"Albemarle Corporation"},
+  {t:"INCY",n:"Incyte Corporation"},{t:"SNA",n:"Snap-on Incorporated"},{t:"MRNA",n:"Moderna, Inc."},{t:"DD",n:"DuPont de Nemours, Inc."},
+  {t:"IFF",n:"International Flavors &amp; Fragrances Inc."},{t:"BRO",n:"Brown &amp; Brown, Inc."},{t:"EVRG",n:"Evergy, Inc."},{t:"GPN",n:"Global Payments Inc."},
+  {t:"FTV",n:"Fortive Corporation"},{t:"ESS",n:"Essex Property Trust, Inc."},{t:"LNT",n:"Alliant Energy Corporation"},{t:"VTRS",n:"Viatris Inc."},
+  {t:"LII",n:"Lennox International Inc."},{t:"CF",n:"CF Industries Holdings, Inc."},{t:"CHTR",n:"Charter Communications, Inc."},{t:"IP",n:"International Paper Company"},
+  {t:"BR",n:"Broadridge Financial Solutions, Inc."},{t:"WY",n:"Weyerhaeuser Company"},{t:"CDW",n:"CDW Corporation"},{t:"AMCR",n:"Amcor plc"},
+  {t:"INVH",n:"Invitation Homes Inc."},{t:"GIS",n:"General Mills, Inc."},{t:"GNRC",n:"Generac Holdings Inc."},{t:"HST",n:"Host Hotels &amp; Resorts, Inc."},
+  {t:"NVR",n:"NVR, Inc."},{t:"ZBH",n:"Zimmer Biomet Holdings, Inc."},{t:"APTV",n:"Aptiv PLC"},{t:"PTC",n:"PTC Inc."},
+  {t:"NDSN",n:"Nordson Corporation"},{t:"KIM",n:"Kimco Realty Corporation"},{t:"GEN",n:"Gen Digital Inc."},{t:"IEX",n:"IDEX Corporation"},
+  {t:"TXT",n:"Textron Inc."},{t:"MAA",n:"Mid-America Apartment Communities, Inc."},{t:"BEN",n:"Franklin Resources, Inc."},{t:"LDOS",n:"Leidos Holdings, Inc."},
+  {t:"TSCO",n:"Tractor Supply Company"},{t:"BBY",n:"Best Buy Co., Inc."},{t:"DECK",n:"Deckers Outdoor Corporation"},{t:"NWS",n:"News Corporation"},
+  {t:"LULU",n:"lululemon athletica inc."},{t:"J",n:"Jacobs Solutions Inc."},{t:"REG",n:"Regency Centers Corporation"},{t:"NWSA",n:"News Corporation"},
+  {t:"BALL",n:"Ball Corporation"},{t:"MAS",n:"Masco Corporation"},{t:"CSGP",n:"CoStar Group, Inc."},{t:"SOLV",n:"Solventum Corporation"},
+  {t:"APA",n:"APA Corporation"},{t:"GPC",n:"Genuine Parts Company"},{t:"UDR",n:"UDR, Inc."},{t:"DOC",n:"Healthpeak Properties, Inc."},
+  {t:"TRMB",n:"Trimble Inc."},{t:"TYL",n:"Tyler Technologies, Inc."},{t:"HRL",n:"Hormel Foods Corporation"},{t:"EG",n:"Everest Group, Ltd."},
+  {t:"DVA",n:"DaVita Inc."},{t:"MKC",n:"McCormick &amp; Company, Incorporated"},{t:"MGM",n:"MGM Resorts International"},{t:"AIZ",n:"Assurant, Inc."},
+  {t:"SWK",n:"Stanley Black &amp; Decker, Inc."},{t:"SWKS",n:"Skyworks Solutions, Inc."},{t:"PNW",n:"Pinnacle West Capital Corporation"},{t:"IVZ",n:"Invesco Ltd."},
+  {t:"AVY",n:"Avery Dennison Corporation"},{t:"HAS",n:"Hasbro, Inc."},{t:"ZBRA",n:"Zebra Technologies Corporation"},{t:"COO",n:"The Cooper Companies, Inc."},
+  {t:"GL",n:"Globe Life Inc."},{t:"PSKY",n:"Paramount Skydance Corporation"},{t:"ALGN",n:"Align Technology, Inc."},{t:"PNR",n:"Pentair plc"},
+  {t:"BF.B",n:"Brown-Forman Corporation"},{t:"CPT",n:"Camden Property Trust"},{t:"HII",n:"Huntington Ingalls Industries, Inc."},{t:"RVTY",n:"Revvity, Inc."},
+  {t:"ALLE",n:"Allegion plc"},{t:"GDDY",n:"GoDaddy Inc."},{t:"IT",n:"Gartner, Inc."},{t:"BXP",n:"BXP, Inc."},
+  {t:"ERIE",n:"Erie Indemnity Company"},{t:"SJM",n:"The J. M. Smucker Company"},{t:"WYNN",n:"Wynn Resorts, Limited"},{t:"CLX",n:"The Clorox Company"},
+  {t:"AES",n:"The AES Corporation"},{t:"FRT",n:"Federal Realty Investment Trust"},{t:"DPZ",n:"Domino&amp;#39;s Pizza, Inc."},{t:"PODD",n:"Insulet Corporation"},
+  {t:"TTD",n:"The Trade Desk, Inc."},{t:"BAX",n:"Baxter International Inc."},{t:"JKHY",n:"Jack Henry &amp; Associates, Inc."},{t:"FDS",n:"FactSet Research Systems Inc."},
+  {t:"ARE",n:"Alexandria Real Estate Equities, Inc."},{t:"UHS",n:"Universal Health Services, Inc."},{t:"CRL",n:"Charles River Laboratories International, Inc."},{t:"HSIC",n:"Henry Schein, Inc."},
+  {t:"NCLH",n:"Norwegian Cruise Line Holdings Ltd."},{t:"BLDR",n:"Builders FirstSource, Inc."},{t:"TECH",n:"Bio-Techne Corporation"},{t:"AOS",n:"A. O. Smith Corporation"},
+  {t:"MOS",n:"The Mosaic Company"},{t:"TAP",n:"Molson Coors Beverage Company"},{t:"POOL",n:"Pool Corporation"},{t:"CPB",n:"The Campbell&amp;#39;s Company"},
+  {t:"CAG",n:"Conagra Brands, Inc."},{t:"EPAM",n:"EPAM Systems, Inc."},
+];
+
+const LS_SP500_KEY = 'investment_sp500_v1';
+function loadSp500FinData() { try { const r = localStorage.getItem(LS_SP500_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
+function saveSp500FinData() { try { localStorage.setItem(LS_SP500_KEY, JSON.stringify(sp500FinData)); } catch(e) {} }
+let sp500FinData = loadSp500FinData();
+
+let sp500SortKey = 'mcap';
+let sp500SortDir = -1;
+let sp500Fetching = false;
+
+// Format raw USD value as $XB / $XT / $XM
+function fmtBn(v) {
+  if (v == null) return `<span class="pchg pchg-load">—</span>`;
+  const b = v / 1e9, abs = Math.abs(b), neg = v < 0;
+  const pfx = neg ? '-$' : '$';
+  if (abs >= 1000) return `<span class="mcap-cell">${pfx}${(abs/1000).toFixed(1)}T</span>`;
+  if (abs >= 1)    return `<span class="mcap-cell">${pfx}${abs.toFixed(1)}B</span>`;
+  return `<span class="mcap-cell">${pfx}${(abs*1000).toFixed(0)}M</span>`;
+}
+
+// Format EV multiple
+function fmtMult(v) {
+  if (v == null || !isFinite(v) || v <= 0 || v > 9999) return `<span class="pchg pchg-load">—</span>`;
+  const cls = v < 15 ? 'pchg-up' : v > 50 ? 'pchg-dn' : '';
+  return `<span class="price-cell ${cls}" style="font-family:'DM Mono',monospace">${v.toFixed(1)}x</span>`;
+}
+
+// Get market cap in raw USD — prefer live priceData (mcap in billions), else FMP profile
+function sp500GetMcapUsd(t) {
+  const pd = priceData[t];
+  if (pd?.mcap > 0) return pd.mcap * 1e9;
+  const fd = sp500FinData[t];
+  if (fd?.mcapFmp > 0) return fd.mcapFmp;
+  return null;
+}
+
+function sp500Reset() {
+  const q = document.getElementById('sp500-q');
+  const sec = document.getElementById('sp500-sector');
+  const mc = document.getElementById('sp500-mcap');
+  if (q) q.value = '';
+  if (sec) sec.value = '';
+  if (mc) mc.value = '';
+  renderSp500Tab();
+}
+
+function sp500Sort(key) {
+  if (sp500SortKey === key) sp500SortDir = -sp500SortDir;
+  else {
+    sp500SortKey = key;
+    // Text columns sort ascending by default; numeric desc
+    sp500SortDir = ['ticker','name','sector'].includes(key) ? 1 : -1;
+  }
+  renderSp500Tab();
+}
+
+function sp500Filter() { renderSp500Tab(); }
+
+function sp500BuildSectorDropdown() {
+  const sel = document.getElementById('sp500-sector');
+  if (!sel) return;
+  const cur = sel.value;
+  while (sel.options.length > 1) sel.remove(1);
+  const sectors = [...new Set(SP500_LIST.map(s => sp500FinData[s.t]?.sector).filter(Boolean))].sort();
+  sectors.forEach(sec => {
+    const o = document.createElement('option');
+    o.value = sec; o.textContent = sec;
+    sel.appendChild(o);
+  });
+  sel.value = cur;
+}
+
+function buildSp500Thead() {
+  const col = (key, label, align='right') => {
+    const active = sp500SortKey === key;
+    const arrow = active ? (sp500SortDir > 0 ? ' ▲' : ' ▼') : '';
+    return `<th onclick="sp500Sort('${key}')" style="cursor:pointer;white-space:nowrap;text-align:${align};padding:6px 10px" class="${active?'sort-active':''}">${label}${arrow}</th>`;
+  };
+  return `<tr>
+    ${col('ticker','Ticker','left')}
+    ${col('name','Name','left')}
+    ${col('sector','Sector','left')}
+    ${col('price','Price')}
+    ${col('mcap','Mkt Cap (€')}
+    ${col('annRev','Ann. Revenue')}
+    ${col('qRev','Q Revenue')}
+    ${col('annEbitda','Ann. EBITDA')}
+    ${col('qEbitda','Q EBITDA')}
+    ${col('annFcf','Ann. FCF')}
+    ${col('qFcf','Q FCF')}
+    ${col('evRev','EV/Rev')}
+    ${col('evFwdRev','EV/Fwd Rev')}
+    ${col('evEbitda','EV/EBITDA')}
+    ${col('evFwdEbitda','EV/Fwd EBITDA')}
+    ${col('evFcf','EV/FCF')}
+    ${col('evFwdFcf','EV/Fwd FCF')}
+  </tr>`;
+}
+
+function renderSp500Tab() {
+  const tb = document.getElementById('sp500-tb');
+  const thead = document.getElementById('sp500-thead');
+  const tf = document.getElementById('sp500-tf');
+  if (!tb || !thead) return;
+
+  thead.innerHTML = buildSp500Thead();
+  sp500BuildSectorDropdown();
+
+  const q = (document.getElementById('sp500-q')?.value || '').toLowerCase().trim();
+  const sectorF = document.getElementById('sp500-sector')?.value || '';
+  const mcapMin = parseFloat(document.getElementById('sp500-mcap')?.value) || 0; // billions
+
+  // Build enriched rows
+  let rows = SP500_LIST.map(s => {
+    const fd = sp500FinData[s.t] || {};
+    const pd = priceData[s.t] || {};
+    const mcapUsd = sp500GetMcapUsd(s.t);
+    const mcapB = mcapUsd ? mcapUsd / 1e9 : null;
+    const ev = mcapUsd;
+
+    const annRev = fd.annRev ?? null;
+    const qRev   = fd.qRev   ?? null;
+    const annEbitda = fd.annEbitda ?? null;
+    const qEbitda   = fd.qEbitda   ?? null;
+    const annFcf = fd.annFcf ?? null;
+    const qFcf   = fd.qFcf   ?? null;
+
+    const safe = (n, d) => (ev > 0 && d != null && d > 0) ? ev / d : null;
+    const evRev       = safe(ev, annRev);
+    const evFwdRev    = safe(ev, qRev != null ? qRev * 4 : null);
+    const evEbitda    = safe(ev, annEbitda);
+    const evFwdEbitda = safe(ev, qEbitda != null ? qEbitda * 4 : null);
+    const evFcf       = safe(ev, annFcf);
+    const evFwdFcf    = safe(ev, qFcf != null ? qFcf * 4 : null);
+
+    return { t: s.t, n: s.n, sector: fd.sector || null, price: pd.price ?? null,
+      mcapB, mcapUsd, ev, annRev, qRev, annEbitda, qEbitda, annFcf, qFcf,
+      evRev, evFwdRev, evEbitda, evFwdEbitda, evFcf, evFwdFcf,
+      annRevDate: fd.annRevDate, qRevDate: fd.qRevDate,
+      annFcfDate: fd.annFcfDate, qFcfDate: fd.qFcfDate,
+    };
+  });
+
+  // Deduplicate (GOOG/GOOGL both in list)
+  // Keep both but show both
+
+  // Filters
+  if (q) rows = rows.filter(r => r.t.toLowerCase().includes(q) || r.n.toLowerCase().includes(q));
+  if (sectorF) rows = rows.filter(r => r.sector === sectorF);
+  if (mcapMin > 0) rows = rows.filter(r => r.mcapB != null && r.mcapB >= mcapMin);
+
+  // Sort
+  const NUM_INF = sp500SortDir > 0 ? Infinity : -Infinity;
+  rows.sort((a, b) => {
+    let av, bv;
+    switch(sp500SortKey) {
+      case 'ticker':  return sp500SortDir * a.t.localeCompare(b.t);
+      case 'name':    return sp500SortDir * a.n.localeCompare(b.n);
+      case 'sector':  return sp500SortDir * (a.sector||'').localeCompare(b.sector||'');
+      case 'price':   av = a.price ?? NUM_INF; bv = b.price ?? NUM_INF; break;
+      case 'mcap':    av = a.mcapB ?? NUM_INF; bv = b.mcapB ?? NUM_INF; break;
+      case 'annRev':  av = a.annRev ?? NUM_INF; bv = b.annRev ?? NUM_INF; break;
+      case 'qRev':    av = a.qRev ?? NUM_INF;   bv = b.qRev ?? NUM_INF; break;
+      case 'annEbitda': av = a.annEbitda ?? NUM_INF; bv = b.annEbitda ?? NUM_INF; break;
+      case 'qEbitda': av = a.qEbitda ?? NUM_INF; bv = b.qEbitda ?? NUM_INF; break;
+      case 'annFcf':  av = a.annFcf ?? NUM_INF; bv = b.annFcf ?? NUM_INF; break;
+      case 'qFcf':    av = a.qFcf ?? NUM_INF;   bv = b.qFcf ?? NUM_INF; break;
+      case 'evRev':   av = a.evRev ?? NUM_INF;   bv = b.evRev ?? NUM_INF; break;
+      case 'evFwdRev': av = a.evFwdRev ?? NUM_INF; bv = b.evFwdRev ?? NUM_INF; break;
+      case 'evEbitda': av = a.evEbitda ?? NUM_INF; bv = b.evEbitda ?? NUM_INF; break;
+      case 'evFwdEbitda': av = a.evFwdEbitda ?? NUM_INF; bv = b.evFwdEbitda ?? NUM_INF; break;
+      case 'evFcf':   av = a.evFcf ?? NUM_INF;   bv = b.evFcf ?? NUM_INF; break;
+      case 'evFwdFcf': av = a.evFwdFcf ?? NUM_INF; bv = b.evFwdFcf ?? NUM_INF; break;
+      default: av = 0; bv = 0;
+    }
+    return sp500SortDir * (av - bv);
+  });
+
+  if (rows.length === 0) {
+    tb.innerHTML = `<tr><td colspan="17" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">No stocks match current filters.</td></tr>`;
+    if (tf) tf.innerHTML = '';
+    return;
+  }
+
+  tb.innerHTML = rows.map(r => {
+    const mcapDisp = r.mcapB != null ? fmtMcap(r.mcapB, 'NYSE') : `<span class="pchg pchg-load">—</span>`;
+    const priceDisp = r.price != null ? fmtPrice(r.price, 'NYSE') : `<span class="pchg pchg-load">—</span>`;
+    const aRD = r.annRevDate ? `title="Annual period: ${r.annRevDate}"` : '';
+    const qRD = r.qRevDate  ? `title="Quarter ending: ${r.qRevDate}"` : '';
+    const aFD = r.annFcfDate ? `title="Annual period: ${r.annFcfDate}"` : '';
+    const qFD = r.qFcfDate  ? `title="Quarter ending: ${r.qFcfDate}"` : '';
+    return `<tr>
+      <td style="padding:5px 10px"><span class="tk" style="color:var(--txt);font-weight:700">${r.t}</span></td>
+      <td style="padding:5px 10px;font-size:11px;color:var(--txt2);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.n}">${r.n}</td>
+      <td style="padding:5px 10px;font-size:10px;color:var(--txt3);white-space:nowrap">${r.sector || '<span style="color:var(--txt3);opacity:.4">—</span>'}</td>
+      <td style="padding:5px 10px;text-align:right">${priceDisp}</td>
+      <td style="padding:5px 10px;text-align:right">${mcapDisp}</td>
+      <td style="padding:5px 10px;text-align:right" ${aRD}>${fmtBn(r.annRev)}</td>
+      <td style="padding:5px 10px;text-align:right" ${qRD}>${fmtBn(r.qRev)}</td>
+      <td style="padding:5px 10px;text-align:right" ${aRD}>${fmtBn(r.annEbitda)}</td>
+      <td style="padding:5px 10px;text-align:right" ${qRD}>${fmtBn(r.qEbitda)}</td>
+      <td style="padding:5px 10px;text-align:right" ${aFD}>${fmtBn(r.annFcf)}</td>
+      <td style="padding:5px 10px;text-align:right" ${qFD}>${fmtBn(r.qFcf)}</td>
+      <td style="padding:5px 10px;text-align:right">${fmtMult(r.evRev)}</td>
+      <td style="padding:5px 10px;text-align:right">${fmtMult(r.evFwdRev)}</td>
+      <td style="padding:5px 10px;text-align:right">${fmtMult(r.evEbitda)}</td>
+      <td style="padding:5px 10px;text-align:right">${fmtMult(r.evFwdEbitda)}</td>
+      <td style="padding:5px 10px;text-align:right">${fmtMult(r.evFcf)}</td>
+      <td style="padding:5px 10px;text-align:right">${fmtMult(r.evFwdFcf)}</td>
+    </tr>`;
+  }).join('');
+
+  const fetched = SP500_LIST.filter(s => sp500FinData[s.t]?.lastFetch).length;
+  const stale = SP500_LIST.filter(s => {
+    const d = sp500FinData[s.t];
+    if (!d?.lastFetch) return false;
+    return Date.now() - new Date(d.lastFetch).getTime() > 7 * 24 * 3600 * 1000;
+  }).length;
+  if (tf) tf.innerHTML = `<tr><td colspan="17" style="padding:8px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3);">
+    Showing <strong style="color:var(--txt2)">${rows.length}</strong> of ${SP500_LIST.length} stocks &middot;
+    <strong style="color:var(--txt2)">${fetched}</strong> with financial data
+    ${stale > 0 ? `&middot; <span style="color:var(--org)">${stale} stale (&gt;7 days)</span>` : ''}
+  </td></tr>`;
+}
+
+// Lightweight per-stock fetch for S&P 500 tab (5 parallel FMP calls)
+async function fetchSp500Stock(ticker) {
+  const apiKey = getFmpKey();
+  if (!apiKey) return null;
+  // FMP uses dashes for BRK.B → BRK-B, BF.B → BF-B
+  const sym = ticker.replace(/\./g, '-');
+  const BASE = 'https://financialmodelingprep.com/api/v3';
+  const get = async (ep, params) => {
+    try {
+      const qs = new URLSearchParams({ ...params, apikey: apiKey }).toString();
+      const r = await fetch(`${BASE}/${ep}/${encodeURIComponent(sym)}?${qs}`, { signal: AbortSignal.timeout(10000) });
+      if (!r.ok) return null;
+      const d = await r.json();
+      if (Array.isArray(d)) return d.length ? d : null;
+      if (d && typeof d === 'object' && !d.error) return [d];
+      return null;
+    } catch(e) { return null; }
+  };
+
+  const [aIS, qIS, aCF, qCF, prof] = await Promise.all([
+    get('income-statement',    { period: 'annual',  limit: 1 }),
+    get('income-statement',    { period: 'quarter', limit: 1 }),
+    get('cash-flow-statement', { period: 'annual',  limit: 1 }),
+    get('cash-flow-statement', { period: 'quarter', limit: 1 }),
+    get('profile',             {}),
+  ]);
+
+  if (!aIS && !qIS && !prof) return null;
+
+  const a = aIS?.[0], q = qIS?.[0], af = aCF?.[0], qf = qCF?.[0], p = prof?.[0];
+  return {
+    sector: p?.sector || null,
+    mcapFmp: p?.mktCap || null,
+    annRev:      a?.revenue    ?? null,
+    annRevDate:  a?.date?.slice(0,10) ?? null,
+    qRev:        q?.revenue    ?? null,
+    qRevDate:    q?.date?.slice(0,10) ?? null,
+    annEbitda:   a?.ebitda     ?? null,
+    qEbitda:     q?.ebitda     ?? null,
+    annFcf:      af?.freeCashFlow ?? null,
+    annFcfDate:  af?.date?.slice(0,10) ?? null,
+    qFcf:        qf?.freeCashFlow ?? null,
+    qFcfDate:    qf?.date?.slice(0,10) ?? null,
+    lastFetch: new Date().toISOString(),
+  };
+}
+
+async function fetchSp500Data() {
+  if (sp500Fetching) return;
+  if (!getFmpKey()) {
+    alert('FMP API key required — add it in Settings → Financial Data API Keys.');
+    return;
+  }
+  sp500Fetching = true;
+  const btn = document.getElementById('sp500-update-btn');
+  const status = document.getElementById('sp500-status');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
+
+  // Skip stocks fetched within last 7 days
+  const STALE_MS = 7 * 24 * 3600 * 1000;
+  const toFetch = SP500_LIST.filter(s => {
+    const d = sp500FinData[s.t];
+    return !d?.lastFetch || (Date.now() - new Date(d.lastFetch).getTime() > STALE_MS);
+  });
+
+  let done = 0;
+  const total = toFetch.length;
+  const CONC = 3; // 3 parallel stocks, ~5 FMP calls each = 15 calls/batch
+
+  for (let i = 0; i < toFetch.length; i += CONC) {
+    if (!sp500Fetching) break;
+    const batch = toFetch.slice(i, i + CONC);
+    const results = await Promise.all(batch.map(s => fetchSp500Stock(s.t)));
+    results.forEach((r, j) => { if (r) sp500FinData[batch[j].t] = r; done++; });
+    if (status) status.textContent = `Fetching… ${done}/${total}`;
+    saveSp500FinData();
+    // Re-render every 30 stocks to show progress
+    if (done % 30 === 0 || done === total) renderSp500Tab();
+    if (i + CONC < toFetch.length) await new Promise(r => setTimeout(r, 400));
+  }
+
+  sp500Fetching = false;
+  if (btn) { btn.disabled = false; btn.innerHTML = '&#9889; Update Data'; }
+  sp500BuildSectorDropdown();
+  renderSp500Tab();
+  if (status) {
+    status.textContent = `Updated ${done} stocks ✓`;
+    setTimeout(() => { if (status) status.textContent = ''; }, 5000);
+  }
 }
 
 // ── INIT ──
