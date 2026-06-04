@@ -6705,7 +6705,8 @@ async function fetchSp500StockFMP(ticker) {
   };
 }
 
-// Alpha Vantage fallback fetch (2 calls: INCOME_STATEMENT + CASH_FLOW)
+// Alpha Vantage fallback fetch (3 parallel calls: INCOME_STATEMENT + CASH_FLOW + OVERVIEW)
+// NOTE: Call this only ONE stock at a time with a 40s gap between calls (AV: 5 req/min)
 async function fetchSp500StockAV(ticker) {
   const apiKey = getAvKey();
   if (!apiKey) return null;
@@ -6713,7 +6714,7 @@ async function fetchSp500StockAV(ticker) {
   const get = async (fn) => {
     try {
       const url = `${BASE}?function=${fn}&symbol=${encodeURIComponent(ticker)}&apikey=${apiKey}`;
-      const r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
       if (!r.ok) { console.warn(`[SP500] AV ${fn} ${ticker} → HTTP ${r.status}`); return null; }
       const d = await r.json();
       if (d['Note'] || d['Information']) {
@@ -6724,18 +6725,22 @@ async function fetchSp500StockAV(ticker) {
     } catch(e) { console.warn(`[SP500] AV ${fn} ${ticker} → ${e.message}`); return null; }
   };
 
-  // AV returns annual+quarterly in ONE call — fetch both endpoints in parallel
-  const [is, cf] = await Promise.all([get('INCOME_STATEMENT'), get('CASH_FLOW')]);
+  // 3 calls in parallel: income statement, cash flow, overview (market cap + sector)
+  const [is, cf, ov] = await Promise.all([
+    get('INCOME_STATEMENT'),
+    get('CASH_FLOW'),
+    get('OVERVIEW'),
+  ]);
 
-  const aIS = is?.annualReports?.[0],   qIS = is?.quarterlyReports?.[0];
-  const aCF = cf?.annualReports?.[0],   qCF = cf?.quarterlyReports?.[0];
+  const aIS = is?.annualReports?.[0],  qIS = is?.quarterlyReports?.[0];
+  const aCF = cf?.annualReports?.[0],  qCF = cf?.quarterlyReports?.[0];
   if (!aIS && !qIS) { console.warn(`[SP500] AV ${ticker}: no income data`); return null; }
 
   const num = v => (v && v !== 'None') ? parseFloat(v) : null;
   const annRev = num(aIS?.totalRevenue), qRev = num(qIS?.totalRevenue);
   if (annRev == null && qRev == null) return null;
 
-  // EBITDA: use direct field if present, else operatingIncome + D&A
+  // EBITDA: direct field first, else operatingIncome + D&A
   const calcEbitda = (rep) => {
     const e = num(rep?.ebitda);
     if (e != null) return e;
@@ -6744,17 +6749,20 @@ async function fetchSp500StockAV(ticker) {
   };
   const annEbitda = calcEbitda(aIS), qEbitda = calcEbitda(qIS);
 
-  // FCF = operatingCashflow - |capitalExpenditures|
+  // FCF = operatingCashflow - |capitalExpenditures| (AV capex can be positive or negative)
   const calcFcf = (rep) => {
     const o = num(rep?.operatingCashflow), c = num(rep?.capitalExpenditures);
     return (o != null && c != null) ? o - Math.abs(c) : null;
   };
   const annFcf = calcFcf(aCF), qFcf = calcFcf(qCF);
 
-  console.log(`[SP500] AV fallback success: ${ticker} annRev=${annRev}`);
+  // Market cap from OVERVIEW
+  const mcapFmp = num(ov?.MarketCapitalization);
+
+  console.log(`[SP500] AV success: ${ticker} annRev=${annRev} mcap=${mcapFmp}`);
   return {
-    sector:      null,
-    mcapFmp:     null,
+    sector:      ov?.Sector || null,
+    mcapFmp,
     annRev,
     annRevDate:  aIS?.fiscalDateEnding ?? null,
     qRev,
@@ -6770,22 +6778,10 @@ async function fetchSp500StockAV(ticker) {
   };
 }
 
-// Wrapper: try FMP first, fall back to Alpha Vantage on 403
-async function fetchSp500Stock(ticker) {
-  const fmp = await fetchSp500StockFMP(ticker);
-  if (fmp && !fmp._need403Fallback) return fmp;
-  // FMP blocked (403) or no key — try Alpha Vantage
-  if (getAvKey()) {
-    console.log(`[SP500] ${ticker}: FMP blocked, trying Alpha Vantage…`);
-    return await fetchSp500StockAV(ticker);
-  }
-  return null;
-}
-
 async function fetchSp500Data() {
   if (sp500Fetching) return;
-  if (!getFmpKey()) {
-    alert('FMP API key required — add it in Settings → Financial Data API Keys.');
+  if (!getFmpKey() && !getAvKey()) {
+    alert('Add an API key in Settings → Financial Data API Keys (FMP or Alpha Vantage).');
     return;
   }
   sp500Fetching = true;
@@ -6793,9 +6789,6 @@ async function fetchSp500Data() {
   const status = document.getElementById('sp500-status');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
 
-  // Only fetch currently visible (filtered) stocks
-  // Re-fetch if: no revenue data anywhere, OR data is stale (>7 days)
-  // Skip if already covered by Financial Analysis cache with good data
   const STALE_MS = 7 * 24 * 3600 * 1000;
   const visibleSet = new Set(sp500VisibleTickers);
   const hasRevenue = t => {
@@ -6813,8 +6806,8 @@ async function fetchSp500Data() {
   };
   const toFetch = SP500_LIST.filter(s => {
     if (!visibleSet.has(s.t)) return false;
-    if (!hasRevenue(s.t)) return true;      // no data anywhere → fetch
-    if (isStale(s.t) && !financialData[s.t]?.lastUpdated) return true;  // stale sp500 data and not in fin cache
+    if (!hasRevenue(s.t)) return true;
+    if (isStale(s.t) && !financialData[s.t]?.lastUpdated) return true;
     return false;
   });
 
@@ -6828,19 +6821,54 @@ async function fetchSp500Data() {
   let done = 0, succeeded = 0;
   const total = toFetch.length;
   const CONC = 3;
+  const avQueue = []; // tickers FMP returned 403 for — processed sequentially via AV
 
-  for (let i = 0; i < toFetch.length; i += CONC) {
-    if (!sp500Fetching) break;
-    const batch = toFetch.slice(i, i + CONC);
-    const results = await Promise.all(batch.map(s => fetchSp500Stock(s.t)));
-    results.forEach((r, j) => {
+  // ── Phase 1: FMP parallel batches ──
+  if (getFmpKey()) {
+    for (let i = 0; i < toFetch.length; i += CONC) {
+      if (!sp500Fetching) break;
+      const batch = toFetch.slice(i, i + CONC);
+      const results = await Promise.all(batch.map(s => fetchSp500StockFMP(s.t)));
+      results.forEach((r, j) => {
+        if (r?._need403Fallback) {
+          avQueue.push(batch[j]); // defer — do NOT increment done yet
+        } else {
+          done++;
+          if (r) { sp500FinData[batch[j].t] = r; succeeded++; }
+        }
+      });
+      if (status) status.textContent = `Fetching (FMP)… ${done}/${total} · ${succeeded} with data`;
+      saveSp500FinData();
+      if (done % 9 === 0) renderSp500Tab();
+      if (i + CONC < toFetch.length) await new Promise(r => setTimeout(r, 400));
+    }
+  } else {
+    avQueue.push(...toFetch); // no FMP key — all go to AV
+  }
+
+  // ── Phase 2: AV sequential (3 calls/stock → 40s gap to stay under 5 req/min) ──
+  if (avQueue.length && getAvKey()) {
+    if (status) status.textContent = `FMP done · ${avQueue.length} stock${avQueue.length > 1 ? 's' : ''} via Alpha Vantage…`;
+    for (let i = 0; i < avQueue.length; i++) {
+      if (!sp500Fetching) break;
+      if (i > 0) {
+        const WAIT = 40;
+        for (let t = WAIT; t > 0; t--) {
+          if (!sp500Fetching) break;
+          if (status) status.textContent = `AV: ${i}/${avQueue.length} done · next in ${t}s…`;
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+      const s = avQueue[i];
+      if (status) status.textContent = `AV: fetching ${s.t} (${i + 1}/${avQueue.length})…`;
+      const r = await fetchSp500StockAV(s.t);
       done++;
-      if (r) { sp500FinData[batch[j].t] = r; succeeded++; }
-    });
-    if (status) status.textContent = `Fetching… ${done}/${total} · ${succeeded} with data`;
-    saveSp500FinData();
-    if (done % 9 === 0 || done === total) renderSp500Tab();
-    if (i + CONC < toFetch.length) await new Promise(r => setTimeout(r, 400));
+      if (r) { sp500FinData[s.t] = r; succeeded++; }
+      saveSp500FinData();
+      renderSp500Tab();
+    }
+  } else if (avQueue.length) {
+    done += avQueue.length; // blocked by FMP, no AV key → count as failed
   }
 
   sp500Fetching = false;
@@ -6849,8 +6877,9 @@ async function fetchSp500Data() {
   renderSp500Tab();
   if (status) {
     const failCount = done - succeeded;
-    status.textContent = `Done: ${succeeded}/${done} stocks updated${failCount ? ` · ${failCount} failed (check console)` : ' ✓'}`;
-    setTimeout(() => { if (status) status.textContent = ''; }, 6000);
+    const avNote = avQueue.length ? ` · ${avQueue.length} via AV` : '';
+    status.textContent = `Done: ${succeeded}/${done} updated${avNote}${failCount ? ` · ${failCount} failed` : ' ✓'}`;
+    setTimeout(() => { if (status) status.textContent = ''; }, 8000);
   }
 }
 
