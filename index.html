@@ -6435,19 +6435,17 @@ function fmtMult(v) {
   return `<span class="price-cell ${cls}" style="font-family:'DM Mono',monospace">${v.toFixed(1)}x</span>`;
 }
 
-// Get market cap in raw USD — four fallbacks in priority order
+// Get market cap in raw USD — fallbacks in priority order
 function sp500GetMcapUsd(t) {
   const pd  = priceData[t];
-  if (pd?.mcap > 0) return pd.mcap * 1e9;           // 1. Long List price fetch (Yahoo, stored in billions)
+  if (pd?.mcap > 0) return pd.mcap * 1e9;                    // 1. Long List price fetch (billions → USD)
   const fd  = sp500FinData[t];
-  if (fd?.mcapFmp > 0) return fd.mcapFmp;            // 2. S&P 500 Update Data (FMP quote or AV OVERVIEW, raw USD)
-  const fin = financialData[t];
-  if (pd?.price > 0 && fin?.sharesOutstanding > 0)   // 3. Compute: live price × cached shares outstanding
-    return pd.price * fin.sharesOutstanding;
-  if (fin?.sharesOutstanding > 0 && fd?.annRev > 0) { // 4. No live price — try last known price from sp500FinData quote
-    const lp = fd?.lastPrice;
-    if (lp > 0) return lp * fin.sharesOutstanding;
-  }
+  if (fd?.mcapFmp > 0) return fd.mcapFmp;                    // 2. FMP quote.marketCap or AV OVERVIEW (raw USD)
+  // Compute price × shares — use best available price and best available share count
+  const price  = pd?.price  > 0 ? pd.price  : (fd?.lastPrice > 0 ? fd.lastPrice : null);
+  const shares = fd?.sharesOutstanding > 0 ? fd.sharesOutstanding   // 3a. from S&P 500 fetch (IS or AV OVERVIEW)
+               : (financialData[t]?.sharesOutstanding > 0 ? financialData[t].sharesOutstanding : null); // 3b. Financial Analysis tab
+  if (price > 0 && shares > 0) return price * shares;
   return null;
 }
 
@@ -6696,9 +6694,11 @@ async function fetchSp500StockFMP(ticker) {
   }
 
   return {
-    sector:      null,                            // sector comes from SP500_LIST, not needed here
-    mcapFmp:     p?.marketCap || null,            // quote returns marketCap (not mktCap)
-    lastPrice:   p?.price     || null,            // store quote price as fallback for mcap calc
+    sector:           null,
+    mcapFmp:          p?.marketCap           || null,   // quote.marketCap (may be 403)
+    lastPrice:        p?.price               || null,   // quote.price, fallback for mcap calc
+    sharesOutstanding: a?.weightedAverageShsOutDil      // from income-statement — always available
+                    ?? a?.weightedAverageShsOut ?? null, //   when IS works, even if quote is 403
     annRev,
     annRevDate:  a?.date?.slice(0,10) ?? null,
     qRev,
@@ -6766,13 +6766,15 @@ async function fetchSp500StockAV(ticker) {
   };
   const annFcf = calcFcf(aCF), qFcf = calcFcf(qCF);
 
-  // Market cap from OVERVIEW
-  const mcapFmp = num(ov?.MarketCapitalization);
+  // Market cap + shares from OVERVIEW
+  const mcapFmp          = num(ov?.MarketCapitalization);
+  const sharesOutstanding = num(ov?.SharesOutstanding);
 
-  console.log(`[SP500] AV success: ${ticker} annRev=${annRev} mcap=${mcapFmp}`);
+  console.log(`[SP500] AV success: ${ticker} annRev=${annRev} mcap=${mcapFmp} shares=${sharesOutstanding}`);
   return {
-    sector:      ov?.Sector || null,
+    sector:           ov?.Sector || null,
     mcapFmp,
+    sharesOutstanding,
     annRev,
     annRevDate:  aIS?.fiscalDateEnding ?? null,
     qRev,
