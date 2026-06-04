@@ -6413,6 +6413,7 @@ let sp500FinData = loadSp500FinData();
 let sp500SortKey = 'mcap';
 let sp500SortDir = -1;
 let sp500Fetching = false;
+let sp500VisibleTickers = SP500_LIST.map(s => s.t); // tracks currently filtered tickers
 
 // Format raw USD value as $XB / $XT / $XM
 function fmtBn(v) {
@@ -6553,6 +6554,9 @@ function renderSp500Tab() {
   if (sectorF) rows = rows.filter(r => r.ind === sectorF);
   if (mcapMin > 0) rows = rows.filter(r => r.mcapB != null && r.mcapB >= mcapMin);
 
+  // Track filtered tickers so Update Data only fetches what's visible
+  sp500VisibleTickers = rows.map(r => r.t);
+
   // Sort
   const NUM_INF = sp500SortDir > 0 ? Infinity : -Infinity;
   rows.sort((a, b) => {
@@ -6685,9 +6689,11 @@ async function fetchSp500Data() {
   const status = document.getElementById('sp500-status');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
 
-  // Skip stocks fetched within last 7 days
+  // Only fetch currently visible (filtered) stocks; skip those fresh within 7 days
   const STALE_MS = 7 * 24 * 3600 * 1000;
+  const visibleSet = new Set(sp500VisibleTickers);
   const toFetch = SP500_LIST.filter(s => {
+    if (!visibleSet.has(s.t)) return false;
     const d = sp500FinData[s.t];
     return !d?.lastFetch || (Date.now() - new Date(d.lastFetch).getTime() > STALE_MS);
   });
@@ -6701,10 +6707,10 @@ async function fetchSp500Data() {
     const batch = toFetch.slice(i, i + CONC);
     const results = await Promise.all(batch.map(s => fetchSp500Stock(s.t)));
     results.forEach((r, j) => { if (r) sp500FinData[batch[j].t] = r; done++; });
-    if (status) status.textContent = `Fetching… ${done}/${total}`;
+    if (status) status.textContent = `Fetching… ${done}/${total} (of ${sp500VisibleTickers.length} filtered)`;
     saveSp500FinData();
-    // Re-render every 30 stocks to show progress
-    if (done % 30 === 0 || done === total) renderSp500Tab();
+    // Re-render every 9 stocks (3 batches) to show progress
+    if (done % 9 === 0 || done === total) renderSp500Tab();
     if (i + CONC < toFetch.length) await new Promise(r => setTimeout(r, 400));
   }
 
