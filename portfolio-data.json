@@ -4015,212 +4015,276 @@
   ],
   "portfolio": {
     "MULT": {
-      "shares": 3725
+      "shares": 3725,
+      "_portChecked": true
     },
     "CYR": {
-      "shares": 6475
+      "shares": 6475,
+      "_portChecked": true
     },
     "VVV3": {
-      "shares": 120
+      "shares": 120,
+      "_portChecked": true
     },
     "TSLA": {
-      "shares": 7
+      "shares": 7,
+      "_portChecked": true
     },
     "HOOD": {
-      "shares": 32
+      "shares": 32,
+      "_portChecked": true
     },
     "G24": {
-      "shares": 60
+      "shares": 60,
+      "_portChecked": true
     },
     "CHG": {
-      "shares": 125
+      "shares": 125,
+      "_portChecked": true
     },
     "TNIE": {
-      "shares": 45000
+      "shares": 45000,
+      "_portChecked": true
     },
     "HTG": {
-      "shares": 11397
+      "shares": 11397,
+      "_portChecked": true
     },
     "NVO": {
-      "shares": 190
+      "shares": 190,
+      "_portChecked": true
     },
     "MRX": {
-      "shares": 8310
+      "shares": 8310,
+      "_portChecked": true
     },
     "MS1": {
-      "shares": 56480
+      "shares": 56480,
+      "_portChecked": true
     },
     "BILL": {
-      "shares": 90
+      "shares": 90,
+      "_portChecked": true
     },
     "N4G0": {
-      "shares": 415
+      "shares": 415,
+      "_portChecked": true
     },
     "RJIB": {
-      "shares": 5490
+      "shares": 5490,
+      "_portChecked": true
     },
     "SATS": {
-      "shares": 130
+      "shares": 130,
+      "_portChecked": true
     },
     "ATAI": {
-      "shares": 4225
+      "shares": 4225,
+      "_portChecked": true
     },
     "CMPS": {
-      "shares": 400
+      "shares": 400,
+      "_portChecked": true
     },
     "TDOC": {
-      "shares": 200
+      "shares": 200,
+      "_portChecked": true
     },
     "IB1T": {
-      "shares": 500
+      "shares": 500,
+      "_portChecked": true
     },
     "S0LR": {
-      "shares": 250
+      "shares": 250,
+      "_portChecked": true
     },
     "Q8Y0": {
-      "shares": 300
+      "shares": 300,
+      "_portChecked": true
     },
     "SNSE": {
-      "shares": 167
+      "shares": 167,
+      "_portChecked": true
     },
     "SPIR": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "PL": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "ASTS": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "BKSY": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "GOOGL": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "AMZN": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "CRWV": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "META": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "MSFT": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "MNDY": {
-      "shares": 70,
+      "shares": 0,
       "_portChecked": true
     },
     "PLTR": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "QCOM": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "RKLB": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "000660.KS": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "SMCI": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "TEAM": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "CRM": {
       "shares": 30,
       "_portChecked": true
     },
     "OKTA": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "BE": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "RIOT": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "IREN": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "APLD": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "CORZ": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "HUBS": {
       "shares": 25,
       "_portChecked": true
     },
     "DOCU": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "ADBE": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "WDAY": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "NOW": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "ZS": {
-      "shares": 25,
-      "_portChecked": true
+      "shares": 0,
+      "_portChecked": false
     },
     "VEEV": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "QLYS": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "GTLB": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "FIG": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "OD7U": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "QDVF": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "SXRS": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "PATH": {
-      "shares": 300
+      "shares": 300,
+      "_portChecked": true
     },
     "SHOP": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "SAP": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "URA": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "CLSK": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "TSAT": {
-      "shares": 110
+      "shares": 110,
+      "_portChecked": true
     },
     "LITE": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "BITF": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     },
     "SIDU": {
-      "shares": 0
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -17694,5 +17758,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-04T15:04:24.991Z"
+  "lastUpdated": "2026-06-04T15:06:25.677Z"
 }
