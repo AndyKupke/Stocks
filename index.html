@@ -1596,6 +1596,18 @@ function loadPortfolio(){
 }
 function savePortfolio(p){ try{localStorage.setItem(LS_KEY,JSON.stringify(p)); markDirty();}catch(e){} scheduleSave(); }
 
+// Fix up any entry that is missing _portChecked (old saved data or GitHub data from before this field existed).
+// Rule: if shares > 0 → definitely a portfolio position (true).
+//       if shares = 0 and only in BUY_SET → was added by toggleBuy, not togglePort (false).
+//       if shares = 0 and NOT in BUY_SET → added via togglePort without shares yet (true).
+function normalizePortfolio() {
+  for (const [t, entry] of Object.entries(PORTFOLIO)) {
+    if (entry._portChecked === undefined) {
+      entry._portChecked = (entry.shares > 0) || !BUY_SET.has(t);
+    }
+  }
+}
+
 function loadBuySet(){
   try{
     const r = localStorage.getItem(LS_BUY_KEY);
@@ -6967,6 +6979,9 @@ async function init(){
 
   el.textContent='Rendering tabs…';
   await new Promise(r=>setTimeout(r,200));
+
+  // Ensure _portChecked is set on every PORTFOLIO entry (handles old/missing data from any source)
+  normalizePortfolio();
 
   // Renumber IDs and sync dp flag with PORTFOLIO
   ST.forEach((s,i)=>{ s.id=i+1; });
