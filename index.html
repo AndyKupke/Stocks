@@ -687,9 +687,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
   </div>
   <div class="fbar">
     <input type="text" id="sp500-q" placeholder="Search ticker or name…" oninput="sp500Filter()" style="min-width:160px">
-    <label>Sector</label>
+    <label>Industry</label>
     <select id="sp500-sector" onchange="sp500Filter()">
-      <option value="">All Sectors</option>
+      <option value="">All Industries</option>
     </select>
     <label>Mkt Cap</label>
     <select id="sp500-mcap" onchange="sp500Filter()">
@@ -6235,132 +6235,174 @@ function toggleIpoColGroup(group) {
 // ══════════════════════════════════════════════════════════════════════
 
 const SP500_LIST=[
-  {t:"NVDA",n:"NVIDIA Corporation"},{t:"AAPL",n:"Apple Inc."},{t:"GOOGL",n:"Alphabet Inc."},{t:"GOOG",n:"Alphabet Inc."},
-  {t:"MSFT",n:"Microsoft Corporation"},{t:"AMZN",n:"Amazon.com, Inc."},{t:"AVGO",n:"Broadcom Inc."},{t:"TSLA",n:"Tesla, Inc."},
-  {t:"META",n:"Meta Platforms, Inc."},{t:"MU",n:"Micron Technology, Inc."},{t:"BRK.B",n:"Berkshire Hathaway Inc."},{t:"LLY",n:"Eli Lilly and Company"},
-  {t:"WMT",n:"Walmart Inc."},{t:"AMD",n:"Advanced Micro Devices, Inc."},{t:"JPM",n:"JPMorgan Chase &amp; Co."},{t:"ORCL",n:"Oracle Corporation"},
-  {t:"XOM",n:"Exxon Mobil Corporation"},{t:"V",n:"Visa Inc."},{t:"INTC",n:"Intel Corporation"},{t:"JNJ",n:"Johnson &amp; Johnson"},
-  {t:"CSCO",n:"Cisco Systems, Inc."},{t:"LRCX",n:"Lam Research Corporation"},{t:"CAT",n:"Caterpillar Inc."},{t:"COST",n:"Costco Wholesale Corporation"},
-  {t:"MA",n:"Mastercard Incorporated"},{t:"AMAT",n:"Applied Materials, Inc."},{t:"ABBV",n:"AbbVie Inc."},{t:"CVX",n:"Chevron Corporation"},
-  {t:"BAC",n:"Bank of America Corporation"},{t:"NFLX",n:"Netflix, Inc."},{t:"UNH",n:"UnitedHealth Group Incorporated"},{t:"PLTR",n:"Palantir Technologies Inc."},
-  {t:"KO",n:"The Coca-Cola Company"},{t:"MS",n:"Morgan Stanley"},{t:"GE",n:"GE Aerospace"},{t:"PG",n:"The Procter &amp; Gamble Company"},
-  {t:"GS",n:"The Goldman Sachs Group, Inc."},{t:"HD",n:"The Home Depot, Inc."},{t:"IBM",n:"International Business Machines Corporation"},{t:"MRK",n:"Merck &amp; Co., Inc."},
-  {t:"TXN",n:"Texas Instruments Incorporated"},{t:"KLAC",n:"KLA Corporation"},{t:"PM",n:"Philip Morris International Inc."},{t:"DELL",n:"Dell Technologies Inc."},
-  {t:"SNDK",n:"Sandisk Corporation"},{t:"QCOM",n:"QUALCOMM Incorporated"},{t:"GEV",n:"GE Vernova Inc."},{t:"WFC",n:"Wells Fargo &amp; Company"},
-  {t:"LIN",n:"Linde plc"},{t:"RTX",n:"RTX Corporation"},{t:"PANW",n:"Palo Alto Networks, Inc."},{t:"C",n:"Citigroup Inc."},
-  {t:"ANET",n:"Arista Networks, Inc."},{t:"ADI",n:"Analog Devices, Inc."},{t:"STX",n:"Seagate Technology Holdings plc"},{t:"AXP",n:"American Express Company"},
-  {t:"WDC",n:"Western Digital Corporation"},{t:"TMUS",n:"T-Mobile US, Inc."},{t:"PEP",n:"PepsiCo, Inc."},{t:"VZ",n:"Verizon Communications Inc."},
-  {t:"MCD",n:"McDonald&amp;#39;s Corporation"},{t:"APP",n:"AppLovin Corporation"},{t:"CRWD",n:"CrowdStrike Holdings, Inc."},{t:"AMGN",n:"Amgen Inc."},
-  {t:"APH",n:"Amphenol Corporation"},{t:"NEE",n:"NextEra Energy, Inc."},{t:"TMO",n:"Thermo Fisher Scientific Inc."},{t:"TJX",n:"The TJX Companies, Inc."},
-  {t:"GLW",n:"Corning Incorporated"},{t:"DIS",n:"The Walt Disney Company"},{t:"BA",n:"The Boeing Company"},{t:"T",n:"AT&amp;T Inc."},
-  {t:"ETN",n:"Eaton Corporation plc"},{t:"BLK",n:"BlackRock, Inc."},{t:"GILD",n:"Gilead Sciences, Inc."},{t:"DE",n:"Deere &amp; Company"},
-  {t:"CRM",n:"Salesforce, Inc."},{t:"UNP",n:"Union Pacific Corporation"},{t:"ABT",n:"Abbott Laboratories"},{t:"SCHW",n:"The Charles Schwab Corporation"},
-  {t:"UBER",n:"Uber Technologies, Inc."},{t:"COP",n:"ConocoPhillips"},{t:"PFE",n:"Pfizer Inc."},{t:"ISRG",n:"Intuitive Surgical, Inc."},
-  {t:"HON",n:"Honeywell International Inc."},{t:"WELL",n:"Welltower Inc."},{t:"BX",n:"Blackstone Inc."},{t:"PLD",n:"Prologis, Inc."},
-  {t:"BKNG",n:"Booking Holdings Inc."},{t:"VRT",n:"Vertiv Holdings Co"},{t:"DHR",n:"Danaher Corporation"},{t:"SPGI",n:"S&amp;P Global Inc."},
-  {t:"NOW",n:"ServiceNow, Inc."},{t:"CB",n:"Chubb Limited"},{t:"LMT",n:"Lockheed Martin Corporation"},{t:"MO",n:"Altria Group, Inc."},
-  {t:"CVS",n:"CVS Health Corporation"},{t:"LOW",n:"Lowe&amp;#39;s Companies, Inc."},{t:"NEM",n:"Newmont Corporation"},{t:"SYK",n:"Stryker Corporation"},
-  {t:"PGR",n:"The Progressive Corporation"},{t:"CDNS",n:"Cadence Design Systems, Inc."},{t:"BMY",n:"Bristol-Myers Squibb Company"},{t:"COF",n:"Capital One Financial Corporation"},
-  {t:"SBUX",n:"Starbucks Corporation"},{t:"ACN",n:"Accenture plc"},{t:"VRTX",n:"Vertex Pharmaceuticals Incorporated"},{t:"PWR",n:"Quanta Services, Inc."},
-  {t:"FTNT",n:"Fortinet, Inc."},{t:"PH",n:"Parker-Hannifin Corporation"},{t:"EQIX",n:"Equinix, Inc."},{t:"ADBE",n:"Adobe Inc."},
-  {t:"TT",n:"Trane Technologies plc"},{t:"SO",n:"The Southern Company"},{t:"FCX",n:"Freeport-McMoRan Inc."},{t:"MDT",n:"Medtronic plc"},
-  {t:"HWM",n:"Howmet Aerospace Inc."},{t:"MAR",n:"Marriott International, Inc."},{t:"BNY",n:"The Bank of New York Mellon Corporation"},{t:"CEG",n:"Constellation Energy Corporation"},
-  {t:"SNPS",n:"Synopsys, Inc."},{t:"DUK",n:"Duke Energy Corporation"},{t:"CMI",n:"Cummins Inc."},{t:"UPS",n:"United Parcel Service, Inc."},
-  {t:"CME",n:"CME Group Inc."},{t:"ADP",n:"Automatic Data Processing, Inc."},{t:"GD",n:"General Dynamics Corporation"},{t:"JCI",n:"Johnson Controls International plc"},
-  {t:"DDOG",n:"Datadog, Inc."},{t:"MCK",n:"McKesson Corporation"},{t:"CIEN",n:"Ciena Corporation"},{t:"PNC",n:"The PNC Financial Services Group, Inc."},
-  {t:"WMB",n:"The Williams Companies, Inc."},{t:"WM",n:"Waste Management, Inc."},{t:"MNST",n:"Monster Beverage Corporation"},{t:"CSX",n:"CSX Corporation"},
-  {t:"INTU",n:"Intuit Inc."},{t:"SLB",n:"SLB N.V."},{t:"ELV",n:"Elevance Health, Inc."},{t:"AMT",n:"American Tower Corporation"},
-  {t:"CMCSA",n:"Comcast Corporation"},{t:"MPWR",n:"Monolithic Power Systems, Inc."},{t:"USB",n:"U.S. Bancorp"},{t:"COHR",n:"Coherent Corp."},
-  {t:"KKR",n:"KKR &amp; Co. Inc."},{t:"NXPI",n:"NXP Semiconductors N.V."},{t:"HCA",n:"HCA Healthcare, Inc."},{t:"ABNB",n:"Airbnb, Inc."},
-  {t:"MMM",n:"3M Company"},{t:"EMR",n:"Emerson Electric Co."},{t:"MDLZ",n:"Mondelez International, Inc."},{t:"ICE",n:"Intercontinental Exchange, Inc."},
-  {t:"MCO",n:"Moody&amp;#39;s Corporation"},{t:"MPC",n:"Marathon Petroleum Corporation"},{t:"VLO",n:"Valero Energy Corporation"},{t:"SPG",n:"Simon Property Group, Inc."},
-  {t:"FDX",n:"FedEx Corporation"},{t:"RCL",n:"Royal Caribbean Cruises Ltd."},{t:"MRSH",n:"Marsh &amp; McLennan Companies, Inc."},{t:"HLT",n:"Hilton Worldwide Holdings Inc."},
-  {t:"EOG",n:"EOG Resources, Inc."},{t:"NOC",n:"Northrop Grumman Corporation"},{t:"ROST",n:"Ross Stores, Inc."},{t:"HOOD",n:"Robinhood Markets, Inc."},
-  {t:"PSX",n:"Phillips 66"},{t:"GM",n:"General Motors Company"},{t:"HPE",n:"Hewlett Packard Enterprise Company"},{t:"LITE",n:"Lumentum Holdings Inc."},
-  {t:"SHW",n:"The Sherwin-Williams Company"},{t:"ORLY",n:"O&amp;#39;Reilly Automotive, Inc."},{t:"ITW",n:"Illinois Tool Works Inc."},{t:"ECL",n:"Ecolab Inc."},
-  {t:"APO",n:"Apollo Global Management, Inc."},{t:"CI",n:"The Cigna Group"},{t:"BSX",n:"Boston Scientific Corporation"},{t:"CRH",n:"CRH plc"},
-  {t:"CVNA",n:"Carvana Co."},{t:"CTAS",n:"Cintas Corporation"},{t:"KMI",n:"Kinder Morgan, Inc."},{t:"AEP",n:"American Electric Power Company, Inc."},
-  {t:"NSC",n:"Norfolk Southern Corporation"},{t:"CL",n:"Colgate-Palmolive Company"},{t:"MSI",n:"Motorola Solutions, Inc."},{t:"TDG",n:"TransDigm Group Incorporated"},
-  {t:"WBD",n:"Warner Bros. Discovery, Inc."},{t:"AON",n:"Aon plc"},{t:"DASH",n:"DoorDash, Inc."},{t:"URI",n:"United Rentals, Inc."},
-  {t:"DLR",n:"Digital Realty Trust, Inc."},{t:"FIX",n:"Comfort Systems USA, Inc."},{t:"NKE",n:"NIKE, Inc."},{t:"TER",n:"Teradyne, Inc."},
-  {t:"BKR",n:"Baker Hughes Company"},{t:"TEL",n:"TE Connectivity plc"},{t:"REGN",n:"Regeneron Pharmaceuticals, Inc."},{t:"APD",n:"Air Products and Chemicals, Inc."},
-  {t:"RSG",n:"Republic Services, Inc."},{t:"F",n:"Ford Motor Company"},{t:"TRV",n:"The Travelers Companies, Inc."},{t:"GWW",n:"W.W. Grainger, Inc."},
-  {t:"PCAR",n:"PACCAR Inc"},{t:"KEYS",n:"Keysight Technologies, Inc."},{t:"OXY",n:"Occidental Petroleum Corporation"},{t:"FANG",n:"Diamondback Energy, Inc."},
-  {t:"TFC",n:"Truist Financial Corporation"},{t:"NUE",n:"Nucor Corporation"},{t:"SRE",n:"Sempra"},{t:"AFL",n:"Aflac Incorporated"},
-  {t:"D",n:"Dominion Energy, Inc."},{t:"TGT",n:"Target Corporation"},{t:"LHX",n:"L3Harris Technologies, Inc."},{t:"TRGP",n:"Targa Resources Corp."},
-  {t:"CARR",n:"Carrier Global Corporation"},{t:"O",n:"Realty Income Corporation"},{t:"OKE",n:"ONEOK, Inc."},{t:"ALL",n:"The Allstate Corporation"},
-  {t:"FAST",n:"Fastenal Company"},{t:"DVN",n:"Devon Energy Corporation"},{t:"PSA",n:"Public Storage"},{t:"ON",n:"ON Semiconductor Corporation"},
-  {t:"MCHP",n:"Microchip Technology Incorporated"},{t:"AME",n:"AMETEK, Inc."},{t:"MET",n:"MetLife, Inc."},{t:"CTVA",n:"Corteva, Inc."},
-  {t:"AJG",n:"Arthur J. Gallagher &amp; Co."},{t:"VST",n:"Vistra Corp."},{t:"DAL",n:"Delta Air Lines, Inc."},{t:"ROK",n:"Rockwell Automation, Inc."},
-  {t:"COR",n:"Cencora, Inc."},{t:"EA",n:"Electronic Arts Inc."},{t:"AZO",n:"AutoZone, Inc."},{t:"ETR",n:"Entergy Corporation"},
-  {t:"EW",n:"Edwards Lifesciences Corporation"},{t:"NDAQ",n:"Nasdaq, Inc."},{t:"ODFL",n:"Old Dominion Freight Line, Inc."},{t:"ADSK",n:"Autodesk, Inc."},
-  {t:"EBAY",n:"eBay Inc."},{t:"XEL",n:"Xcel Energy Inc."},{t:"EXC",n:"Exelon Corporation"},{t:"GRMN",n:"Garmin Ltd."},
-  {t:"CAH",n:"Cardinal Health, Inc."},{t:"FITB",n:"Fifth Third Bancorp"},{t:"MSCI",n:"MSCI Inc."},{t:"WAB",n:"Westinghouse Air Brake Technologies Corporation"},
-  {t:"IDXX",n:"IDEXX Laboratories, Inc."},{t:"STT",n:"State Street Corporation"},{t:"COIN",n:"Coinbase Global, Inc."},{t:"KDP",n:"Keurig Dr Pepper Inc."},
-  {t:"XYZ",n:"Block, Inc."},{t:"DHI",n:"D.R. Horton, Inc."},{t:"YUM",n:"Yum! Brands, Inc."},{t:"ARES",n:"Ares Management Corporation"},
-  {t:"ADM",n:"Archer-Daniels-Midland Company"},{t:"BDX",n:"Becton, Dickinson and Company"},{t:"TTWO",n:"Take-Two Interactive Software, Inc."},{t:"JBL",n:"Jabil Inc."},
-  {t:"STLD",n:"Steel Dynamics, Inc."},{t:"AMP",n:"Ameriprise Financial, Inc."},{t:"HUM",n:"Humana Inc."},{t:"IBKR",n:"Interactive Brokers Group, Inc."},
-  {t:"AXON",n:"Axon Enterprise, Inc."},{t:"A",n:"Agilent Technologies, Inc."},{t:"PEG",n:"Public Service Enterprise Group Incorporated"},{t:"VTR",n:"Ventas, Inc."},
-  {t:"CCI",n:"Crown Castle Inc."},{t:"AIG",n:"American International Group, Inc."},{t:"LYV",n:"Live Nation Entertainment, Inc."},{t:"ED",n:"Consolidated Edison, Inc."},
-  {t:"IRM",n:"Iron Mountain Incorporated"},{t:"TKO",n:"TKO Group Holdings, Inc."},{t:"PYPL",n:"PayPal Holdings, Inc."},{t:"CCL",n:"Carnival Corporation Ltd."},
-  {t:"KR",n:"The Kroger Co."},{t:"EME",n:"EMCOR Group, Inc."},{t:"WAT",n:"Waters Corporation"},{t:"HSY",n:"The Hershey Company"},
-  {t:"PCG",n:"PG&amp;E Corporation"},{t:"VMC",n:"Vulcan Materials Company"},{t:"CBRE",n:"CBRE Group, Inc."},{t:"CMG",n:"Chipotle Mexican Grill, Inc."},
-  {t:"WDAY",n:"Workday, Inc."},{t:"SYY",n:"Sysco Corporation"},{t:"WEC",n:"WEC Energy Group, Inc."},{t:"NTAP",n:"NetApp, Inc."},
-  {t:"PAYX",n:"Paychex, Inc."},{t:"SATS",n:"EchoStar Corporation"},{t:"MLM",n:"Martin Marietta Materials, Inc."},{t:"PRU",n:"Prudential Financial, Inc."},
-  {t:"HIG",n:"The Hartford Insurance Group, Inc."},{t:"HAL",n:"Halliburton Company"},{t:"FSLR",n:"First Solar, Inc."},{t:"UAL",n:"United Airlines Holdings, Inc."},
-  {t:"EQT",n:"EQT Corporation"},{t:"LVS",n:"Las Vegas Sands Corp."},{t:"ROP",n:"Roper Technologies, Inc."},{t:"ZTS",n:"Zoetis Inc."},
-  {t:"Q",n:"Qnity Electronics, Inc."},{t:"KVUE",n:"Kenvue Inc."},{t:"HBAN",n:"Huntington Bancshares Incorporated"},{t:"EXR",n:"Extra Space Storage Inc."},
-  {t:"KMB",n:"Kimberly-Clark Corporation"},{t:"MTB",n:"M&amp;T Bank Corporation"},{t:"NTRS",n:"Northern Trust Corporation"},{t:"ACGL",n:"Arch Capital Group Ltd."},
-  {t:"IQV",n:"IQVIA Holdings Inc."},{t:"CBOE",n:"Cboe Global Markets, Inc."},{t:"VICI",n:"VICI Properties Inc."},{t:"EL",n:"The Estée Lauder Companies Inc."},
-  {t:"DTE",n:"DTE Energy Company"},{t:"CNC",n:"Centene Corporation"},{t:"AEE",n:"Ameren Corporation"},{t:"FISV",n:"Fiserv, Inc."},
-  {t:"BIIB",n:"Biogen Inc."},{t:"DOV",n:"Dover Corporation"},{t:"TDY",n:"Teledyne Technologies Incorporated"},{t:"CASY",n:"Casey&amp;#39;s General Stores, Inc."},
-  {t:"RJF",n:"Raymond James Financial, Inc."},{t:"SMCI",n:"Super Micro Computer, Inc."},{t:"NRG",n:"NRG Energy, Inc."},{t:"GEHC",n:"GE HealthCare Technologies Inc."},
-  {t:"TPR",n:"Tapestry, Inc."},{t:"CPRT",n:"Copart, Inc."},{t:"ATO",n:"Atmos Energy Corporation"},{t:"DXCM",n:"DexCom, Inc."},
-  {t:"TPL",n:"Texas Pacific Land Corporation"},{t:"IR",n:"Ingersoll Rand Inc."},{t:"EIX",n:"Edison International"},{t:"FICO",n:"Fair Isaac Corporation"},
-  {t:"CNP",n:"CenterPoint Energy, Inc."},{t:"VRSN",n:"VeriSign, Inc."},{t:"EXPE",n:"Expedia Group, Inc."},{t:"RMD",n:"ResMed Inc."},
-  {t:"FOXA",n:"Fox Corporation"},{t:"KHC",n:"The Kraft Heinz Company"},{t:"OTIS",n:"Otis Worldwide Corporation"},{t:"JBHT",n:"J.B. Hunt Transport Services, Inc."},
-  {t:"PPL",n:"PPL Corporation"},{t:"FE",n:"FirstEnergy Corp."},{t:"AVB",n:"AvalonBay Communities, Inc."},{t:"XYL",n:"Xylem Inc."},
-  {t:"CFG",n:"Citizens Financial Group, Inc."},{t:"ES",n:"Eversource Energy"},{t:"HUBB",n:"Hubbell Incorporated"},{t:"DOW",n:"Dow Inc."},
-  {t:"FOX",n:"Fox Corporation"},{t:"BG",n:"Bunge Global SA"},{t:"WRB",n:"W. R. Berkley Corporation"},{t:"EQR",n:"Equity Residential"},
-  {t:"CTSH",n:"Cognizant Technology Solutions Corporation"},{t:"PPG",n:"PPG Industries, Inc."},{t:"CINF",n:"Cincinnati Financial Corporation"},{t:"WSM",n:"Williams-Sonoma, Inc."},
-  {t:"AWK",n:"American Water Works Company, Inc."},{t:"HPQ",n:"HP Inc."},{t:"WTW",n:"Willis Towers Watson Public Limited Company"},{t:"MTD",n:"Mettler-Toledo International Inc."},
-  {t:"RF",n:"Regions Financial Corporation"},{t:"VRSK",n:"Verisk Analytics, Inc."},{t:"AKAM",n:"Akamai Technologies, Inc."},{t:"STZ",n:"Constellation Brands, Inc."},
-  {t:"DG",n:"Dollar General Corporation"},{t:"SYF",n:"Synchrony Financial"},{t:"CPAY",n:"Corpay, Inc."},{t:"FFIV",n:"F5, Inc."},
-  {t:"DRI",n:"Darden Restaurants, Inc."},{t:"KEY",n:"KeyCorp"},{t:"WST",n:"West Pharmaceutical Services, Inc."},{t:"PHM",n:"PulteGroup, Inc."},
-  {t:"TROW",n:"T. Rowe Price Group, Inc."},{t:"SW",n:"Smurfit Westrock Plc"},{t:"ROL",n:"Rollins, Inc."},{t:"LEN",n:"Lennar Corporation"},
-  {t:"CHD",n:"Church &amp; Dwight Co., Inc."},{t:"PFG",n:"Principal Financial Group, Inc."},{t:"NI",n:"NiSource Inc."},{t:"EXE",n:"Expand Energy Corporation"},
-  {t:"LYB",n:"LyondellBasell Industries N.V."},{t:"CMS",n:"CMS Energy Corporation"},{t:"DLTR",n:"Dollar Tree, Inc."},{t:"L",n:"Loews Corporation"},
-  {t:"DGX",n:"Quest Diagnostics Incorporated"},{t:"RL",n:"Ralph Lauren Corporation"},{t:"CHRW",n:"C.H. Robinson Worldwide, Inc."},{t:"LH",n:"Labcorp Holdings Inc."},
-  {t:"FIS",n:"Fidelity National Information Services, Inc."},{t:"OMC",n:"Omnicom Group Inc."},{t:"SBAC",n:"SBA Communications Corporation"},{t:"VLTO",n:"Veralto Corporation"},
-  {t:"EXPD",n:"Expeditors International of Washington, Inc."},{t:"STE",n:"STERIS plc"},{t:"EFX",n:"Equifax Inc."},{t:"ULTA",n:"Ulta Beauty, Inc."},
-  {t:"TSN",n:"Tyson Foods, Inc."},{t:"LUV",n:"Southwest Airlines Co."},{t:"PKG",n:"Packaging Corporation of America"},{t:"ALB",n:"Albemarle Corporation"},
-  {t:"INCY",n:"Incyte Corporation"},{t:"SNA",n:"Snap-on Incorporated"},{t:"MRNA",n:"Moderna, Inc."},{t:"DD",n:"DuPont de Nemours, Inc."},
-  {t:"IFF",n:"International Flavors &amp; Fragrances Inc."},{t:"BRO",n:"Brown &amp; Brown, Inc."},{t:"EVRG",n:"Evergy, Inc."},{t:"GPN",n:"Global Payments Inc."},
-  {t:"FTV",n:"Fortive Corporation"},{t:"ESS",n:"Essex Property Trust, Inc."},{t:"LNT",n:"Alliant Energy Corporation"},{t:"VTRS",n:"Viatris Inc."},
-  {t:"LII",n:"Lennox International Inc."},{t:"CF",n:"CF Industries Holdings, Inc."},{t:"CHTR",n:"Charter Communications, Inc."},{t:"IP",n:"International Paper Company"},
-  {t:"BR",n:"Broadridge Financial Solutions, Inc."},{t:"WY",n:"Weyerhaeuser Company"},{t:"CDW",n:"CDW Corporation"},{t:"AMCR",n:"Amcor plc"},
-  {t:"INVH",n:"Invitation Homes Inc."},{t:"GIS",n:"General Mills, Inc."},{t:"GNRC",n:"Generac Holdings Inc."},{t:"HST",n:"Host Hotels &amp; Resorts, Inc."},
-  {t:"NVR",n:"NVR, Inc."},{t:"ZBH",n:"Zimmer Biomet Holdings, Inc."},{t:"APTV",n:"Aptiv PLC"},{t:"PTC",n:"PTC Inc."},
-  {t:"NDSN",n:"Nordson Corporation"},{t:"KIM",n:"Kimco Realty Corporation"},{t:"GEN",n:"Gen Digital Inc."},{t:"IEX",n:"IDEX Corporation"},
-  {t:"TXT",n:"Textron Inc."},{t:"MAA",n:"Mid-America Apartment Communities, Inc."},{t:"BEN",n:"Franklin Resources, Inc."},{t:"LDOS",n:"Leidos Holdings, Inc."},
-  {t:"TSCO",n:"Tractor Supply Company"},{t:"BBY",n:"Best Buy Co., Inc."},{t:"DECK",n:"Deckers Outdoor Corporation"},{t:"NWS",n:"News Corporation"},
-  {t:"LULU",n:"lululemon athletica inc."},{t:"J",n:"Jacobs Solutions Inc."},{t:"REG",n:"Regency Centers Corporation"},{t:"NWSA",n:"News Corporation"},
-  {t:"BALL",n:"Ball Corporation"},{t:"MAS",n:"Masco Corporation"},{t:"CSGP",n:"CoStar Group, Inc."},{t:"SOLV",n:"Solventum Corporation"},
-  {t:"APA",n:"APA Corporation"},{t:"GPC",n:"Genuine Parts Company"},{t:"UDR",n:"UDR, Inc."},{t:"DOC",n:"Healthpeak Properties, Inc."},
-  {t:"TRMB",n:"Trimble Inc."},{t:"TYL",n:"Tyler Technologies, Inc."},{t:"HRL",n:"Hormel Foods Corporation"},{t:"EG",n:"Everest Group, Ltd."},
-  {t:"DVA",n:"DaVita Inc."},{t:"MKC",n:"McCormick &amp; Company, Incorporated"},{t:"MGM",n:"MGM Resorts International"},{t:"AIZ",n:"Assurant, Inc."},
-  {t:"SWK",n:"Stanley Black &amp; Decker, Inc."},{t:"SWKS",n:"Skyworks Solutions, Inc."},{t:"PNW",n:"Pinnacle West Capital Corporation"},{t:"IVZ",n:"Invesco Ltd."},
-  {t:"AVY",n:"Avery Dennison Corporation"},{t:"HAS",n:"Hasbro, Inc."},{t:"ZBRA",n:"Zebra Technologies Corporation"},{t:"COO",n:"The Cooper Companies, Inc."},
-  {t:"GL",n:"Globe Life Inc."},{t:"PSKY",n:"Paramount Skydance Corporation"},{t:"ALGN",n:"Align Technology, Inc."},{t:"PNR",n:"Pentair plc"},
-  {t:"BF.B",n:"Brown-Forman Corporation"},{t:"CPT",n:"Camden Property Trust"},{t:"HII",n:"Huntington Ingalls Industries, Inc."},{t:"RVTY",n:"Revvity, Inc."},
-  {t:"ALLE",n:"Allegion plc"},{t:"GDDY",n:"GoDaddy Inc."},{t:"IT",n:"Gartner, Inc."},{t:"BXP",n:"BXP, Inc."},
-  {t:"ERIE",n:"Erie Indemnity Company"},{t:"SJM",n:"The J. M. Smucker Company"},{t:"WYNN",n:"Wynn Resorts, Limited"},{t:"CLX",n:"The Clorox Company"},
-  {t:"AES",n:"The AES Corporation"},{t:"FRT",n:"Federal Realty Investment Trust"},{t:"DPZ",n:"Domino&amp;#39;s Pizza, Inc."},{t:"PODD",n:"Insulet Corporation"},
-  {t:"TTD",n:"The Trade Desk, Inc."},{t:"BAX",n:"Baxter International Inc."},{t:"JKHY",n:"Jack Henry &amp; Associates, Inc."},{t:"FDS",n:"FactSet Research Systems Inc."},
-  {t:"ARE",n:"Alexandria Real Estate Equities, Inc."},{t:"UHS",n:"Universal Health Services, Inc."},{t:"CRL",n:"Charles River Laboratories International, Inc."},{t:"HSIC",n:"Henry Schein, Inc."},
-  {t:"NCLH",n:"Norwegian Cruise Line Holdings Ltd."},{t:"BLDR",n:"Builders FirstSource, Inc."},{t:"TECH",n:"Bio-Techne Corporation"},{t:"AOS",n:"A. O. Smith Corporation"},
-  {t:"MOS",n:"The Mosaic Company"},{t:"TAP",n:"Molson Coors Beverage Company"},{t:"POOL",n:"Pool Corporation"},{t:"CPB",n:"The Campbell&amp;#39;s Company"},
-  {t:"CAG",n:"Conagra Brands, Inc."},{t:"EPAM",n:"EPAM Systems, Inc."},
+  {t:"NVDA",n:"NVIDIA Corporation",ind:"Semiconductors"},{t:"AAPL",n:"Apple Inc.",ind:"Consumer Electronics"},{t:"GOOGL",n:"Alphabet Inc.",ind:"Internet Content &amp; Information"},
+  {t:"GOOG",n:"Alphabet Inc.",ind:"Internet Content &amp; Information"},{t:"MSFT",n:"Microsoft Corporation",ind:"Software - Infrastructure"},{t:"AMZN",n:"Amazon.com, Inc.",ind:"Internet Retail"},
+  {t:"AVGO",n:"Broadcom Inc.",ind:"Semiconductors"},{t:"TSLA",n:"Tesla, Inc.",ind:"Auto Manufacturers"},{t:"META",n:"Meta Platforms, Inc.",ind:"Internet Content &amp; Information"},
+  {t:"MU",n:"Micron Technology, Inc.",ind:"Semiconductors"},{t:"BRK.B",n:"Berkshire Hathaway Inc.",ind:"Insurance - Diversified"},{t:"LLY",n:"Eli Lilly and Company",ind:"Drug Manufacturers - General"},
+  {t:"WMT",n:"Walmart Inc.",ind:"Discount Stores"},{t:"AMD",n:"Advanced Micro Devices, Inc.",ind:"Semiconductors"},{t:"JPM",n:"JPMorgan Chase &amp; Co.",ind:"Banks - Diversified"},
+  {t:"ORCL",n:"Oracle Corporation",ind:"Software - Infrastructure"},{t:"XOM",n:"Exxon Mobil Corporation",ind:"Oil &amp; Gas Integrated"},{t:"V",n:"Visa Inc.",ind:"Credit Services"},
+  {t:"INTC",n:"Intel Corporation",ind:"Semiconductors"},{t:"JNJ",n:"Johnson &amp; Johnson",ind:"Drug Manufacturers - General"},{t:"CSCO",n:"Cisco Systems, Inc.",ind:"Communication Equipment"},
+  {t:"LRCX",n:"Lam Research Corporation",ind:"Semiconductor Equipment &amp; Materials"},{t:"CAT",n:"Caterpillar Inc.",ind:"Farm &amp; Heavy Construction Machinery"},{t:"COST",n:"Costco Wholesale Corporation",ind:"Discount Stores"},
+  {t:"MA",n:"Mastercard Incorporated",ind:"Credit Services"},{t:"AMAT",n:"Applied Materials, Inc.",ind:"Semiconductor Equipment &amp; Materials"},{t:"ABBV",n:"AbbVie Inc.",ind:"Drug Manufacturers - General"},
+  {t:"CVX",n:"Chevron Corporation",ind:"Oil &amp; Gas Integrated"},{t:"BAC",n:"Bank of America Corporation",ind:"Banks - Diversified"},{t:"NFLX",n:"Netflix, Inc.",ind:"Entertainment"},
+  {t:"UNH",n:"UnitedHealth Group Incorporated",ind:"Healthcare Plans"},{t:"PLTR",n:"Palantir Technologies Inc.",ind:"Software - Infrastructure"},{t:"KO",n:"The Coca-Cola Company",ind:"Beverages - Non-Alcoholic"},
+  {t:"MS",n:"Morgan Stanley",ind:"Capital Markets"},{t:"GE",n:"GE Aerospace",ind:"Aerospace &amp; Defense"},{t:"PG",n:"The Procter &amp; Gamble Company",ind:"Household &amp; Personal Products"},
+  {t:"GS",n:"The Goldman Sachs Group, Inc.",ind:"Capital Markets"},{t:"HD",n:"The Home Depot, Inc.",ind:"Home Improvement Retail"},{t:"IBM",n:"International Business Machines Corporation",ind:"Information Technology Services"},
+  {t:"MRK",n:"Merck &amp; Co., Inc.",ind:"Drug Manufacturers - General"},{t:"TXN",n:"Texas Instruments Incorporated",ind:"Semiconductors"},{t:"KLAC",n:"KLA Corporation",ind:"Semiconductor Equipment &amp; Materials"},
+  {t:"PM",n:"Philip Morris International Inc.",ind:"Tobacco"},{t:"DELL",n:"Dell Technologies Inc.",ind:"Computer Hardware"},{t:"SNDK",n:"Sandisk Corporation",ind:"Computer Hardware"},
+  {t:"QCOM",n:"QUALCOMM Incorporated",ind:"Semiconductors"},{t:"GEV",n:"GE Vernova Inc.",ind:"Specialty Industrial Machinery"},{t:"WFC",n:"Wells Fargo &amp; Company",ind:"Banks - Diversified"},
+  {t:"LIN",n:"Linde plc",ind:"Specialty Chemicals"},{t:"RTX",n:"RTX Corporation",ind:"Aerospace &amp; Defense"},{t:"PANW",n:"Palo Alto Networks, Inc.",ind:"Software - Infrastructure"},
+  {t:"C",n:"Citigroup Inc.",ind:"Banks - Diversified"},{t:"ANET",n:"Arista Networks, Inc.",ind:"Computer Hardware"},{t:"ADI",n:"Analog Devices, Inc.",ind:"Semiconductors"},
+  {t:"STX",n:"Seagate Technology Holdings plc",ind:"Computer Hardware"},{t:"AXP",n:"American Express Company",ind:"Credit Services"},{t:"WDC",n:"Western Digital Corporation",ind:"Computer Hardware"},
+  {t:"TMUS",n:"T-Mobile US, Inc.",ind:"Telecom Services"},{t:"PEP",n:"PepsiCo, Inc.",ind:"Beverages - Non-Alcoholic"},{t:"VZ",n:"Verizon Communications Inc.",ind:"Telecom Services"},
+  {t:"MCD",n:"McDonald&amp;#39;s Corporation",ind:"Restaurants"},{t:"APP",n:"AppLovin Corporation",ind:"Advertising Agencies"},{t:"CRWD",n:"CrowdStrike Holdings, Inc.",ind:"Software - Infrastructure"},
+  {t:"AMGN",n:"Amgen Inc.",ind:"Drug Manufacturers - General"},{t:"APH",n:"Amphenol Corporation",ind:"Electronic Components"},{t:"NEE",n:"NextEra Energy, Inc.",ind:"Utilities - Regulated Electric"},
+  {t:"TMO",n:"Thermo Fisher Scientific Inc.",ind:"Diagnostics &amp; Research"},{t:"TJX",n:"The TJX Companies, Inc.",ind:"Apparel Retail"},{t:"GLW",n:"Corning Incorporated",ind:"Electronic Components"},
+  {t:"DIS",n:"The Walt Disney Company",ind:"Entertainment"},{t:"BA",n:"The Boeing Company",ind:"Aerospace &amp; Defense"},{t:"T",n:"AT&amp;T Inc.",ind:"Telecom Services"},
+  {t:"ETN",n:"Eaton Corporation plc",ind:"Specialty Industrial Machinery"},{t:"BLK",n:"BlackRock, Inc.",ind:"Asset Management"},{t:"GILD",n:"Gilead Sciences, Inc.",ind:"Drug Manufacturers - General"},
+  {t:"DE",n:"Deere &amp; Company",ind:"Farm &amp; Heavy Construction Machinery"},{t:"CRM",n:"Salesforce, Inc.",ind:"Software - Application"},{t:"UNP",n:"Union Pacific Corporation",ind:"Railroads"},
+  {t:"ABT",n:"Abbott Laboratories",ind:"Medical Devices"},{t:"SCHW",n:"The Charles Schwab Corporation",ind:"Capital Markets"},{t:"UBER",n:"Uber Technologies, Inc.",ind:"Software - Application"},
+  {t:"COP",n:"ConocoPhillips",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"PFE",n:"Pfizer Inc.",ind:"Drug Manufacturers - General"},{t:"ISRG",n:"Intuitive Surgical, Inc.",ind:"Medical Instruments &amp; Supplies"},
+  {t:"HON",n:"Honeywell International Inc.",ind:"Conglomerates"},{t:"WELL",n:"Welltower Inc.",ind:"REIT - Healthcare Facilities"},{t:"BX",n:"Blackstone Inc.",ind:"Asset Management"},
+  {t:"PLD",n:"Prologis, Inc.",ind:"REIT - Industrial"},{t:"BKNG",n:"Booking Holdings Inc.",ind:"Travel Services"},{t:"VRT",n:"Vertiv Holdings Co",ind:"Electrical Equipment &amp; Parts"},
+  {t:"DHR",n:"Danaher Corporation",ind:"Diagnostics &amp; Research"},{t:"SPGI",n:"S&amp;P Global Inc.",ind:"Financial Data &amp; Stock Exchanges"},{t:"NOW",n:"ServiceNow, Inc.",ind:"Software - Application"},
+  {t:"CB",n:"Chubb Limited",ind:"Insurance - Property &amp; Casualty"},{t:"LMT",n:"Lockheed Martin Corporation",ind:"Aerospace &amp; Defense"},{t:"MO",n:"Altria Group, Inc.",ind:"Tobacco"},
+  {t:"CVS",n:"CVS Health Corporation",ind:"Healthcare Plans"},{t:"LOW",n:"Lowe&amp;#39;s Companies, Inc.",ind:"Home Improvement Retail"},{t:"NEM",n:"Newmont Corporation",ind:"Gold"},
+  {t:"SYK",n:"Stryker Corporation",ind:"Medical Devices"},{t:"PGR",n:"The Progressive Corporation",ind:"Insurance - Property &amp; Casualty"},{t:"CDNS",n:"Cadence Design Systems, Inc.",ind:"Software - Application"},
+  {t:"BMY",n:"Bristol-Myers Squibb Company",ind:"Drug Manufacturers - General"},{t:"COF",n:"Capital One Financial Corporation",ind:"Credit Services"},{t:"SBUX",n:"Starbucks Corporation",ind:"Restaurants"},
+  {t:"ACN",n:"Accenture plc",ind:"Information Technology Services"},{t:"VRTX",n:"Vertex Pharmaceuticals Incorporated",ind:"Biotechnology"},{t:"PWR",n:"Quanta Services, Inc.",ind:"Engineering &amp; Construction"},
+  {t:"FTNT",n:"Fortinet, Inc.",ind:"Software - Infrastructure"},{t:"PH",n:"Parker-Hannifin Corporation",ind:"Specialty Industrial Machinery"},{t:"EQIX",n:"Equinix, Inc.",ind:"REIT - Specialty"},
+  {t:"ADBE",n:"Adobe Inc.",ind:"Software - Application"},{t:"TT",n:"Trane Technologies plc",ind:"Building Products &amp; Equipment"},{t:"SO",n:"The Southern Company",ind:"Utilities - Regulated Electric"},
+  {t:"FCX",n:"Freeport-McMoRan Inc.",ind:"Copper"},{t:"MDT",n:"Medtronic plc",ind:"Medical Devices"},{t:"HWM",n:"Howmet Aerospace Inc.",ind:"Aerospace &amp; Defense"},
+  {t:"MAR",n:"Marriott International, Inc.",ind:"Lodging"},{t:"BNY",n:"The Bank of New York Mellon Corporation",ind:"Banks - Diversified"},{t:"CEG",n:"Constellation Energy Corporation",ind:"Utilities - Independent Power Producers"},
+  {t:"SNPS",n:"Synopsys, Inc.",ind:"Software - Infrastructure"},{t:"DUK",n:"Duke Energy Corporation",ind:"Utilities - Regulated Electric"},{t:"CMI",n:"Cummins Inc.",ind:"Specialty Industrial Machinery"},
+  {t:"UPS",n:"United Parcel Service, Inc.",ind:"Integrated Freight &amp; Logistics"},{t:"CME",n:"CME Group Inc.",ind:"Financial Data &amp; Stock Exchanges"},{t:"ADP",n:"Automatic Data Processing, Inc.",ind:"Software - Application"},
+  {t:"GD",n:"General Dynamics Corporation",ind:"Aerospace &amp; Defense"},{t:"JCI",n:"Johnson Controls International plc",ind:"Building Products &amp; Equipment"},{t:"DDOG",n:"Datadog, Inc.",ind:"Software - Application"},
+  {t:"MCK",n:"McKesson Corporation",ind:"Medical Distribution"},{t:"CIEN",n:"Ciena Corporation",ind:"Communication Equipment"},{t:"PNC",n:"The PNC Financial Services Group, Inc.",ind:"Banks - Regional"},
+  {t:"WMB",n:"The Williams Companies, Inc.",ind:"Oil &amp; Gas Midstream"},{t:"WM",n:"Waste Management, Inc.",ind:"Waste Management"},{t:"MNST",n:"Monster Beverage Corporation",ind:"Beverages - Non-Alcoholic"},
+  {t:"CSX",n:"CSX Corporation",ind:"Railroads"},{t:"INTU",n:"Intuit Inc.",ind:"Software - Application"},{t:"SLB",n:"SLB N.V.",ind:"Oil &amp; Gas Equipment &amp; Services"},
+  {t:"ELV",n:"Elevance Health, Inc.",ind:"Healthcare Plans"},{t:"AMT",n:"American Tower Corporation",ind:"REIT - Specialty"},{t:"CMCSA",n:"Comcast Corporation",ind:"Telecom Services"},
+  {t:"MPWR",n:"Monolithic Power Systems, Inc.",ind:"Semiconductors"},{t:"USB",n:"U.S. Bancorp",ind:"Banks - Regional"},{t:"COHR",n:"Coherent Corp.",ind:"Scientific &amp; Technical Instruments"},
+  {t:"KKR",n:"KKR &amp; Co. Inc.",ind:"Asset Management"},{t:"NXPI",n:"NXP Semiconductors N.V.",ind:"Semiconductors"},{t:"HCA",n:"HCA Healthcare, Inc.",ind:"Medical Care Facilities"},
+  {t:"ABNB",n:"Airbnb, Inc.",ind:"Travel Services"},{t:"MMM",n:"3M Company",ind:"Conglomerates"},{t:"EMR",n:"Emerson Electric Co.",ind:"Specialty Industrial Machinery"},
+  {t:"MDLZ",n:"Mondelez International, Inc.",ind:"Confectioners"},{t:"ICE",n:"Intercontinental Exchange, Inc.",ind:"Financial Data &amp; Stock Exchanges"},{t:"MCO",n:"Moody&amp;#39;s Corporation",ind:"Financial Data &amp; Stock Exchanges"},
+  {t:"MPC",n:"Marathon Petroleum Corporation",ind:"Oil &amp; Gas Refining &amp; Marketing"},{t:"VLO",n:"Valero Energy Corporation",ind:"Oil &amp; Gas Refining &amp; Marketing"},{t:"SPG",n:"Simon Property Group, Inc.",ind:"REIT - Retail"},
+  {t:"FDX",n:"FedEx Corporation",ind:"Integrated Freight &amp; Logistics"},{t:"RCL",n:"Royal Caribbean Cruises Ltd.",ind:"Travel Services"},{t:"MRSH",n:"Marsh &amp; McLennan Companies, Inc.",ind:"Insurance Brokers"},
+  {t:"HLT",n:"Hilton Worldwide Holdings Inc.",ind:"Lodging"},{t:"EOG",n:"EOG Resources, Inc.",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"NOC",n:"Northrop Grumman Corporation",ind:"Aerospace &amp; Defense"},
+  {t:"ROST",n:"Ross Stores, Inc.",ind:"Apparel Retail"},{t:"HOOD",n:"Robinhood Markets, Inc.",ind:"Capital Markets"},{t:"PSX",n:"Phillips 66",ind:"Oil &amp; Gas Refining &amp; Marketing"},
+  {t:"GM",n:"General Motors Company",ind:"Auto Manufacturers"},{t:"HPE",n:"Hewlett Packard Enterprise Company",ind:"Communication Equipment"},{t:"LITE",n:"Lumentum Holdings Inc.",ind:"Communication Equipment"},
+  {t:"SHW",n:"The Sherwin-Williams Company",ind:"Specialty Chemicals"},{t:"ORLY",n:"O&amp;#39;Reilly Automotive, Inc.",ind:"Auto Parts"},{t:"ITW",n:"Illinois Tool Works Inc.",ind:"Specialty Industrial Machinery"},
+  {t:"ECL",n:"Ecolab Inc.",ind:"Specialty Chemicals"},{t:"APO",n:"Apollo Global Management, Inc.",ind:"Asset Management"},{t:"CI",n:"The Cigna Group",ind:"Healthcare Plans"},
+  {t:"BSX",n:"Boston Scientific Corporation",ind:"Medical Devices"},{t:"CRH",n:"CRH plc",ind:"Building Materials"},{t:"CVNA",n:"Carvana Co.",ind:"Auto &amp; Truck Dealerships"},
+  {t:"CTAS",n:"Cintas Corporation",ind:"Specialty Business Services"},{t:"KMI",n:"Kinder Morgan, Inc.",ind:"Oil &amp; Gas Midstream"},{t:"AEP",n:"American Electric Power Company, Inc.",ind:"Utilities - Regulated Electric"},
+  {t:"NSC",n:"Norfolk Southern Corporation",ind:"Railroads"},{t:"CL",n:"Colgate-Palmolive Company",ind:"Household &amp; Personal Products"},{t:"MSI",n:"Motorola Solutions, Inc.",ind:"Communication Equipment"},
+  {t:"TDG",n:"TransDigm Group Incorporated",ind:"Aerospace &amp; Defense"},{t:"WBD",n:"Warner Bros. Discovery, Inc.",ind:"Entertainment"},{t:"AON",n:"Aon plc",ind:"Insurance Brokers"},
+  {t:"DASH",n:"DoorDash, Inc.",ind:"Internet Retail"},{t:"URI",n:"United Rentals, Inc.",ind:"Rental &amp; Leasing Services"},{t:"DLR",n:"Digital Realty Trust, Inc.",ind:"REIT - Specialty"},
+  {t:"FIX",n:"Comfort Systems USA, Inc.",ind:"Engineering &amp; Construction"},{t:"NKE",n:"NIKE, Inc.",ind:"Footwear &amp; Accessories"},{t:"TER",n:"Teradyne, Inc.",ind:"Semiconductor Equipment &amp; Materials"},
+  {t:"BKR",n:"Baker Hughes Company",ind:"Oil &amp; Gas Equipment &amp; Services"},{t:"TEL",n:"TE Connectivity plc",ind:"Electronic Components"},{t:"REGN",n:"Regeneron Pharmaceuticals, Inc.",ind:"Biotechnology"},
+  {t:"APD",n:"Air Products and Chemicals, Inc.",ind:"Specialty Chemicals"},{t:"RSG",n:"Republic Services, Inc.",ind:"Waste Management"},{t:"F",n:"Ford Motor Company",ind:"Auto Manufacturers"},
+  {t:"TRV",n:"The Travelers Companies, Inc.",ind:"Insurance - Property &amp; Casualty"},{t:"GWW",n:"W.W. Grainger, Inc.",ind:"Industrial Distribution"},{t:"PCAR",n:"PACCAR Inc",ind:"Farm &amp; Heavy Construction Machinery"},
+  {t:"KEYS",n:"Keysight Technologies, Inc.",ind:"Scientific &amp; Technical Instruments"},{t:"OXY",n:"Occidental Petroleum Corporation",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"FANG",n:"Diamondback Energy, Inc.",ind:"Oil &amp; Gas Exploration &amp; Production"},
+  {t:"TFC",n:"Truist Financial Corporation",ind:"Banks - Regional"},{t:"NUE",n:"Nucor Corporation",ind:"Steel"},{t:"SRE",n:"Sempra",ind:"Utilities - Diversified"},
+  {t:"AFL",n:"Aflac Incorporated",ind:"Insurance - Life"},{t:"D",n:"Dominion Energy, Inc.",ind:"Utilities - Regulated Electric"},{t:"TGT",n:"Target Corporation",ind:"Discount Stores"},
+  {t:"LHX",n:"L3Harris Technologies, Inc.",ind:"Aerospace &amp; Defense"},{t:"TRGP",n:"Targa Resources Corp.",ind:"Oil &amp; Gas Midstream"},{t:"CARR",n:"Carrier Global Corporation",ind:"Building Products &amp; Equipment"},
+  {t:"O",n:"Realty Income Corporation",ind:"REIT - Retail"},{t:"OKE",n:"ONEOK, Inc.",ind:"Oil &amp; Gas Midstream"},{t:"ALL",n:"The Allstate Corporation",ind:"Insurance - Property &amp; Casualty"},
+  {t:"FAST",n:"Fastenal Company",ind:"Industrial Distribution"},{t:"DVN",n:"Devon Energy Corporation",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"PSA",n:"Public Storage",ind:"REIT - Industrial"},
+  {t:"ON",n:"ON Semiconductor Corporation",ind:"Semiconductors"},{t:"MCHP",n:"Microchip Technology Incorporated",ind:"Semiconductors"},{t:"AME",n:"AMETEK, Inc.",ind:"Specialty Industrial Machinery"},
+  {t:"MET",n:"MetLife, Inc.",ind:"Insurance - Life"},{t:"CTVA",n:"Corteva, Inc.",ind:"Agricultural Inputs"},{t:"AJG",n:"Arthur J. Gallagher &amp; Co.",ind:"Insurance Brokers"},
+  {t:"VST",n:"Vistra Corp.",ind:"Utilities - Independent Power Producers"},{t:"DAL",n:"Delta Air Lines, Inc.",ind:"Airlines"},{t:"ROK",n:"Rockwell Automation, Inc.",ind:"Specialty Industrial Machinery"},
+  {t:"COR",n:"Cencora, Inc.",ind:"Medical Distribution"},{t:"EA",n:"Electronic Arts Inc.",ind:"Electronic Gaming &amp; Multimedia"},{t:"AZO",n:"AutoZone, Inc.",ind:"Auto Parts"},
+  {t:"ETR",n:"Entergy Corporation",ind:"Utilities - Regulated Electric"},{t:"EW",n:"Edwards Lifesciences Corporation",ind:"Medical Devices"},{t:"NDAQ",n:"Nasdaq, Inc.",ind:"Financial Data &amp; Stock Exchanges"},
+  {t:"ODFL",n:"Old Dominion Freight Line, Inc.",ind:"Trucking"},{t:"ADSK",n:"Autodesk, Inc.",ind:"Software - Application"},{t:"EBAY",n:"eBay Inc.",ind:"Internet Retail"},
+  {t:"XEL",n:"Xcel Energy Inc.",ind:"Utilities - Regulated Electric"},{t:"EXC",n:"Exelon Corporation",ind:"Utilities - Regulated Electric"},{t:"GRMN",n:"Garmin Ltd.",ind:"Scientific &amp; Technical Instruments"},
+  {t:"CAH",n:"Cardinal Health, Inc.",ind:"Medical Distribution"},{t:"FITB",n:"Fifth Third Bancorp",ind:"Banks - Regional"},{t:"MSCI",n:"MSCI Inc.",ind:"Financial Data &amp; Stock Exchanges"},
+  {t:"WAB",n:"Westinghouse Air Brake Technologies Corporation",ind:"Railroads"},{t:"IDXX",n:"IDEXX Laboratories, Inc.",ind:"Diagnostics &amp; Research"},{t:"STT",n:"State Street Corporation",ind:"Asset Management"},
+  {t:"COIN",n:"Coinbase Global, Inc.",ind:"Financial Data &amp; Stock Exchanges"},{t:"KDP",n:"Keurig Dr Pepper Inc.",ind:"Beverages - Non-Alcoholic"},{t:"XYZ",n:"Block, Inc.",ind:"Software - Infrastructure"},
+  {t:"DHI",n:"D.R. Horton, Inc.",ind:"Residential Construction"},{t:"YUM",n:"Yum! Brands, Inc.",ind:"Restaurants"},{t:"ARES",n:"Ares Management Corporation",ind:"Asset Management"},
+  {t:"ADM",n:"Archer-Daniels-Midland Company",ind:"Farm Products"},{t:"BDX",n:"Becton, Dickinson and Company",ind:"Medical Instruments &amp; Supplies"},{t:"TTWO",n:"Take-Two Interactive Software, Inc.",ind:"Electronic Gaming &amp; Multimedia"},
+  {t:"JBL",n:"Jabil Inc.",ind:"Electronic Components"},{t:"STLD",n:"Steel Dynamics, Inc.",ind:"Steel"},{t:"AMP",n:"Ameriprise Financial, Inc.",ind:"Asset Management"},
+  {t:"HUM",n:"Humana Inc.",ind:"Healthcare Plans"},{t:"IBKR",n:"Interactive Brokers Group, Inc.",ind:"Capital Markets"},{t:"AXON",n:"Axon Enterprise, Inc.",ind:"Aerospace &amp; Defense"},
+  {t:"A",n:"Agilent Technologies, Inc.",ind:"Diagnostics &amp; Research"},{t:"PEG",n:"Public Service Enterprise Group Incorporated",ind:"Utilities - Regulated Electric"},{t:"VTR",n:"Ventas, Inc.",ind:"REIT - Healthcare Facilities"},
+  {t:"CCI",n:"Crown Castle Inc.",ind:"REIT - Specialty"},{t:"AIG",n:"American International Group, Inc.",ind:"Insurance - Diversified"},{t:"LYV",n:"Live Nation Entertainment, Inc.",ind:"Entertainment"},
+  {t:"ED",n:"Consolidated Edison, Inc.",ind:"Utilities - Regulated Electric"},{t:"IRM",n:"Iron Mountain Incorporated",ind:"REIT - Specialty"},{t:"TKO",n:"TKO Group Holdings, Inc.",ind:"Entertainment"},
+  {t:"PYPL",n:"PayPal Holdings, Inc.",ind:"Credit Services"},{t:"CCL",n:"Carnival Corporation Ltd.",ind:"Travel Services"},{t:"KR",n:"The Kroger Co.",ind:"Grocery Stores"},
+  {t:"EME",n:"EMCOR Group, Inc.",ind:"Engineering &amp; Construction"},{t:"WAT",n:"Waters Corporation",ind:"Diagnostics &amp; Research"},{t:"HSY",n:"The Hershey Company",ind:"Confectioners"},
+  {t:"PCG",n:"PG&amp;E Corporation",ind:"Utilities - Regulated Electric"},{t:"VMC",n:"Vulcan Materials Company",ind:"Building Materials"},{t:"CBRE",n:"CBRE Group, Inc.",ind:"Real Estate Services"},
+  {t:"CMG",n:"Chipotle Mexican Grill, Inc.",ind:"Restaurants"},{t:"WDAY",n:"Workday, Inc.",ind:"Software - Application"},{t:"SYY",n:"Sysco Corporation",ind:"Food Distribution"},
+  {t:"WEC",n:"WEC Energy Group, Inc.",ind:"Utilities - Regulated Electric"},{t:"NTAP",n:"NetApp, Inc.",ind:"Software - Infrastructure"},{t:"PAYX",n:"Paychex, Inc.",ind:"Software - Application"},
+  {t:"SATS",n:"EchoStar Corporation",ind:"Telecom Services"},{t:"MLM",n:"Martin Marietta Materials, Inc.",ind:"Building Materials"},{t:"PRU",n:"Prudential Financial, Inc.",ind:"Insurance - Life"},
+  {t:"HIG",n:"The Hartford Insurance Group, Inc.",ind:"Insurance - Diversified"},{t:"HAL",n:"Halliburton Company",ind:"Oil &amp; Gas Equipment &amp; Services"},{t:"FSLR",n:"First Solar, Inc.",ind:"Solar"},
+  {t:"UAL",n:"United Airlines Holdings, Inc.",ind:"Airlines"},{t:"EQT",n:"EQT Corporation",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"LVS",n:"Las Vegas Sands Corp.",ind:"Resorts &amp; Casinos"},
+  {t:"ROP",n:"Roper Technologies, Inc.",ind:"Software - Application"},{t:"ZTS",n:"Zoetis Inc.",ind:"Drug Manufacturers - Specialty &amp; Generic"},{t:"Q",n:"Qnity Electronics, Inc.",ind:"Semiconductor Equipment &amp; Materials"},
+  {t:"KVUE",n:"Kenvue Inc.",ind:"Household &amp; Personal Products"},{t:"HBAN",n:"Huntington Bancshares Incorporated",ind:"Banks - Regional"},{t:"EXR",n:"Extra Space Storage Inc.",ind:"REIT - Industrial"},
+  {t:"KMB",n:"Kimberly-Clark Corporation",ind:"Household &amp; Personal Products"},{t:"MTB",n:"M&amp;T Bank Corporation",ind:"Banks - Regional"},{t:"NTRS",n:"Northern Trust Corporation",ind:"Asset Management"},
+  {t:"ACGL",n:"Arch Capital Group Ltd.",ind:"Insurance - Diversified"},{t:"IQV",n:"IQVIA Holdings Inc.",ind:"Diagnostics &amp; Research"},{t:"CBOE",n:"Cboe Global Markets, Inc.",ind:"Financial Data &amp; Stock Exchanges"},
+  {t:"VICI",n:"VICI Properties Inc.",ind:"REIT - Diversified"},{t:"EL",n:"The Estée Lauder Companies Inc.",ind:"Household &amp; Personal Products"},{t:"DTE",n:"DTE Energy Company",ind:"Utilities - Regulated Electric"},
+  {t:"CNC",n:"Centene Corporation",ind:"Healthcare Plans"},{t:"AEE",n:"Ameren Corporation",ind:"Utilities - Regulated Electric"},{t:"FISV",n:"Fiserv, Inc.",ind:"Software - Application"},
+  {t:"BIIB",n:"Biogen Inc.",ind:"Drug Manufacturers - General"},{t:"DOV",n:"Dover Corporation",ind:"Specialty Industrial Machinery"},{t:"TDY",n:"Teledyne Technologies Incorporated",ind:"Scientific &amp; Technical Instruments"},
+  {t:"CASY",n:"Casey&amp;#39;s General Stores, Inc.",ind:"Specialty Retail"},{t:"RJF",n:"Raymond James Financial, Inc.",ind:"Asset Management"},{t:"SMCI",n:"Super Micro Computer, Inc.",ind:"Computer Hardware"},
+  {t:"NRG",n:"NRG Energy, Inc.",ind:"Utilities - Independent Power Producers"},{t:"GEHC",n:"GE HealthCare Technologies Inc.",ind:"Medical Devices"},{t:"TPR",n:"Tapestry, Inc.",ind:"Luxury Goods"},
+  {t:"CPRT",n:"Copart, Inc.",ind:"Specialty Business Services"},{t:"ATO",n:"Atmos Energy Corporation",ind:"Utilities - Regulated Gas"},{t:"DXCM",n:"DexCom, Inc.",ind:"Medical Devices"},
+  {t:"TPL",n:"Texas Pacific Land Corporation",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"IR",n:"Ingersoll Rand Inc.",ind:"Specialty Industrial Machinery"},{t:"EIX",n:"Edison International",ind:"Utilities - Regulated Electric"},
+  {t:"FICO",n:"Fair Isaac Corporation",ind:"Software - Application"},{t:"CNP",n:"CenterPoint Energy, Inc.",ind:"Utilities - Regulated Electric"},{t:"VRSN",n:"VeriSign, Inc.",ind:"Software - Infrastructure"},
+  {t:"EXPE",n:"Expedia Group, Inc.",ind:"Travel Services"},{t:"RMD",n:"ResMed Inc.",ind:"Medical Instruments &amp; Supplies"},{t:"FOXA",n:"Fox Corporation",ind:"Entertainment"},
+  {t:"KHC",n:"The Kraft Heinz Company",ind:"Packaged Foods"},{t:"OTIS",n:"Otis Worldwide Corporation",ind:"Specialty Industrial Machinery"},{t:"JBHT",n:"J.B. Hunt Transport Services, Inc.",ind:"Integrated Freight &amp; Logistics"},
+  {t:"PPL",n:"PPL Corporation",ind:"Utilities - Regulated Electric"},{t:"FE",n:"FirstEnergy Corp.",ind:"Utilities - Regulated Electric"},{t:"AVB",n:"AvalonBay Communities, Inc.",ind:"REIT - Residential"},
+  {t:"XYL",n:"Xylem Inc.",ind:"Specialty Industrial Machinery"},{t:"CFG",n:"Citizens Financial Group, Inc.",ind:"Banks - Regional"},{t:"ES",n:"Eversource Energy",ind:"Utilities - Regulated Electric"},
+  {t:"HUBB",n:"Hubbell Incorporated",ind:"Electrical Equipment &amp; Parts"},{t:"DOW",n:"Dow Inc.",ind:"Chemicals"},{t:"FOX",n:"Fox Corporation",ind:"Entertainment"},
+  {t:"BG",n:"Bunge Global SA",ind:"Farm Products"},{t:"WRB",n:"W. R. Berkley Corporation",ind:"Insurance - Property &amp; Casualty"},{t:"EQR",n:"Equity Residential",ind:"REIT - Residential"},
+  {t:"CTSH",n:"Cognizant Technology Solutions Corporation",ind:"Information Technology Services"},{t:"PPG",n:"PPG Industries, Inc.",ind:"Specialty Chemicals"},{t:"CINF",n:"Cincinnati Financial Corporation",ind:"Insurance - Property &amp; Casualty"},
+  {t:"WSM",n:"Williams-Sonoma, Inc.",ind:"Specialty Retail"},{t:"AWK",n:"American Water Works Company, Inc.",ind:"Utilities - Regulated Water"},{t:"HPQ",n:"HP Inc.",ind:"Computer Hardware"},
+  {t:"WTW",n:"Willis Towers Watson Public Limited Company",ind:"Insurance Brokers"},{t:"MTD",n:"Mettler-Toledo International Inc.",ind:"Diagnostics &amp; Research"},{t:"RF",n:"Regions Financial Corporation",ind:"Banks - Regional"},
+  {t:"VRSK",n:"Verisk Analytics, Inc.",ind:"Consulting Services"},{t:"AKAM",n:"Akamai Technologies, Inc.",ind:"Software - Infrastructure"},{t:"STZ",n:"Constellation Brands, Inc.",ind:"Beverages - Brewers"},
+  {t:"DG",n:"Dollar General Corporation",ind:"Discount Stores"},{t:"SYF",n:"Synchrony Financial",ind:"Credit Services"},{t:"CPAY",n:"Corpay, Inc.",ind:"Software - Infrastructure"},
+  {t:"FFIV",n:"F5, Inc.",ind:"Software - Infrastructure"},{t:"DRI",n:"Darden Restaurants, Inc.",ind:"Restaurants"},{t:"KEY",n:"KeyCorp",ind:"Banks - Regional"},
+  {t:"WST",n:"West Pharmaceutical Services, Inc.",ind:"Medical Instruments &amp; Supplies"},{t:"PHM",n:"PulteGroup, Inc.",ind:"Residential Construction"},{t:"TROW",n:"T. Rowe Price Group, Inc.",ind:"Asset Management"},
+  {t:"SW",n:"Smurfit Westrock Plc",ind:"Packaging &amp; Containers"},{t:"ROL",n:"Rollins, Inc.",ind:"Personal Services"},{t:"LEN",n:"Lennar Corporation",ind:"Residential Construction"},
+  {t:"CHD",n:"Church &amp; Dwight Co., Inc.",ind:"Household &amp; Personal Products"},{t:"PFG",n:"Principal Financial Group, Inc.",ind:"Asset Management"},{t:"NI",n:"NiSource Inc.",ind:"Utilities - Regulated Gas"},
+  {t:"EXE",n:"Expand Energy Corporation",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"LYB",n:"LyondellBasell Industries N.V.",ind:"Specialty Chemicals"},{t:"CMS",n:"CMS Energy Corporation",ind:"Utilities - Regulated Electric"},
+  {t:"DLTR",n:"Dollar Tree, Inc.",ind:"Discount Stores"},{t:"L",n:"Loews Corporation",ind:"Insurance - Property &amp; Casualty"},{t:"DGX",n:"Quest Diagnostics Incorporated",ind:"Diagnostics &amp; Research"},
+  {t:"RL",n:"Ralph Lauren Corporation",ind:"Apparel Manufacturing"},{t:"CHRW",n:"C.H. Robinson Worldwide, Inc.",ind:"Integrated Freight &amp; Logistics"},{t:"LH",n:"Labcorp Holdings Inc.",ind:"Diagnostics &amp; Research"},
+  {t:"FIS",n:"Fidelity National Information Services, Inc.",ind:"Information Technology Services"},{t:"OMC",n:"Omnicom Group Inc.",ind:"Advertising Agencies"},{t:"SBAC",n:"SBA Communications Corporation",ind:"REIT - Specialty"},
+  {t:"VLTO",n:"Veralto Corporation",ind:"Pollution &amp; Treatment Controls"},{t:"EXPD",n:"Expeditors International of Washington, Inc.",ind:"Integrated Freight &amp; Logistics"},{t:"STE",n:"STERIS plc",ind:"Medical Devices"},
+  {t:"EFX",n:"Equifax Inc.",ind:"Consulting Services"},{t:"ULTA",n:"Ulta Beauty, Inc.",ind:"Specialty Retail"},{t:"TSN",n:"Tyson Foods, Inc.",ind:"Farm Products"},
+  {t:"LUV",n:"Southwest Airlines Co.",ind:"Airlines"},{t:"PKG",n:"Packaging Corporation of America",ind:"Packaging &amp; Containers"},{t:"ALB",n:"Albemarle Corporation",ind:"Specialty Chemicals"},
+  {t:"INCY",n:"Incyte Corporation",ind:"Biotechnology"},{t:"SNA",n:"Snap-on Incorporated",ind:"Tools &amp; Accessories"},{t:"MRNA",n:"Moderna, Inc.",ind:"Biotechnology"},
+  {t:"DD",n:"DuPont de Nemours, Inc.",ind:"Specialty Chemicals"},{t:"IFF",n:"International Flavors &amp; Fragrances Inc.",ind:"Specialty Chemicals"},{t:"BRO",n:"Brown &amp; Brown, Inc.",ind:"Insurance Brokers"},
+  {t:"EVRG",n:"Evergy, Inc.",ind:"Utilities - Regulated Electric"},{t:"GPN",n:"Global Payments Inc.",ind:"Specialty Business Services"},{t:"FTV",n:"Fortive Corporation",ind:"Scientific &amp; Technical Instruments"},
+  {t:"ESS",n:"Essex Property Trust, Inc.",ind:"REIT - Residential"},{t:"LNT",n:"Alliant Energy Corporation",ind:"Utilities - Regulated Electric"},{t:"VTRS",n:"Viatris Inc.",ind:"Drug Manufacturers - Specialty &amp; Generic"},
+  {t:"LII",n:"Lennox International Inc.",ind:"Building Products &amp; Equipment"},{t:"CF",n:"CF Industries Holdings, Inc.",ind:"Agricultural Inputs"},{t:"CHTR",n:"Charter Communications, Inc.",ind:"Telecom Services"},
+  {t:"IP",n:"International Paper Company",ind:"Packaging &amp; Containers"},{t:"BR",n:"Broadridge Financial Solutions, Inc.",ind:"Information Technology Services"},{t:"WY",n:"Weyerhaeuser Company",ind:"REIT - Specialty"},
+  {t:"CDW",n:"CDW Corporation",ind:"Information Technology Services"},{t:"AMCR",n:"Amcor plc",ind:"Packaging &amp; Containers"},{t:"INVH",n:"Invitation Homes Inc.",ind:"REIT - Residential"},
+  {t:"GIS",n:"General Mills, Inc.",ind:"Packaged Foods"},{t:"GNRC",n:"Generac Holdings Inc.",ind:"Specialty Industrial Machinery"},{t:"HST",n:"Host Hotels &amp; Resorts, Inc.",ind:"REIT - Hotel &amp; Motel"},
+  {t:"NVR",n:"NVR, Inc.",ind:"Residential Construction"},{t:"ZBH",n:"Zimmer Biomet Holdings, Inc.",ind:"Medical Devices"},{t:"APTV",n:"Aptiv PLC",ind:"Auto Parts"},
+  {t:"PTC",n:"PTC Inc.",ind:"Software - Application"},{t:"NDSN",n:"Nordson Corporation",ind:"Specialty Industrial Machinery"},{t:"KIM",n:"Kimco Realty Corporation",ind:"REIT - Retail"},
+  {t:"GEN",n:"Gen Digital Inc.",ind:"Software - Infrastructure"},{t:"IEX",n:"IDEX Corporation",ind:"Specialty Industrial Machinery"},{t:"TXT",n:"Textron Inc.",ind:"Aerospace &amp; Defense"},
+  {t:"MAA",n:"Mid-America Apartment Communities, Inc.",ind:"REIT - Residential"},{t:"BEN",n:"Franklin Resources, Inc.",ind:"Asset Management"},{t:"LDOS",n:"Leidos Holdings, Inc.",ind:"Information Technology Services"},
+  {t:"TSCO",n:"Tractor Supply Company",ind:"Specialty Retail"},{t:"BBY",n:"Best Buy Co., Inc.",ind:"Specialty Retail"},{t:"DECK",n:"Deckers Outdoor Corporation",ind:"Footwear &amp; Accessories"},
+  {t:"NWS",n:"News Corporation",ind:"Entertainment"},{t:"LULU",n:"lululemon athletica inc.",ind:"Apparel Retail"},{t:"J",n:"Jacobs Solutions Inc.",ind:"Engineering &amp; Construction"},
+  {t:"REG",n:"Regency Centers Corporation",ind:"REIT - Retail"},{t:"NWSA",n:"News Corporation",ind:"Entertainment"},{t:"BALL",n:"Ball Corporation",ind:"Packaging &amp; Containers"},
+  {t:"MAS",n:"Masco Corporation",ind:"Building Products &amp; Equipment"},{t:"CSGP",n:"CoStar Group, Inc.",ind:"Real Estate Services"},{t:"SOLV",n:"Solventum Corporation",ind:"Medical Instruments &amp; Supplies"},
+  {t:"APA",n:"APA Corporation",ind:"Oil &amp; Gas Exploration &amp; Production"},{t:"GPC",n:"Genuine Parts Company",ind:"Auto Parts"},{t:"UDR",n:"UDR, Inc.",ind:"REIT - Residential"},
+  {t:"DOC",n:"Healthpeak Properties, Inc.",ind:"REIT - Healthcare Facilities"},{t:"TRMB",n:"Trimble Inc.",ind:"Scientific &amp; Technical Instruments"},{t:"TYL",n:"Tyler Technologies, Inc.",ind:"Software - Application"},
+  {t:"HRL",n:"Hormel Foods Corporation",ind:"Packaged Foods"},{t:"EG",n:"Everest Group, Ltd.",ind:"Insurance - Reinsurance"},{t:"DVA",n:"DaVita Inc.",ind:"Medical Care Facilities"},
+  {t:"MKC",n:"McCormick &amp; Company, Incorporated",ind:"Packaged Foods"},{t:"MGM",n:"MGM Resorts International",ind:"Resorts &amp; Casinos"},{t:"AIZ",n:"Assurant, Inc.",ind:"Insurance - Property &amp; Casualty"},
+  {t:"SWK",n:"Stanley Black &amp; Decker, Inc.",ind:"Tools &amp; Accessories"},{t:"SWKS",n:"Skyworks Solutions, Inc.",ind:"Semiconductors"},{t:"PNW",n:"Pinnacle West Capital Corporation",ind:"Utilities - Regulated Electric"},
+  {t:"IVZ",n:"Invesco Ltd.",ind:"Asset Management"},{t:"AVY",n:"Avery Dennison Corporation",ind:"Packaging &amp; Containers"},{t:"HAS",n:"Hasbro, Inc.",ind:"Leisure"},
+  {t:"ZBRA",n:"Zebra Technologies Corporation",ind:"Communication Equipment"},{t:"COO",n:"The Cooper Companies, Inc.",ind:"Medical Instruments &amp; Supplies"},{t:"GL",n:"Globe Life Inc.",ind:"Insurance - Life"},
+  {t:"PSKY",n:"Paramount Skydance Corporation",ind:"Entertainment"},{t:"ALGN",n:"Align Technology, Inc.",ind:"Medical Instruments &amp; Supplies"},{t:"PNR",n:"Pentair plc",ind:"Specialty Industrial Machinery"},
+  {t:"BF.B",n:"Brown-Forman Corporation",ind:"Beverages - Wineries &amp; Distilleries"},{t:"CPT",n:"Camden Property Trust",ind:"REIT - Residential"},{t:"HII",n:"Huntington Ingalls Industries, Inc.",ind:"Aerospace &amp; Defense"},
+  {t:"RVTY",n:"Revvity, Inc.",ind:"Diagnostics &amp; Research"},{t:"ALLE",n:"Allegion plc",ind:"Security &amp; Protection Services"},{t:"GDDY",n:"GoDaddy Inc.",ind:"Software - Infrastructure"},
+  {t:"IT",n:"Gartner, Inc.",ind:"Information Technology Services"},{t:"BXP",n:"BXP, Inc.",ind:"REIT - Office"},{t:"ERIE",n:"Erie Indemnity Company",ind:"Insurance Brokers"},
+  {t:"SJM",n:"The J. M. Smucker Company",ind:"Packaged Foods"},{t:"WYNN",n:"Wynn Resorts, Limited",ind:"Resorts &amp; Casinos"},{t:"CLX",n:"The Clorox Company",ind:"Household &amp; Personal Products"},
+  {t:"AES",n:"The AES Corporation",ind:"Utilities - Diversified"},{t:"FRT",n:"Federal Realty Investment Trust",ind:"REIT - Retail"},{t:"DPZ",n:"Domino&amp;#39;s Pizza, Inc.",ind:"Restaurants"},
+  {t:"PODD",n:"Insulet Corporation",ind:"Medical Devices"},{t:"TTD",n:"The Trade Desk, Inc.",ind:"Advertising Agencies"},{t:"BAX",n:"Baxter International Inc.",ind:"Medical Instruments &amp; Supplies"},
+  {t:"JKHY",n:"Jack Henry &amp; Associates, Inc.",ind:"Information Technology Services"},{t:"FDS",n:"FactSet Research Systems Inc.",ind:"Financial Data &amp; Stock Exchanges"},{t:"ARE",n:"Alexandria Real Estate Equities, Inc.",ind:"REIT - Office"},
+  {t:"UHS",n:"Universal Health Services, Inc.",ind:"Medical Care Facilities"},{t:"CRL",n:"Charles River Laboratories International, Inc.",ind:"Diagnostics &amp; Research"},{t:"HSIC",n:"Henry Schein, Inc.",ind:"Medical Distribution"},
+  {t:"NCLH",n:"Norwegian Cruise Line Holdings Ltd.",ind:"Travel Services"},{t:"BLDR",n:"Builders FirstSource, Inc.",ind:"Building Products &amp; Equipment"},{t:"TECH",n:"Bio-Techne Corporation",ind:"Biotechnology"},
+  {t:"AOS",n:"A. O. Smith Corporation",ind:"Specialty Industrial Machinery"},{t:"MOS",n:"The Mosaic Company",ind:"Agricultural Inputs"},{t:"TAP",n:"Molson Coors Beverage Company",ind:"Beverages - Brewers"},
+  {t:"POOL",n:"Pool Corporation",ind:"Industrial Distribution"},{t:"CPB",n:"The Campbell&amp;#39;s Company",ind:"Packaged Foods"},{t:"CAG",n:"Conagra Brands, Inc.",ind:"Packaged Foods"},
+  {t:"EPAM",n:"EPAM Systems, Inc.",ind:"Information Technology Services"},
 ];
 
 const LS_SP500_KEY = 'investment_sp500_v1';
@@ -6425,7 +6467,8 @@ function sp500BuildSectorDropdown() {
   if (!sel) return;
   const cur = sel.value;
   while (sel.options.length > 1) sel.remove(1);
-  const sectors = [...new Set(SP500_LIST.map(s => sp500FinData[s.t]?.sector).filter(Boolean))].sort();
+  // Use embedded ind field (always available), not FMP-fetched sector
+  const sectors = [...new Set(SP500_LIST.map(s => s.ind).filter(Boolean))].sort();
   sectors.forEach(sec => {
     const o = document.createElement('option');
     o.value = sec; o.textContent = sec;
@@ -6443,7 +6486,7 @@ function buildSp500Thead() {
   return `<tr>
     ${col('ticker','Ticker','left')}
     ${col('name','Name','left')}
-    ${col('sector','Sector','left')}
+    ${col('sector','Industry','left')}
     ${col('price','Price')}
     ${col('mcap','Mkt Cap (€')}
     ${col('annRev','Ann. Revenue')}
@@ -6497,7 +6540,7 @@ function renderSp500Tab() {
     const evFcf       = safe(ev, annFcf);
     const evFwdFcf    = safe(ev, qFcf != null ? qFcf * 4 : null);
 
-    return { t: s.t, n: s.n, sector: fd.sector || null, price: pd.price ?? null,
+    return { t: s.t, n: s.n, ind: s.ind || null, price: pd.price ?? null,
       mcapB, mcapUsd, ev, annRev, qRev, annEbitda, qEbitda, annFcf, qFcf,
       evRev, evFwdRev, evEbitda, evFwdEbitda, evFcf, evFwdFcf,
       annRevDate: fd.annRevDate, qRevDate: fd.qRevDate,
@@ -6505,12 +6548,9 @@ function renderSp500Tab() {
     };
   });
 
-  // Deduplicate (GOOG/GOOGL both in list)
-  // Keep both but show both
-
   // Filters
-  if (q) rows = rows.filter(r => r.t.toLowerCase().includes(q) || r.n.toLowerCase().includes(q));
-  if (sectorF) rows = rows.filter(r => r.sector === sectorF);
+  if (q) rows = rows.filter(r => r.t.toLowerCase().includes(q) || r.n.toLowerCase().includes(q) || (r.ind||'').toLowerCase().includes(q));
+  if (sectorF) rows = rows.filter(r => r.ind === sectorF);
   if (mcapMin > 0) rows = rows.filter(r => r.mcapB != null && r.mcapB >= mcapMin);
 
   // Sort
@@ -6520,7 +6560,7 @@ function renderSp500Tab() {
     switch(sp500SortKey) {
       case 'ticker':  return sp500SortDir * a.t.localeCompare(b.t);
       case 'name':    return sp500SortDir * a.n.localeCompare(b.n);
-      case 'sector':  return sp500SortDir * (a.sector||'').localeCompare(b.sector||'');
+      case 'sector':  return sp500SortDir * (a.ind||'').localeCompare(b.ind||'');
       case 'price':   av = a.price ?? NUM_INF; bv = b.price ?? NUM_INF; break;
       case 'mcap':    av = a.mcapB ?? NUM_INF; bv = b.mcapB ?? NUM_INF; break;
       case 'annRev':  av = a.annRev ?? NUM_INF; bv = b.annRev ?? NUM_INF; break;
@@ -6556,7 +6596,7 @@ function renderSp500Tab() {
     return `<tr>
       <td style="padding:5px 10px"><span class="tk" style="color:var(--txt);font-weight:700">${r.t}</span></td>
       <td style="padding:5px 10px;font-size:11px;color:var(--txt2);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.n}">${r.n}</td>
-      <td style="padding:5px 10px;font-size:10px;color:var(--txt3);white-space:nowrap">${r.sector || '<span style="color:var(--txt3);opacity:.4">—</span>'}</td>
+      <td style="padding:5px 10px;font-size:10px;color:var(--txt3);white-space:nowrap">${r.ind || '<span style="color:var(--txt3);opacity:.4">—</span>'}</td>
       <td style="padding:5px 10px;text-align:right">${priceDisp}</td>
       <td style="padding:5px 10px;text-align:right">${mcapDisp}</td>
       <td style="padding:5px 10px;text-align:right" ${aRD}>${fmtBn(r.annRev)}</td>
