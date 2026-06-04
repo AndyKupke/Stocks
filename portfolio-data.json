@@ -4111,7 +4111,7 @@
       "shares": 0
     },
     "MNDY": {
-      "shares": 0,
+      "shares": 70,
       "_portChecked": true
     },
     "PLTR": {
@@ -17695,5 +17695,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-04T14:51:42.438Z"
+  "lastUpdated": "2026-06-04T14:51:47.707Z"
 }
