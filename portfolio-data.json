@@ -4131,7 +4131,7 @@
     },
     "TEAM": {
       "shares": 0,
-      "_portChecked": true
+      "_portChecked": false
     },
     "CRM": {
       "shares": 30,
@@ -17695,5 +17695,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-04T14:52:01.393Z"
+  "lastUpdated": "2026-06-04T14:52:04.904Z"
 }
