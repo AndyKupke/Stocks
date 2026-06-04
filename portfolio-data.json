@@ -4168,7 +4168,7 @@
       "shares": 0
     },
     "ZS": {
-      "shares": 0,
+      "shares": 25,
       "_portChecked": true
     },
     "VEEV": {
@@ -17691,5 +17691,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-04T14:52:21.427Z"
+  "lastUpdated": "2026-06-04T14:52:37.916Z"
 }
