@@ -2845,19 +2845,21 @@ async function autoFetchFxRates(manual = false) {
   const st  = document.getElementById('fx-save-status');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
   try {
-    const url = 'https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,CHF,KRW';
+    // open.er-api.com — ECB-sourced, no key, proper CORS for GitHub Pages
+    const url = 'https://open.er-api.com/v6/latest/EUR';
     const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const data = await r.json();
+    if (data.result !== 'success') throw new Error(data['error-type'] || 'API error');
     const rates = data.rates; // EUR→X, we need X→EUR = 1/rate
     if (rates.USD > 0) fxRates.USD = +(1 / rates.USD).toFixed(6);
     if (rates.GBP > 0) fxRates.GBP = +(1 / rates.GBP).toFixed(6);
     if (rates.CHF > 0) fxRates.CHF = +(1 / rates.CHF).toFixed(6);
     if (rates.KRW > 0) fxRates.KRW = +(1 / rates.KRW).toFixed(8);
     saveFxRates();
-    renderFxTab();       // refresh input fields
+    renderFxTab();
     renderPortfolioTab();
-    if (manual && st) { st.textContent = `Rates updated (${data.date}) ✓`; st.style.color = 'var(--grn)'; setTimeout(()=>{ st.textContent=''; },4000); }
+    if (manual && st) { st.textContent = `Rates updated ✓`; st.style.color = 'var(--grn)'; setTimeout(()=>{ st.textContent=''; },4000); }
   } catch(e) {
     if (manual && st) { st.textContent = `Auto-fetch failed: ${e.message}`; st.style.color = 'var(--red)'; setTimeout(()=>{ st.textContent=''; },4000); }
   } finally {
@@ -6519,21 +6521,31 @@ function renderSp500Tab() {
   const mcapMin = parseFloat(document.getElementById('sp500-mcap')?.value) || 0; // billions
 
   // Build enriched rows
+  // Priority: sp500FinData (dedicated fetch) → financialData (Financial Analysis tab cache)
   let rows = SP500_LIST.map(s => {
-    const fd = sp500FinData[s.t] || {};
-    const pd = priceData[s.t] || {};
+    const fd  = sp500FinData[s.t] || {};
+    const fin = financialData[s.t] || {};          // reuse Financial Analysis tab cache
+    const finA = fin.annual?.[0]  || {};
+    const finQ = fin.quarterly?.[0] || {};
+    const pd  = priceData[s.t] || {};
     const mcapUsd = sp500GetMcapUsd(s.t);
     const mcapB = mcapUsd ? mcapUsd / 1e9 : null;
     const ev = mcapUsd;
 
-    const annRev = fd.annRev ?? null;
-    const qRev   = fd.qRev   ?? null;
-    const annEbitda = fd.annEbitda ?? null;
-    const qEbitda   = fd.qEbitda   ?? null;
-    const annFcf = fd.annFcf ?? null;
-    const qFcf   = fd.qFcf   ?? null;
+    // Prefer sp500FinData, fall back to Financial Analysis cache
+    const annRev    = fd.annRev    ?? finA.totalRevenue ?? null;
+    const qRev      = fd.qRev      ?? finQ.totalRevenue ?? null;
+    const annEbitda = fd.annEbitda ?? finA.ebitda       ?? null;
+    const qEbitda   = fd.qEbitda   ?? finQ.ebitda       ?? null;
+    const annFcf    = fd.annFcf    ?? finA.freeCashflow  ?? null;
+    const qFcf      = fd.qFcf      ?? finQ.freeCashflow  ?? null;
 
-    const safe = (n, d) => (ev > 0 && d != null && d > 0) ? ev / d : null;
+    const annRevDate = fd.annRevDate ?? finA.endDate ?? null;
+    const qRevDate   = fd.qRevDate   ?? finQ.endDate ?? null;
+    const annFcfDate = fd.annFcfDate ?? finA.endDate ?? null;
+    const qFcfDate   = fd.qFcfDate   ?? finQ.endDate ?? null;
+
+    const safe = (ev, d) => (ev > 0 && d != null && d > 0) ? ev / d : null;
     const evRev       = safe(ev, annRev);
     const evFwdRev    = safe(ev, qRev != null ? qRev * 4 : null);
     const evEbitda    = safe(ev, annEbitda);
@@ -6544,8 +6556,7 @@ function renderSp500Tab() {
     return { t: s.t, n: s.n, ind: s.ind || null, price: pd.price ?? null,
       mcapB, mcapUsd, ev, annRev, qRev, annEbitda, qEbitda, annFcf, qFcf,
       evRev, evFwdRev, evEbitda, evFwdEbitda, evFcf, evFwdFcf,
-      annRevDate: fd.annRevDate, qRevDate: fd.qRevDate,
-      annFcfDate: fd.annFcfDate, qFcfDate: fd.qFcfDate,
+      annRevDate, qRevDate, annFcfDate, qFcfDate,
     };
   });
 
@@ -6703,15 +6714,28 @@ async function fetchSp500Data() {
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
 
   // Only fetch currently visible (filtered) stocks
-  // Re-fetch if: never fetched, stale (>7 days), OR fetched but revenue is still null
+  // Re-fetch if: no revenue data anywhere, OR data is stale (>7 days)
+  // Skip if already covered by Financial Analysis cache with good data
   const STALE_MS = 7 * 24 * 3600 * 1000;
   const visibleSet = new Set(sp500VisibleTickers);
+  const hasRevenue = t => {
+    const fd = sp500FinData[t];
+    if (fd?.annRev != null || fd?.qRev != null) return true;
+    const fin = financialData[t];
+    if (fin?.annual?.[0]?.totalRevenue != null) return true;
+    if (fin?.quarterly?.[0]?.totalRevenue != null) return true;
+    return false;
+  };
+  const isStale = t => {
+    const fd = sp500FinData[t];
+    if (!fd?.lastFetch) return true;
+    return Date.now() - new Date(fd.lastFetch).getTime() > STALE_MS;
+  };
   const toFetch = SP500_LIST.filter(s => {
     if (!visibleSet.has(s.t)) return false;
-    const d = sp500FinData[s.t];
-    if (!d?.lastFetch) return true;                                              // never fetched
-    if (d.annRev == null && d.qRev == null) return true;                        // fetched but no revenue
-    return Date.now() - new Date(d.lastFetch).getTime() > STALE_MS;            // stale
+    if (!hasRevenue(s.t)) return true;      // no data anywhere → fetch
+    if (isStale(s.t) && !financialData[s.t]?.lastUpdated) return true;  // stale sp500 data and not in fin cache
+    return false;
   });
 
   if (toFetch.length === 0) {
