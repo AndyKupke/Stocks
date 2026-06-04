@@ -1589,7 +1589,7 @@ function loadPortfolio(){
     const out = {};
     for(const [k,v] of Object.entries(d)){
       if(v===true||v===false){ out[k]={shares:0}; }
-      else if(typeof v==='object'){ out[k]={shares:v.shares||0}; }
+      else if(typeof v==='object'){ out[k]={shares:v.shares||0, ...(v._portChecked!==undefined&&{_portChecked:v._portChecked})}; }
     }
     return out;
   }catch(e){ return {}; }
