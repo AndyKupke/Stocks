@@ -6669,27 +6669,27 @@ async function fetchSp500StockFMP(ticker) {
     }
   };
 
-  const [aIS, qIS, aCF, qCF, prof] = await Promise.all([
+  const [aIS, qIS, aCF, qCF, qt] = await Promise.all([
     get('income-statement',    { period: 'annual',  limit: 1 }),
     get('income-statement',    { period: 'quarter', limit: 1 }),
     get('cash-flow-statement', { period: 'annual',  limit: 1 }),
     get('cash-flow-statement', { period: 'quarter', limit: 1 }),
-    get('profile',             {}),
+    get('quote',               {}),   // quote returns marketCap; less restricted than profile
   ]);
 
-  const a = aIS?.[0], q = qIS?.[0], af = aCF?.[0], qf = qCF?.[0], p = prof?.[0];
+  const a = aIS?.[0], q = qIS?.[0], af = aCF?.[0], qf = qCF?.[0], p = qt?.[0];
   const annRev = a?.revenue ?? a?.totalRevenue ?? null;
   const qRev   = q?.revenue ?? q?.totalRevenue ?? null;
 
-  // If we got 403s on all financial endpoints and no revenue, signal fallback needed
+  // If we got 403s on all financial endpoints and no revenue, signal AV fallback
   if (annRev == null && qRev == null) {
     console.warn(`[SP500] FMP ${ticker}: no revenue data (got403=${got403})`);
     return got403 ? { _need403Fallback: true } : null;
   }
 
   return {
-    sector:      p?.sector  || null,
-    mcapFmp:     p?.mktCap  || null,
+    sector:      null,                            // sector comes from SP500_LIST, not needed here
+    mcapFmp:     p?.marketCap || null,            // quote returns marketCap (not mktCap)
     annRev,
     annRevDate:  a?.date?.slice(0,10) ?? null,
     qRev,
