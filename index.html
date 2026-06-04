@@ -6790,34 +6790,9 @@ async function fetchSp500Data() {
   const status = document.getElementById('sp500-status');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
 
-  const STALE_MS = 7 * 24 * 3600 * 1000;
   const visibleSet = new Set(sp500VisibleTickers);
-  const hasRevenue = t => {
-    const fd = sp500FinData[t];
-    if (fd?.annRev != null || fd?.qRev != null) return true;
-    const fin = financialData[t];
-    if (fin?.annual?.[0]?.totalRevenue != null) return true;
-    if (fin?.quarterly?.[0]?.totalRevenue != null) return true;
-    return false;
-  };
-  const isStale = t => {
-    const fd = sp500FinData[t];
-    if (!fd?.lastFetch) return true;
-    return Date.now() - new Date(fd.lastFetch).getTime() > STALE_MS;
-  };
-  // AV records with missing FCF or mcap (partial rate-limit failure) should be retried
-  const isIncomplete = t => {
-    const fd = sp500FinData[t];
-    if (!fd || fd._source !== 'av') return false;
-    return fd.annFcf == null || fd.mcapFmp == null;
-  };
-  const toFetch = SP500_LIST.filter(s => {
-    if (!visibleSet.has(s.t)) return false;
-    if (!hasRevenue(s.t)) return true;
-    if (isIncomplete(s.t)) return true;  // partial AV data → retry
-    if (isStale(s.t) && !financialData[s.t]?.lastUpdated) return true;
-    return false;
-  });
+  // Always re-fetch all visible (filtered) stocks — user clicked Update Data explicitly
+  const toFetch = SP500_LIST.filter(s => visibleSet.has(s.t));
 
   if (toFetch.length === 0) {
     sp500Fetching = false;
