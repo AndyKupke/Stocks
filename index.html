@@ -6705,12 +6705,13 @@ async function fetchSp500StockFMP(ticker) {
   };
 }
 
-// Alpha Vantage fallback fetch (3 parallel calls: INCOME_STATEMENT + CASH_FLOW + OVERVIEW)
-// NOTE: Call this only ONE stock at a time with a 40s gap between calls (AV: 5 req/min)
+// Alpha Vantage fallback fetch (3 sequential calls: INCOME_STATEMENT → CASH_FLOW → OVERVIEW)
+// Sequential because AV free tier enforces 1 req/sec burst limit — parallel triggers rate limit
 async function fetchSp500StockAV(ticker) {
   const apiKey = getAvKey();
   if (!apiKey) return null;
   const BASE = 'https://www.alphavantage.co/query';
+  const wait = ms => new Promise(r => setTimeout(r, ms));
   const get = async (fn) => {
     try {
       const url = `${BASE}?function=${fn}&symbol=${encodeURIComponent(ticker)}&apikey=${apiKey}`;
@@ -6725,12 +6726,12 @@ async function fetchSp500StockAV(ticker) {
     } catch(e) { console.warn(`[SP500] AV ${fn} ${ticker} → ${e.message}`); return null; }
   };
 
-  // 3 calls in parallel: income statement, cash flow, overview (market cap + sector)
-  const [is, cf, ov] = await Promise.all([
-    get('INCOME_STATEMENT'),
-    get('CASH_FLOW'),
-    get('OVERVIEW'),
-  ]);
+  // Sequential calls with 1.5s gap — AV enforces 1 req/sec burst limit
+  const is = await get('INCOME_STATEMENT');
+  await wait(1500);
+  const cf = await get('CASH_FLOW');
+  await wait(1500);
+  const ov = await get('OVERVIEW');
 
   const aIS = is?.annualReports?.[0],  qIS = is?.quarterlyReports?.[0];
   const aCF = cf?.annualReports?.[0],  qCF = cf?.quarterlyReports?.[0];
@@ -6804,9 +6805,16 @@ async function fetchSp500Data() {
     if (!fd?.lastFetch) return true;
     return Date.now() - new Date(fd.lastFetch).getTime() > STALE_MS;
   };
+  // AV records with missing FCF or mcap (partial rate-limit failure) should be retried
+  const isIncomplete = t => {
+    const fd = sp500FinData[t];
+    if (!fd || fd._source !== 'av') return false;
+    return fd.annFcf == null || fd.mcapFmp == null;
+  };
   const toFetch = SP500_LIST.filter(s => {
     if (!visibleSet.has(s.t)) return false;
     if (!hasRevenue(s.t)) return true;
+    if (isIncomplete(s.t)) return true;  // partial AV data → retry
     if (isStale(s.t) && !financialData[s.t]?.lastUpdated) return true;
     return false;
   });
@@ -6852,7 +6860,7 @@ async function fetchSp500Data() {
     for (let i = 0; i < avQueue.length; i++) {
       if (!sp500Fetching) break;
       if (i > 0) {
-        const WAIT = 40;
+        const WAIT = 10; // 1.5s between calls within stock + 10s between stocks = well under AV 1 req/sec limit
         for (let t = WAIT; t > 0; t--) {
           if (!sp500Fetching) break;
           if (status) status.textContent = `AV: ${i}/${avQueue.length} done · next in ${t}s…`;
