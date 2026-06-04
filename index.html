@@ -6642,18 +6642,20 @@ function renderSp500Tab() {
   </td></tr>`;
 }
 
-// Lightweight per-stock fetch for S&P 500 tab (5 parallel FMP calls)
-async function fetchSp500Stock(ticker) {
+// FMP fetch for a single S&P 500 stock (5 parallel calls)
+// Returns data object on success, null if no revenue data or all 403s
+async function fetchSp500StockFMP(ticker) {
   const apiKey = getFmpKey();
   if (!apiKey) return null;
-  // FMP uses dashes for BRK.B → BRK-B, BF.B → BF-B
-  const sym = ticker.replace(/\./g, '-');
+  const sym = ticker.replace(/\./g, '-'); // BRK.B → BRK-B
   const BASE = 'https://financialmodelingprep.com/api/v3';
+  let got403 = false;
   const get = async (ep, params) => {
     try {
       const qs = new URLSearchParams({ ...params, apikey: apiKey }).toString();
       const r = await fetch(`${BASE}/${ep}/${encodeURIComponent(sym)}?${qs}`, { signal: AbortSignal.timeout(12000) });
       if (!r.ok) {
+        if (r.status === 403) got403 = true;
         console.warn(`[SP500] FMP ${ep} ${sym} → HTTP ${r.status}`);
         return null;
       }
@@ -6676,30 +6678,108 @@ async function fetchSp500Stock(ticker) {
   ]);
 
   const a = aIS?.[0], q = qIS?.[0], af = aCF?.[0], qf = qCF?.[0], p = prof?.[0];
-
-  // Only store a record if we got at least revenue data — avoids caching empty profile-only results
   const annRev = a?.revenue ?? a?.totalRevenue ?? null;
   const qRev   = q?.revenue ?? q?.totalRevenue ?? null;
+
+  // If we got 403s on all financial endpoints and no revenue, signal fallback needed
   if (annRev == null && qRev == null) {
-    console.warn(`[SP500] ${ticker}: no revenue data (aIS=${!!aIS}, qIS=${!!qIS}, prof=${!!prof})`);
-    return null;
+    console.warn(`[SP500] FMP ${ticker}: no revenue data (got403=${got403})`);
+    return got403 ? { _need403Fallback: true } : null;
   }
 
   return {
-    sector:      p?.sector   || null,
-    mcapFmp:     p?.mktCap   || null,
+    sector:      p?.sector  || null,
+    mcapFmp:     p?.mktCap  || null,
     annRev,
     annRevDate:  a?.date?.slice(0,10) ?? null,
     qRev,
     qRevDate:    q?.date?.slice(0,10) ?? null,
-    annEbitda:   a?.ebitda   ?? null,
-    qEbitda:     q?.ebitda   ?? null,
+    annEbitda:   a?.ebitda  ?? null,
+    qEbitda:     q?.ebitda  ?? null,
     annFcf:      af?.freeCashFlow ?? af?.freeCashflow ?? null,
     annFcfDate:  af?.date?.slice(0,10) ?? null,
     qFcf:        qf?.freeCashFlow ?? qf?.freeCashflow ?? null,
     qFcfDate:    qf?.date?.slice(0,10) ?? null,
     lastFetch:   new Date().toISOString(),
+    _source:     'fmp',
   };
+}
+
+// Alpha Vantage fallback fetch (2 calls: INCOME_STATEMENT + CASH_FLOW)
+async function fetchSp500StockAV(ticker) {
+  const apiKey = getAvKey();
+  if (!apiKey) return null;
+  const BASE = 'https://www.alphavantage.co/query';
+  const get = async (fn) => {
+    try {
+      const url = `${BASE}?function=${fn}&symbol=${encodeURIComponent(ticker)}&apikey=${apiKey}`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) { console.warn(`[SP500] AV ${fn} ${ticker} → HTTP ${r.status}`); return null; }
+      const d = await r.json();
+      if (d['Note'] || d['Information']) {
+        console.warn(`[SP500] AV rate limit for ${ticker}:`, d['Note'] || d['Information']);
+        return null;
+      }
+      return d;
+    } catch(e) { console.warn(`[SP500] AV ${fn} ${ticker} → ${e.message}`); return null; }
+  };
+
+  // AV returns annual+quarterly in ONE call — fetch both endpoints in parallel
+  const [is, cf] = await Promise.all([get('INCOME_STATEMENT'), get('CASH_FLOW')]);
+
+  const aIS = is?.annualReports?.[0],   qIS = is?.quarterlyReports?.[0];
+  const aCF = cf?.annualReports?.[0],   qCF = cf?.quarterlyReports?.[0];
+  if (!aIS && !qIS) { console.warn(`[SP500] AV ${ticker}: no income data`); return null; }
+
+  const num = v => (v && v !== 'None') ? parseFloat(v) : null;
+  const annRev = num(aIS?.totalRevenue), qRev = num(qIS?.totalRevenue);
+  if (annRev == null && qRev == null) return null;
+
+  // EBITDA: use direct field if present, else operatingIncome + D&A
+  const calcEbitda = (rep) => {
+    const e = num(rep?.ebitda);
+    if (e != null) return e;
+    const oi = num(rep?.operatingIncome), da = num(rep?.depreciationAndAmortization);
+    return (oi != null && da != null) ? oi + da : null;
+  };
+  const annEbitda = calcEbitda(aIS), qEbitda = calcEbitda(qIS);
+
+  // FCF = operatingCashflow - |capitalExpenditures|
+  const calcFcf = (rep) => {
+    const o = num(rep?.operatingCashflow), c = num(rep?.capitalExpenditures);
+    return (o != null && c != null) ? o - Math.abs(c) : null;
+  };
+  const annFcf = calcFcf(aCF), qFcf = calcFcf(qCF);
+
+  console.log(`[SP500] AV fallback success: ${ticker} annRev=${annRev}`);
+  return {
+    sector:      null,
+    mcapFmp:     null,
+    annRev,
+    annRevDate:  aIS?.fiscalDateEnding ?? null,
+    qRev,
+    qRevDate:    qIS?.fiscalDateEnding ?? null,
+    annEbitda,
+    qEbitda,
+    annFcf,
+    annFcfDate:  aCF?.fiscalDateEnding ?? null,
+    qFcf,
+    qFcfDate:    qCF?.fiscalDateEnding ?? null,
+    lastFetch:   new Date().toISOString(),
+    _source:     'av',
+  };
+}
+
+// Wrapper: try FMP first, fall back to Alpha Vantage on 403
+async function fetchSp500Stock(ticker) {
+  const fmp = await fetchSp500StockFMP(ticker);
+  if (fmp && !fmp._need403Fallback) return fmp;
+  // FMP blocked (403) or no key — try Alpha Vantage
+  if (getAvKey()) {
+    console.log(`[SP500] ${ticker}: FMP blocked, trying Alpha Vantage…`);
+    return await fetchSp500StockAV(ticker);
+  }
+  return null;
 }
 
 async function fetchSp500Data() {
