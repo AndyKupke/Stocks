@@ -4111,7 +4111,7 @@
       "shares": 0
     },
     "MNDY": {
-      "shares": 0,
+      "shares": 70,
       "_portChecked": true
     },
     "PLTR": {
@@ -4171,7 +4171,8 @@
       "shares": 0
     },
     "ZS": {
-      "shares": 0
+      "shares": 25,
+      "_portChecked": true
     },
     "VEEV": {
       "shares": 0
@@ -17693,5 +17694,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-04T15:04:09.671Z"
+  "lastUpdated": "2026-06-04T15:04:17.274Z"
 }
