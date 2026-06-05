@@ -32,6 +32,8 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font
 .tab.active{color:var(--acc);border-bottom-color:var(--acc);}
 .sec{display:none;padding:14px 22px;}
 .sec.active{display:block;}
+/* table-layout:fixed means browser uses colgroup widths, never scans all cells */
+#wl-tbl{table-layout:fixed;width:100%;}
 .fbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
 .fbar input[type=text]{background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'DM Mono',monospace;font-size:11px;padding:5px 9px;border-radius:4px;outline:none;width:190px;}
 .fbar input[type=text]:focus{border-color:var(--acc);}
@@ -631,6 +633,30 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="fbtn pri" onclick="openModal()">+ Add Stock</button>
   </div>
   <div class="tw"><table id="wl-tbl">
+    <colgroup>
+      <col style="width:32px">  <!-- Port -->
+      <col style="width:30px">  <!-- Buy -->
+      <col style="width:32px">  <!-- # -->
+      <col style="width:72px">  <!-- Ticker -->
+      <col>                     <!-- Company — flexible -->
+      <col style="width:60px">  <!-- Thesis -->
+      <col style="width:58px">  <!-- Details toggle -->
+      <col style="width:110px"> <!-- Industry -->
+      <col style="width:60px">  <!-- Region -->
+      <col style="width:52px">  <!-- Exchange -->
+      <col style="width:95px">  <!-- Price -->
+      <col style="width:52px">  <!-- Perf toggle -->
+      <col style="width:68px">  <!-- Mkt Cap -->
+      <col style="width:46px">  <!-- 1D -->
+      <col style="width:46px">  <!-- 7D -->
+      <col style="width:46px">  <!-- 30D -->
+      <col style="width:46px">  <!-- 90D -->
+      <col style="width:46px">  <!-- 1Y -->
+      <col style="width:46px">  <!-- YTD -->
+      <col style="width:48px">  <!-- Flags -->
+      <col style="width:80px">  <!-- Note -->
+      <col style="width:82px">  <!-- Actions -->
+    </colgroup>
     <thead id="ll-thead"></thead><tbody id="wl-tb"></tbody><tfoot id="wl-tf"></tfoot>
   </table></div>
   <div class="ll-coverage-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
@@ -5022,12 +5048,20 @@ const colGroupState = {
 
 function toggleColGroup(table, group) {
   colGroupState[table][group] = !colGroupState[table][group];
-  // Re-render the whole table so thead and tbody are always built together —
-  // hiding individual th/td cells causes browser to misalign header vs rows.
+  const open = colGroupState[table][group];
+
   if (table === 'port') {
     renderPortfolioTab();
   } else if (table === 'll') {
-    wlFilter();
+    // Surgical update: rebuild only the single thead row (trivial) and
+    // toggle 'hidden' on existing tbody cells — no rows rebuilt, no re-sort, no re-filter.
+    // Hiding both <th> and <td> in the same column position keeps alignment intact.
+    const lhd = document.getElementById('ll-thead');
+    if (lhd) lhd.innerHTML = buildLLThead();
+    const cellClass = group === 'details' ? 'll-details' : 'll-perf';
+    document.querySelectorAll(`#wl-tb .${cellClass}`).forEach(el => {
+      el.classList.toggle('hidden', !open);
+    });
   }
 }
 
