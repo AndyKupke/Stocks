@@ -46,8 +46,6 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font
 .chk input{accent-color:var(--acc);}
 .tw{overflow-x:auto;border:1px solid var(--bdr);border-radius:5px;}
 table{width:100%;border-collapse:collapse;font-size:10px;table-layout:auto;}
-#wl-tbl td,#wl-tbl th{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-#wl-tbl .nm{white-space:normal;overflow:visible;}
 thead th{background:var(--surf2);color:var(--txt2);font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.6px;padding:7px 9px;text-align:left;border-bottom:1px solid var(--bdr);white-space:nowrap;cursor:pointer;user-select:none;}
 thead th:hover{color:var(--txt);}
 thead th.sorted{color:var(--acc);}
@@ -637,7 +635,7 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="fbtn" onclick="wlReset()">Reset</button>
     <button class="fbtn pri" onclick="openModal()">+ Add Stock</button>
   </div>
-  <div class="tw"><table id="wl-tbl" style="width:100%;table-layout:fixed">
+  <div class="tw"><table id="wl-tbl">
     <thead id="ll-thead"></thead><tbody id="wl-tb"></tbody><tfoot id="wl-tf"></tfoot>
   </table></div>
   <div class="ll-coverage-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
@@ -5059,29 +5057,27 @@ function buildLLThead() {
   const dClr = det ? 'color:var(--acc)' : '';
   const pClr = prf ? 'color:var(--acc)' : '';
   return `<tr>
-    <th style="width:34px;text-align:center;font-size:8px;color:var(--grn)" title="In Portfolio">Port.</th>
+    <th style="width:38px;text-align:center;font-size:8px;color:var(--grn)" title="In Portfolio">Port.</th>
     <th style="width:32px;text-align:center;font-size:8px;color:var(--ylw)" title="Mark as Long">Long</th>
     <th style="width:32px;text-align:center;font-size:8px;color:#e05c5c" title="Mark as Short">Short</th>
-    <th style="width:28px" onclick="wlSort('id')">#</th>
-    <th style="width:72px" onclick="wlSort('ticker')">Ticker</th>
+    <th onclick="wlSort('id')" style="min-width:30px">#</th>
+    <th onclick="wlSort('ticker')">Ticker</th>
     <th onclick="wlSort('name')">Company</th>
-    <th style="width:60px" onclick="wlSort('thesis')">Thesis</th>
-    <th style="width:62px" class="cgrp-toggle" onclick="toggleColGroup('ll','details')" style="${dClr}" title="Industry, Region, Exchange">${dLbl}</th>
-    <th style="width:110px" class="cgrp-hdr${dH}" onclick="wlSort('industry')">Industry</th>
-    <th style="width:62px" class="cgrp-hdr${dH}" onclick="wlSort('region')">Region</th>
-    <th style="width:50px" class="cgrp-hdr${dH}" onclick="wlSort('exchange')">Exch.</th>
-    <th style="width:96px;text-align:right" onclick="wlSort('price')">Price</th>
-    <th style="width:54px" class="cgrp-toggle" onclick="toggleColGroup('ll','perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y">${pLbl}</th>
-    <th style="width:70px" class="cgrp-hdr${pH}" onclick="wlSort('mcap')">Mkt Cap</th>
-    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg1d')">1D</th>
-    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg7d')">7D</th>
-    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg30d')">30D</th>
-    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg90d')">90D</th>
-    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg1y')">1Y</th>
-    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chgytd')">YTD</th>
-    <th style="width:46px">Flags</th>
-    <th style="width:90px">Note</th>
-    <th style="width:80px"></th>
+    <th onclick="wlSort('thesis')">Thesis</th>
+    <th class="cgrp-toggle" onclick="toggleColGroup('ll','details')" style="${dClr}" title="Industry, Region, Exchange">${dLbl}</th>
+    <th class="cgrp-hdr${dH}" onclick="wlSort('industry')">Industry</th>
+    <th class="cgrp-hdr${dH}" onclick="wlSort('region')">Region</th>
+    <th class="cgrp-hdr${dH}" onclick="wlSort('exchange')">Exch.</th>
+    <th style="text-align:right" onclick="wlSort('price')">Price</th>
+    <th class="cgrp-toggle" onclick="toggleColGroup('ll','perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y">${pLbl}</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('mcap')">Mkt Cap</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1d')">1D</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg7d')">7D</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg30d')">30D</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg90d')">90D</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1y')">1Y</th>
+    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chgytd')">YTD</th>
+    <th>Flags</th><th>Note</th><th></th>
   </tr>`;
 }
 
