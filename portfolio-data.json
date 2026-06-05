@@ -3562,7 +3562,7 @@
       "ex": "NASDAQ",
       "cv": "M",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4293,6 +4293,10 @@
     "HHH": {
       "shares": 0,
       "_portChecked": false
+    },
+    "BPYPM": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -4340,7 +4344,8 @@
     "SIDU",
     "HUBS",
     "UBER",
-    "HHH"
+    "HHH",
+    "BPYPM"
   ],
   "prices": {
     "S0LR": {
@@ -17768,5 +17773,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-05T06:09:42.540Z"
+  "lastUpdated": "2026-06-05T06:10:13.936Z"
 }
