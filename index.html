@@ -627,7 +627,12 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
       <option>Biotech / Health</option><option>Space / Satellite</option>
       <option>Travel / Hospitality</option><option>ETF</option>
     </select>
-    <label class="chk"><input type="checkbox" id="wl-odep" onchange="wlFilter()"> Depot only</label>
+    <select id="wl-view" onchange="wlFilter()" style="background:var(--surf2);border:1px solid var(--bdr);color:var(--txt2);font-family:'DM Mono',monospace;font-size:10px;padding:5px 8px;border-radius:4px;cursor:pointer;outline:none">
+      <option value="all">All</option>
+      <option value="port">Depot Only (PORT.)</option>
+      <option value="long">LONG</option>
+      <option value="short">SHORT</option>
+    </select>
     <div class="spacer"></div>
     <button class="fbtn" onclick="wlReset()">Reset</button>
     <button class="fbtn pri" onclick="openModal()">+ Add Stock</button>
@@ -635,7 +640,8 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
   <div class="tw"><table id="wl-tbl">
     <colgroup>
       <col style="width:32px">  <!-- Port -->
-      <col style="width:30px">  <!-- Buy -->
+      <col style="width:32px">  <!-- Long -->
+      <col style="width:32px">  <!-- Short -->
       <col style="width:32px">  <!-- # -->
       <col style="width:72px">  <!-- Ticker -->
       <col>                     <!-- Company — flexible -->
@@ -1691,12 +1697,23 @@ function loadBuySet(){
 }
 function saveBuySet(){ try{localStorage.setItem(LS_BUY_KEY,JSON.stringify([...BUY_SET])); markDirty();}catch(e){} scheduleSave(); }
 
+const LS_SHORT_KEY = 'investment_short_v1';
+function loadShortSet(){ try{ const r=localStorage.getItem(LS_SHORT_KEY); return r?new Set(JSON.parse(r)):new Set(); }catch(e){ return new Set(); } }
+function saveShortSet(){ try{ localStorage.setItem(LS_SHORT_KEY,JSON.stringify([...SHORT_SET])); markDirty(); }catch(e){} scheduleSave(); }
+
 let PORTFOLIO       = loadPortfolio();
 let BUY_SET         = loadBuySet();
+let SHORT_SET       = loadShortSet();
 let ADDITIONAL_SHARES  = loadAddlShares(); // ticker → delta shares (positive=buy more, negative=sell)
 
-function isInPort(t){ return !!PORTFOLIO[t]; }
+function isInPort(t) { return !!PORTFOLIO[t]; }
 function isBuy(t)   { return BUY_SET.has(t); }
+function isShort(t) { return SHORT_SET.has(t); }
+function toggleShort(t) {
+  if (SHORT_SET.has(t)) SHORT_SET.delete(t); else SHORT_SET.add(t);
+  saveShortSet();
+  updateLLRow(t);
+}
 function getShares(t){ return PORTFOLIO[t]?.shares||0; }
 function getAddlShares(t){ return ADDITIONAL_SHARES[t]||0; }
 function updateAddlShares(t, v){
@@ -1725,11 +1742,13 @@ function updateLLRow(t) {
   const row  = document.getElementById('ll-row-'  + t); if (!row) return;
   const chkP = document.getElementById('ll-chkp-' + t);
   const chkB = document.getElementById('ll-chkb-' + t);
-  const inP  = isInPort(t), inB = isBuy(t);
+  const chkS = document.getElementById('ll-chks-' + t);
+  const inP  = isInPort(t), inB = isBuy(t), inS = isShort(t);
   const s    = ST.find(x => x.t === t) || {};
   row.className = inP ? 'rport' : s.dp ? 'rdep' : '';
   if (chkP) { chkP.checked = inP; chkP.title = inP ? 'Remove from Portfolio' : 'Add to Portfolio'; }
-  if (chkB)   chkB.checked = inB;
+  if (chkB) chkB.checked = inB;
+  if (chkS) chkS.checked = inS;
 }
 
 // Debounced portfolio tab re-render — batches rapid successive clicks into one paint
@@ -2244,13 +2263,15 @@ function wlFilter(){
   const th=document.getElementById('wl-th').value;
   const reg=document.getElementById('wl-reg').value;
   const ind=document.getElementById('wl-ind').value;
-  const od=document.getElementById('wl-odep').checked;
+  const view=document.getElementById('wl-view')?.value||'all';
   wlDisp=ST.filter(s=>{
     if(q&&!s.t.toLowerCase().includes(q)&&!s.n.toLowerCase().includes(q))return false;
     if(th&&s.th!==th)return false;
     if(reg&&s.reg!==reg)return false;
     if(ind&&s.ind!==ind)return false;
-    if(od&&!s.dp)return false;
+    if(view==='port'&&!s.dp)return false;
+    if(view==='long'&&!isBuy(s.t))return false;
+    if(view==='short'&&!isShort(s.t))return false;
     return true;
   });
   wlApplySort();renderLLTable();renderLLCoverage();
@@ -2306,7 +2327,8 @@ function renderLLTable(){
     const perfH = colGroupState.ll.perf    ? '' : ' hidden';
     return `<tr id="ll-row-${s.t}" class="${rc}">
       <td style="text-align:center"><input id="ll-chkp-${s.t}" type="checkbox" class="port-chk" ${inP?'checked':''} onchange="togglePort('${s.t}')" title="${inP?'Remove from':'Add to'} Portfolio" style="accent-color:var(--grn)"></td>
-      <td style="text-align:center"><input id="ll-chkb-${s.t}" type="checkbox" ${inB?'checked':''} onchange="toggleBuy('${s.t}')" title="${inB?'Remove':'Mark as'} Buy" style="accent-color:var(--ylw)"></td>
+      <td style="text-align:center"><input id="ll-chkb-${s.t}" type="checkbox" ${inB?'checked':''} onchange="toggleBuy('${s.t}')" title="${inB?'Remove':'Mark as'} Long" style="accent-color:var(--ylw)"></td>
+      <td style="text-align:center"><input id="ll-chks-${s.t}" type="checkbox" ${isShort(s.t)?'checked':''} onchange="toggleShort('${s.t}')" title="${isShort(s.t)?'Remove':'Mark as'} Short" style="accent-color:#e05c5c"></td>
       <td><span class="mono" style="font-size:10px;color:var(--txt3)">${s.id}</span></td>
       <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
       <td><span class="nm" title="${s.n}">${s.n}</span></td>
@@ -2844,7 +2866,7 @@ function removeStock(tk){
 }
 function wlReset(){
   ['wl-q','wl-th','wl-reg','wl-ind'].forEach(id=>{document.getElementById(id).value='';});
-  document.getElementById('wl-odep').checked=false;
+  const vw=document.getElementById('wl-view'); if(vw) vw.value='all';
   wlFilter();
 }
 function showTab(id,btn){
@@ -3107,6 +3129,7 @@ async function syncToGitHub(){
     stockList:        ST,              // full stock list — GitHub is the single source of truth
     portfolio:        PORTFOLIO,
     buySet:           [...BUY_SET],
+    shortSet:         [...SHORT_SET],
     prices:           priceData,
     additionalShares: ADDITIONAL_SHARES,
     fxRates,
@@ -5050,7 +5073,8 @@ function buildLLThead() {
   const pClr = prf ? 'color:var(--acc)' : '';
   return `<tr>
     <th style="width:38px;text-align:center;font-size:8px;color:var(--grn)" title="In Portfolio">Port.</th>
-    <th style="width:32px;text-align:center;font-size:8px;color:var(--ylw)" title="Mark as Buy">Buy</th>
+    <th style="width:32px;text-align:center;font-size:8px;color:var(--ylw)" title="Mark as Long">Long</th>
+    <th style="width:32px;text-align:center;font-size:8px;color:#e05c5c" title="Mark as Short">Short</th>
     <th onclick="wlSort('id')" style="min-width:32px">#</th>
     <th onclick="wlSort('ticker')">Ticker</th>
     <th onclick="wlSort('name')">Company</th>
@@ -7219,6 +7243,7 @@ async function init(){
     if(ghTs >= dirtyTs){
       if(ghData.portfolio)       PORTFOLIO       = ghData.portfolio;
       if(ghData.buySet)          BUY_SET         = new Set(ghData.buySet);
+      if(ghData.shortSet)        SHORT_SET       = new Set(ghData.shortSet);
       if(ghData.prices)          priceData       = ghData.prices;
       if(ghData.additionalShares)ADDITIONAL_SHARES = ghData.additionalShares;
       if(ghData.fxRates)         fxRates           = ghData.fxRates;
