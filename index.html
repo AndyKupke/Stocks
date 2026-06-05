@@ -1867,6 +1867,10 @@ function renderPortfolioTab(){
   // Apply sort
   filtered.sort((a,b)=>{
     const pd_a=priceData[a.t]||{}, pd_b=priceData[b.t]||{};
+    // Use same buyFlag logic as display: _portChecked overrides raw BUY_SET membership
+    const pcA=PORTFOLIO[a.t]?._portChecked, pcB=PORTFOLIO[b.t]?._portChecked;
+    const buyA = pcA===true?false : pcA===false?true : isBuy(a.t);
+    const buyB = pcB===true?false : pcB===false?true : isBuy(b.t);
     let av, bv;
     if(portSortKey==='ticker')     { av=a.t;         bv=b.t; }
     else if(portSortKey==='name')  { av=a.n;         bv=b.n; }
@@ -1883,10 +1887,10 @@ function renderPortfolioTab(){
     else if(portSortKey==='chg1y') { av=pd_a.chg1y??-Infinity; bv=pd_b.chg1y??-Infinity; }
     else if(portSortKey==='chgytd'){ av=pd_a.chgytd??-Infinity;bv=pd_b.chgytd??-Infinity; }
     else if(portSortKey==='shares'){ av=getShares(a.t)||0;      bv=getShares(b.t)||0; }
-    else if(portSortKey==='posval'){ const sha=getShares(a.t)||0,shb=getShares(b.t)||0; av=isBuy(a.t)?0:sha*(pd_a.price||0); bv=isBuy(b.t)?0:shb*(pd_b.price||0); }
+    else if(portSortKey==='posval'){ const sha=getShares(a.t)||0,shb=getShares(b.t)||0; av=buyA?0:sha*(pd_a.price||0); bv=buyB?0:shb*(pd_b.price||0); }
     else if(portSortKey==='addlsh'){ av=getAddlShares(a.t)||0;  bv=getAddlShares(b.t)||0; }
     else if(portSortKey==='addlinv'){ const aa=getAddlShares(a.t)||0,ab=getAddlShares(b.t)||0; av=aa*(pd_a.price||0); bv=ab*(pd_b.price||0); }
-    else if(portSortKey==='tothold'){ const sha=getShares(a.t)||0,shb=getShares(b.t)||0,aa=getAddlShares(a.t)||0,ab=getAddlShares(b.t)||0; av=isBuy(a.t)?25000:(sha+aa)*(pd_a.price||0); bv=isBuy(b.t)?25000:(shb+ab)*(pd_b.price||0); }
+    else if(portSortKey==='tothold'){ const sha=getShares(a.t)||0,shb=getShares(b.t)||0,aa=getAddlShares(a.t)||0,ab=getAddlShares(b.t)||0; av=buyA?25000:(sha+aa)*(pd_a.price||0); bv=buyB?25000:(shb+ab)*(pd_b.price||0); }
     else { av=a.id; bv=b.id; }
     if(typeof av==='string') return portSortDir*(av.toLowerCase()<bv.toLowerCase()?-1:av.toLowerCase()>bv.toLowerCase()?1:0);
     return portSortDir*(av<bv?-1:av>bv?1:0);
