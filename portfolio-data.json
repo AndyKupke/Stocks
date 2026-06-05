@@ -1420,7 +1420,7 @@
       "ex": "NYSE",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4285,6 +4285,10 @@
     "SIDU": {
       "shares": 0,
       "_portChecked": false
+    },
+    "UBER": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -4330,7 +4334,8 @@
     "LITE",
     "BITF",
     "SIDU",
-    "HUBS"
+    "HUBS",
+    "UBER"
   ],
   "prices": {
     "S0LR": {
@@ -11980,10 +11985,10 @@
   },
   "additionalShares": {},
   "fxRates": {
-    "USD": 0.861602,
-    "GBP": 1.157144,
-    "CHF": 1.089418,
-    "KRW": 0.00056325
+    "USD": 0.860528,
+    "GBP": 1.155912,
+    "CHF": 1.090498,
+    "KRW": 0.00056134
   },
   "financialData": {
     "AAPL": {
@@ -17758,5 +17763,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-05T06:08:42.128Z"
+  "lastUpdated": "2026-06-05T06:08:57.311Z"
 }
