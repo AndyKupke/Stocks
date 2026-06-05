@@ -3002,10 +3002,10 @@ async function syncToGitHub(){
     prices:           priceData,
     additionalShares: ADDITIONAL_SHARES,
     fxRates,
-    financialData,
+    // financialData intentionally excluded — stored in localStorage only (can be 200KB+)
     lastUpdated:      new Date().toISOString()
   };
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
   if(!ghSha) ghSha = await ghGetSha();
   const body = { message:'Update portfolio data', content };
   if(ghSha) body.sha = ghSha;
@@ -4087,7 +4087,7 @@ async function fetchFinancialData() {
         kpis:             avResult.kpis,
         lastUpdated:      new Date().toISOString(),
       };
-      saveFinancialData(); scheduleSave(); finNeedsRefetch = false;
+      saveFinancialData(); finNeedsRefetch = false;
       const entry  = financialData[finSelectedTicker];
       const addedA = entry.annual.length    - prevAnnualCount;
       const addedQ = entry.quarterly.length - prevQuarterlyCount;
@@ -4122,7 +4122,7 @@ async function fetchFinancialData() {
         kpis:             fmpResult.kpis,
         lastUpdated:      new Date().toISOString(),
       };
-      saveFinancialData(); scheduleSave(); finNeedsRefetch = false;
+      saveFinancialData(); finNeedsRefetch = false;
       const entry  = financialData[finSelectedTicker];
       const addedA = entry.annual.length    - prevAnnualCount;
       const addedQ = entry.quarterly.length - prevQuarterlyCount;
@@ -6954,16 +6954,13 @@ async function init(){
       if(ghData.prices)          priceData       = ghData.prices;
       if(ghData.additionalShares)ADDITIONAL_SHARES = ghData.additionalShares;
       if(ghData.fxRates)         fxRates           = ghData.fxRates;
-      if(ghData.financialData)   financialData     = ghData.financialData;
+      // financialData not synced via GitHub — loaded from localStorage at startup
       try{ localStorage.setItem(LS_KEY,        JSON.stringify(PORTFOLIO));   }catch(e){}
       try{ localStorage.setItem(LS_BUY_KEY,    JSON.stringify([...BUY_SET]));}catch(e){}
       try{ localStorage.setItem(LS_PRICES_KEY, JSON.stringify(priceData));   }catch(e){}
       setSyncStatus('Loaded from GitHub', 'var(--grn)');
     } else {
       // Local portfolio/price data is newer — push it up.
-      // Keep local fxRates and ADDITIONAL_SHARES (they were saved to localStorage).
-      // Only take financialData from GitHub (not user-edited, always prefer freshest fetch).
-      if(ghData.financialData)   financialData     = ghData.financialData;
       setSyncStatus('Local changes detected — syncing…', 'var(--org)');
       setTimeout(syncToGitHub, 500);
     }
