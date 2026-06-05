@@ -1694,6 +1694,40 @@ function flushAddlUpdate(t, input){
   updateAddlShares(t, input.value);
 }
 
+// Surgically update a single Long List row's checkbox states and row class.
+// Avoids rebuilding the entire table HTML on every BUY/portfolio toggle.
+function updateLLRow(t) {
+  const row = document.getElementById('ll-row-' + t);
+  if (!row) return; // row not visible in current filter — nothing to do
+  const inP = isInPort(t), inB = isBuy(t);
+  const s = ST.find(x => x.t === t) || {};
+  row.className = inP ? 'rport' : s.dp ? 'rdep' : '';
+  const chkPort = document.getElementById('ll-chk-port-' + t);
+  const chkBuy  = document.getElementById('ll-chk-buy-'  + t);
+  if (chkPort) { chkPort.checked = inP; chkPort.title = inP ? 'Remove from Portfolio' : 'Add to Portfolio'; }
+  if (chkBuy)  chkBuy.checked = inB;
+  // Update footer counts without full re-render
+  const tf = document.getElementById('wl-tf');
+  if (tf) {
+    const portInView = wlDisp.filter(s => isInPort(s.t)).length;
+    const allPort    = ST.filter(s => isInPort(s.t)).length;
+    const inBuy      = wlDisp.filter(s => isBuy(s.t)).length;
+    const allBuy     = ST.filter(s => isBuy(s.t)).length;
+    const isFiltered = wlDisp.length < ST.length;
+    tf.innerHTML = `<tr>
+      <td colspan="17" style="text-align:right;"><span class="tf-lbl">${isFiltered?`${wlDisp.length} of ${ST.length} stocks`:` ${ST.length} stocks total`}&nbsp;&nbsp;${isFiltered?`${portInView} portfolio (in view) · ${inBuy} buy (in view)`:`${allPort} portfolio · ${allBuy} buy`}</span></td>
+      <td colspan="3"><span class="tf-grn">${isFiltered?portInView:allPort} / ${ST.length}</span></td>
+    </tr>`;
+  }
+}
+
+// Debounced portfolio tab re-render — batches rapid successive calls into one
+let _portRenderTimer = null;
+function schedulePortRender() {
+  clearTimeout(_portRenderTimer);
+  _portRenderTimer = setTimeout(renderPortfolioTab, 80);
+}
+
 // Portfolio checkbox — independent of Buy.
 // Uses _portChecked flag so toggleBuy knows not to remove it on Buy-uncheck.
 function togglePort(t){
@@ -1714,8 +1748,8 @@ function togglePort(t){
     if(stock) stock.dp = true;
   }
   savePortfolio(PORTFOLIO);
-  renderPortfolioTab();
-  renderLLTable();
+  updateLLRow(t);          // surgical row update — no full table rebuild
+  schedulePortRender();    // debounced portfolio tab refresh
   renderThesesTab();
 }
 
@@ -1743,8 +1777,8 @@ function toggleBuy(t){
     }
   }
   saveBuySet();
-  renderPortfolioTab();
-  renderLLTable();
+  updateLLRow(t);          // surgical row update — no full table rebuild
+  schedulePortRender();    // debounced portfolio tab refresh
   renderThesesTab();
 }
 
@@ -2252,9 +2286,9 @@ function renderLLTable(){
     const pd=priceData[s.t]||{};
     const detH  = colGroupState.ll.details ? '' : ' hidden';
     const perfH = colGroupState.ll.perf    ? '' : ' hidden';
-    return `<tr class="${rc}">
-      <td style="text-align:center"><input type="checkbox" class="port-chk" ${inP?'checked':''} onchange="togglePort('${s.t}')" title="${inP?'Remove from':'Add to'} Portfolio" style="accent-color:var(--grn)"></td>
-      <td style="text-align:center"><input type="checkbox" ${inB?'checked':''} onchange="toggleBuy('${s.t}')" title="${inB?'Remove':'Mark as'} Buy" style="accent-color:var(--ylw)"></td>
+    return `<tr id="ll-row-${s.t}" class="${rc}">
+      <td style="text-align:center"><input id="ll-chk-port-${s.t}" type="checkbox" class="port-chk" ${inP?'checked':''} onchange="togglePort('${s.t}')" title="${inP?'Remove from':'Add to'} Portfolio" style="accent-color:var(--grn)"></td>
+      <td style="text-align:center"><input id="ll-chk-buy-${s.t}" type="checkbox" ${inB?'checked':''} onchange="toggleBuy('${s.t}')" title="${inB?'Remove':'Mark as'} Buy" style="accent-color:var(--ylw)"></td>
       <td><span class="mono" style="font-size:10px;color:var(--txt3)">${s.id}</span></td>
       <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
       <td><span class="nm" title="${s.n}">${s.n}</span></td>
