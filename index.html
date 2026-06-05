@@ -3698,7 +3698,7 @@ function fmtChg(v) {
 }
 
 // ── Port sort (portfolio table) ──
-let portSortKey='id', portSortDir=1;
+let portSortKey='posval', portSortDir=-1;
 function portSort(key) {
   if(portSortKey===key){ portSortDir*=-1; } else { portSortKey=key; portSortDir=1; }
   renderPortfolioTab();
