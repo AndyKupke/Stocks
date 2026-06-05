@@ -2304,7 +2304,11 @@ function renderLLTable(){
 
   const tb=document.getElementById('wl-tb'),tf=document.getElementById('wl-tf');
   if(!wlDisp.length){tb.innerHTML=`<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">No stocks match filters</td></tr>`;tf.innerHTML='';return;}
-  tb.innerHTML=wlDisp.map(s=>{
+  // Pagination: render first 100 rows immediately; show Load More for the rest
+  const LL_PAGE = 100;
+  const llSlice = wlDisp.length > LL_PAGE ? wlDisp.slice(0, LL_PAGE) : wlDisp;
+  const llMore  = wlDisp.length - llSlice.length;
+  tb.innerHTML=llSlice.map(s=>{
     const inP=isInPort(s.t),inB=isBuy(s.t);
     const rc=inP?'rport':s.dp?'rdep':'';
     const pd=priceData[s.t]||{};
@@ -2340,6 +2344,12 @@ function renderLLTable(){
       </td>
     </tr>`;
   }).join('');
+  // Load More button if rows were paginated
+  if (llMore > 0) {
+    const moreRow = document.createElement('tr');
+    moreRow.innerHTML = `<td colspan="22" style="text-align:center;padding:10px"><button onclick="wlShowAll()" style="background:var(--surf2);border:1px solid var(--bdr);color:var(--txt2);font-family:'DM Mono',monospace;font-size:11px;padding:6px 18px;border-radius:4px;cursor:pointer">Show all ${wlDisp.length} stocks (${llMore} more)</button></td>`;
+    tb.appendChild(moreRow);
+  }
   const portInView=wlDisp.filter(s=>isInPort(s.t)).length;
   const allPort=ST.filter(s=>isInPort(s.t)).length;
   const isFiltered=wlDisp.length<ST.length;
@@ -2349,6 +2359,55 @@ function renderLLTable(){
     <td colspan="17" style="text-align:right;"><span class="tf-lbl">${isFiltered?`${wlDisp.length} of ${ST.length} stocks`:` ${ST.length} stocks total`}&nbsp;&nbsp;${isFiltered?`${portInView} portfolio (in view) · ${inBuy} buy (in view)`:`${allPort} portfolio · ${allBuy} buy`}</span></td>
     <td colspan="3"><span class="tf-grn">${isFiltered?portInView:allPort} / ${ST.length}</span></td>
   </tr>`;
+}
+// Show all rows without pagination limit (user explicitly requested it)
+function wlShowAll() {
+  const tb = document.getElementById('wl-tb');
+  const tf = document.getElementById('wl-tf');
+  if (!tb) return;
+  const detH = colGroupState.ll.details ? '' : ' hidden';
+  const perfH = colGroupState.ll.perf    ? '' : ' hidden';
+  // Remove the "Show more" row, then append remaining rows
+  const lastRow = tb.lastElementChild;
+  if (lastRow && lastRow.querySelector('button')) lastRow.remove();
+  const existingIds = new Set([...tb.querySelectorAll('tr[id]')].map(r => r.id));
+  const missing = wlDisp.filter(s => !existingIds.has('ll-row-' + s.t));
+  if (missing.length) {
+    tb.insertAdjacentHTML('beforeend', missing.map(s => {
+      const inP=isInPort(s.t),inB=isBuy(s.t);
+      const rc=inP?'rport':s.dp?'rdep':'';
+      const pd=priceData[s.t]||{};
+      return `<tr id="ll-row-${s.t}" class="${rc}">
+        <td style="text-align:center"><input id="ll-chkp-${s.t}" type="checkbox" class="port-chk" ${inP?'checked':''} onchange="togglePort('${s.t}')" title="${inP?'Remove from':'Add to'} Portfolio" style="accent-color:var(--grn)"></td>
+        <td style="text-align:center"><input id="ll-chkb-${s.t}" type="checkbox" ${inB?'checked':''} onchange="toggleBuy('${s.t}')" title="${inB?'Remove':'Mark as'} Long" style="accent-color:var(--ylw)"></td>
+        <td style="text-align:center"><input id="ll-chks-${s.t}" type="checkbox" ${isShort(s.t)?'checked':''} onchange="toggleShort('${s.t}')" title="${isShort(s.t)?'Remove':'Mark as'} Short" style="accent-color:#e05c5c"></td>
+        <td><span class="mono" style="font-size:10px;color:var(--txt3)">${s.id}</span></td>
+        <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
+        <td><span class="nm" title="${s.n}">${s.n}</span></td>
+        <td>${tp(s.th)}</td>
+        <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('ll','details')"></td>
+        <td class="cgrp-cell ll-details${detH}"><span style="font-size:10px;color:var(--txt2)">${s.ind}</span></td>
+        <td class="cgrp-cell ll-details${detH}"><span class="mono" style="font-size:10px;color:var(--txt2)">${s.reg}</span></td>
+        <td class="cgrp-cell ll-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex}</span></td>
+        <td class="price-cell">${fmtPrice(pd.price,s.ex)}</td>
+        <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('ll','perf')"></td>
+        <td class="cgrp-cell ll-perf${perfH}">${fmtMcap(pd.mcap, s.ex)}</td>
+        <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg1d)}</td>
+        <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg7d)}</td>
+        <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg30d)}</td>
+        <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg90d)}</td>
+        <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg1y)}</td>
+        <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chgytd)}</td>
+        <td>${flH(s)}</td>
+        <td><span class="nm" title="${s.note}">${s.note}</span></td>
+        <td style="white-space:nowrap">
+          <button class="ab-btn" style="margin-right:3px" onclick="fetchSinglePrice('${s.t}',this)" title="Fetch live price">&#9889;</button>
+          <button class="ab-btn" style="margin-right:3px" onclick="editStock('${s.t}')">&#9998;</button>
+          <button class="ab-btn" onclick="removeStock('${s.t}')">✕</button>
+        </td>
+      </tr>`;
+    }).join(''));
+  }
 }
 function renderLLCoverage(){
   document.getElementById('ll-coverage').innerHTML=Object.entries(TM).map(([k,m])=>{
@@ -3780,20 +3839,16 @@ async function fetchAllPrices() {
 }
 
 // ── PRICE FORMATTING HELPERS ──
+// Module-level Sets — fmtPrice was re-creating 4 Sets on EVERY call (583+ allocs per render)
+const _FP_EUR = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
+const _FP_GBP = new Set(['LSE']);
+const _FP_KRW = new Set(['KRX']);
+const _FP_CHF = new Set(['SIX']);
 function fmtPrice(v, ex) {
   if (v == null) return `<span class="pchg pchg-load">—</span>`;
-  const EUR_EX = new Set(['XETRA','EPA','BIT','EURONEXT','AMS','NASDAQ OMX','OSE','WSE','CPH','BME']);
-  const GBP_EX = new Set(['LSE']);
-  const KRW_EX = new Set(['KRX']);
-  const CHF_EX = new Set(['SIX']);
-  let sym = '$';
-  if      (EUR_EX.has(ex)) sym = '€';
-  else if (GBP_EX.has(ex)) sym = '£';
-  else if (KRW_EX.has(ex)) sym = '₩';
-  else if (CHF_EX.has(ex)) sym = 'CHF';
-  // Always 2 decimals, 1000-separator, 1 space between symbol and number
+  const sym = _FP_EUR.has(ex) ? '€' : _FP_GBP.has(ex) ? '£' : _FP_KRW.has(ex) ? '₩' : _FP_CHF.has(ex) ? 'CHF' : '$';
   const n = v.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return `<span class="price-cell">${sym} ${n}</span>`;
+  return `<span class="price-cell">${sym} ${n}</span>`;
 }
 
 function fmtMcap(v, ex) {
