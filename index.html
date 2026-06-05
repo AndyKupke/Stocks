@@ -2255,7 +2255,19 @@ function wlSort(key){
   const keys=['_chk','id','ticker','name','thesis','industry','region','exchange','flags','note','_del'];
   const el=document.querySelectorAll('#wl-tbl thead th')[keys.indexOf(key)];
   if(el){el.classList.add('sorted');if(wlSortDir===-1)el.classList.add('desc');}
-  wlApplySort();renderLLTable();
+  wlApplySort();
+
+  // Re-order existing DOM rows instead of rebuilding HTML.
+  // Moving <tr> nodes is O(n) DOM moves — no HTML generation, no browser
+  // parsing, no full table layout recomputation (just positional update).
+  const tb = document.getElementById('wl-tb');
+  if (tb && wlDisp.length && document.getElementById('ll-row-' + wlDisp[0].t)) {
+    const frag = document.createDocumentFragment();
+    wlDisp.forEach(s => { const r = document.getElementById('ll-row-' + s.t); if(r) frag.appendChild(r); });
+    tb.appendChild(frag);
+  } else {
+    renderLLTable(); // rows not in DOM yet — fall back to full render
+  }
 }
 function wlApplySort(){
   const k=wlSortKey;
@@ -7255,20 +7267,20 @@ async function init(){
   if(changed){ try{localStorage.setItem(LS_KEY,JSON.stringify(PORTFOLIO));}catch(e){} }
   ST.forEach(s=>{ if(PORTFOLIO[s.t]) s.dp = true; });
 
-  // Show the app immediately — portfolio tab is already active in HTML
+  // Show app skeleton immediately — all heavy renders deferred to after first paint
   document.getElementById('lov').style.display='none';
   document.getElementById('app').style.display='block';
 
-  // Render the visible portfolio tab now; defer everything else
-  renderPortfolioTab();
-
-  // Deferred: Long List filter (fast — just computes wlDisp, render is lazy),
-  // and all invisible-tab renders (theses, framework, BVP)
+  // First tick: render the visible portfolio tab
   setTimeout(() => {
-    wlFilter();
-    renderThesesTab();
-    renderFw();
-    bvpInit();
+    renderPortfolioTab();
+    // Second tick: compute Long List filter array (fast), then invisible tabs
+    setTimeout(() => {
+      wlFilter();
+      renderThesesTab();
+      renderFw();
+      bvpInit();
+    }, 0);
   }, 0);
 
   // Auto-fetch live FX rates from ECB (Frankfurter) — silent, no UI feedback
