@@ -638,31 +638,6 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="fbtn pri" onclick="openModal()">+ Add Stock</button>
   </div>
   <div class="tw"><table id="wl-tbl">
-    <colgroup>
-      <col style="width:32px">  <!-- Port -->
-      <col style="width:32px">  <!-- Long -->
-      <col style="width:32px">  <!-- Short -->
-      <col style="width:32px">  <!-- # -->
-      <col style="width:72px">  <!-- Ticker -->
-      <col>                     <!-- Company — flexible -->
-      <col style="width:60px">  <!-- Thesis -->
-      <col style="width:58px">  <!-- Details toggle -->
-      <col style="width:110px"> <!-- Industry -->
-      <col style="width:60px">  <!-- Region -->
-      <col style="width:52px">  <!-- Exchange -->
-      <col style="width:95px">  <!-- Price -->
-      <col style="width:52px">  <!-- Perf toggle -->
-      <col style="width:68px">  <!-- Mkt Cap -->
-      <col style="width:46px">  <!-- 1D -->
-      <col style="width:46px">  <!-- 7D -->
-      <col style="width:46px">  <!-- 30D -->
-      <col style="width:46px">  <!-- 90D -->
-      <col style="width:46px">  <!-- 1Y -->
-      <col style="width:46px">  <!-- YTD -->
-      <col style="width:48px">  <!-- Flags -->
-      <col style="width:80px">  <!-- Note -->
-      <col style="width:82px">  <!-- Actions -->
-    </colgroup>
     <thead id="ll-thead"></thead><tbody id="wl-tb"></tbody><tfoot id="wl-tf"></tfoot>
   </table></div>
   <div class="ll-coverage-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
@@ -5071,28 +5046,31 @@ function buildLLThead() {
   const pLbl = prf ? '&minus; Perf.'   : '+ Perf.';
   const dClr = det ? 'color:var(--acc)' : '';
   const pClr = prf ? 'color:var(--acc)' : '';
+  // Widths on th elements (not colgroup) so display:none hidden cols don't waste space
   return `<tr>
-    <th style="width:38px;text-align:center;font-size:8px;color:var(--grn)" title="In Portfolio">Port.</th>
-    <th style="width:32px;text-align:center;font-size:8px;color:var(--ylw)" title="Mark as Long">Long</th>
-    <th style="width:32px;text-align:center;font-size:8px;color:#e05c5c" title="Mark as Short">Short</th>
-    <th onclick="wlSort('id')" style="min-width:32px">#</th>
-    <th onclick="wlSort('ticker')">Ticker</th>
+    <th style="width:34px;text-align:center;font-size:8px;color:var(--grn)" title="In Portfolio">Port.</th>
+    <th style="width:34px;text-align:center;font-size:8px;color:var(--ylw)" title="Mark as Long">Long</th>
+    <th style="width:34px;text-align:center;font-size:8px;color:#e05c5c" title="Mark as Short">Short</th>
+    <th style="width:30px" onclick="wlSort('id')">#</th>
+    <th style="width:72px" onclick="wlSort('ticker')">Ticker</th>
     <th onclick="wlSort('name')">Company</th>
-    <th onclick="wlSort('thesis')">Thesis</th>
-    <th class="cgrp-toggle" onclick="toggleColGroup('ll','details')" style="${dClr}" title="Industry, Region, Exchange">${dLbl}</th>
-    <th class="cgrp-hdr${dH}" onclick="wlSort('industry')">Industry</th>
-    <th class="cgrp-hdr${dH}" onclick="wlSort('region')">Region</th>
-    <th class="cgrp-hdr${dH}" onclick="wlSort('exchange')">Exch.</th>
-    <th style="text-align:right" onclick="wlSort('price')">Price</th>
-    <th class="cgrp-toggle" onclick="toggleColGroup('ll','perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y">${pLbl}</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('mcap')">Mkt Cap</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1d')">1D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg7d')">7D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg30d')">30D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg90d')">90D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1y')">1Y</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chgytd')">YTD</th>
-    <th>Flags</th><th>Note</th><th></th>
+    <th style="width:64px" onclick="wlSort('thesis')">Thesis</th>
+    <th style="width:60px" class="cgrp-toggle" onclick="toggleColGroup('ll','details')" style="${dClr}" title="Industry, Region, Exchange">${dLbl}</th>
+    <th style="width:110px" class="cgrp-hdr${dH}" onclick="wlSort('industry')">Industry</th>
+    <th style="width:62px" class="cgrp-hdr${dH}" onclick="wlSort('region')">Region</th>
+    <th style="width:52px" class="cgrp-hdr${dH}" onclick="wlSort('exchange')">Exch.</th>
+    <th style="width:96px;text-align:right" onclick="wlSort('price')">Price</th>
+    <th style="width:56px" class="cgrp-toggle" onclick="toggleColGroup('ll','perf')" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y">${pLbl}</th>
+    <th style="width:70px" class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('mcap')">Mkt Cap</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1d')">1D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg7d')">7D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg30d')">30D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg90d')">90D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1y')">1Y</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chgytd')">YTD</th>
+    <th style="width:48px">Flags</th>
+    <th style="width:80px">Note</th>
+    <th style="width:80px"></th>
   </tr>`;
 }
 
@@ -7282,11 +7260,21 @@ async function init(){
   if(changed){ try{localStorage.setItem(LS_KEY,JSON.stringify(PORTFOLIO));}catch(e){} }
   ST.forEach(s=>{ if(PORTFOLIO[s.t]) s.dp = true; });
 
-  wlFilter();
+  // Show the app immediately — portfolio tab is already active in HTML
+  document.getElementById('lov').style.display='none';
+  document.getElementById('app').style.display='block';
+
+  // Render the visible portfolio tab now; defer everything else
   renderPortfolioTab();
-  renderThesesTab();
-  renderFw();
-  bvpInit();
+
+  // Deferred: Long List filter (fast — just computes wlDisp, render is lazy),
+  // and all invisible-tab renders (theses, framework, BVP)
+  setTimeout(() => {
+    wlFilter();
+    renderThesesTab();
+    renderFw();
+    bvpInit();
+  }, 0);
 
   // Auto-fetch live FX rates from ECB (Frankfurter) — silent, no UI feedback
   autoFetchFxRates(false);
@@ -7299,9 +7287,6 @@ async function init(){
     if(st1) st1.textContent = msg;
     if(st2) st2.textContent = msg;
   }
-
-  document.getElementById('lov').style.display='none';
-  document.getElementById('app').style.display='block';
 
   // Auto-show token panel if not configured yet
   if(!getPat()){
