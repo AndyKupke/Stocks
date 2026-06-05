@@ -4021,7 +4021,7 @@
       "ex": "NYSE",
       "cv": "H",
       "rk": 2,
-      "dp": false,
+      "dp": true,
       "etf": false,
       "hr": false,
       "priv": false,
@@ -4310,6 +4310,10 @@
     "HHH": {
       "shares": 0,
       "_portChecked": false
+    },
+    "QSR": {
+      "shares": 0,
+      "_portChecked": false
     }
   },
   "buySet": [
@@ -4357,7 +4361,8 @@
     "SIDU",
     "HUBS",
     "UBER",
-    "HHH"
+    "HHH",
+    "QSR"
   ],
   "prices": {
     "S0LR": {
@@ -17785,5 +17790,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-05T06:12:15.724Z"
+  "lastUpdated": "2026-06-05T06:12:37.572Z"
 }
