@@ -2326,15 +2326,8 @@ function renderLLFooter() {
 }
 
 let _llRenderGen = 0;   // cancel stale in-progress renders
-let _llDirty = false;   // true when table needs re-render but tab is hidden
 
 function renderLLTable() {
-  // If Long List tab is not visible, skip the expensive DOM work and just set a dirty flag.
-  // The table will be rendered when the tab is opened via menuNav('longlist').
-  const sec = document.getElementById('sec-longlist');
-  if (sec && !sec.classList.contains('active')) { _llDirty = true; return; }
-  _llDirty = false;
-
   const tb=document.getElementById('wl-tb'),tf=document.getElementById('wl-tf');
   if(!tb) return;
   if(!wlDisp.length){
@@ -4633,7 +4626,6 @@ function menuNav(tabId) {
   showTab(tabId, null);   // no tab bar buttons — null is safe
   if (tabId === 'fx') renderFxTab();
   if (tabId === 'financial-analysis') renderFinancialTab();
-  if (tabId === 'longlist') requestAnimationFrame(() => { if (_llDirty) { wlApplySort(); renderLLTable(); renderLLCoverage(); } });
   if (tabId === 'ipos') requestAnimationFrame(() => { if (!ipoAllData.length) ipoLoadFromGitHub(); else renderIpoTable(); });
   if (tabId === 'sp500') requestAnimationFrame(() => renderSp500Tab());
   if (tabId === 'planned-ipos') requestAnimationFrame(() => renderPlannedIpoTab());
