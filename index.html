@@ -2269,7 +2269,14 @@ function wlApplySort(){
     return av<bv?-wlSortDir:av>bv?wlSortDir:0;
   });
 }
+let _llNeedsRefresh = true; // dirty flag: render deferred until tab is visible
+
 function renderLLTable(){
+  // Skip render when Long List isn't visible — just mark dirty so we render on next visit
+  const llSec = document.getElementById('sec-longlist');
+  if (llSec && !llSec.classList.contains('active')) { _llNeedsRefresh = true; return; }
+  _llNeedsRefresh = false;
+
   const tb=document.getElementById('wl-tb'),tf=document.getElementById('wl-tf');
   if(!wlDisp.length){tb.innerHTML=`<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">No stocks match filters</td></tr>`;tf.innerHTML='';return;}
   tb.innerHTML=wlDisp.map(s=>{
@@ -3562,11 +3569,10 @@ function applyFetchedPrices(results) {
   results.forEach(d => { if (d?.sym) priceData[d.sym] = d; });
   savePriceData();   // persist immediately after each batch
   renderPortfolioTab();
-  renderLLTable();
+  renderLLTable();   // will skip + mark dirty if Long List tab not active
   if (ipoAllData.length) renderIpoTable();
   if(typeof bvpRender === 'function') bvpRender();
   renderPlan();
-  window.addEventListener('resize', () => { if(typeof renderPlan==='function') renderPlan(); });
   // fsInit() called on-demand when stock tab is opened
 }
 
@@ -4585,6 +4591,9 @@ function menuNav(tabId) {
   showTab(tabId, null);   // no tab bar buttons — null is safe
   if (tabId === 'fx') renderFxTab();
   if (tabId === 'financial-analysis') renderFinancialTab();
+  // Render Long List only if data has changed since last visit (dirty flag).
+  // Tab shows instantly via showTab CSS; render fills it in on the next frame.
+  if (tabId === 'longlist') requestAnimationFrame(() => { if (_llNeedsRefresh) { wlApplySort(); renderLLTable(); } });
   if (tabId === 'ipos') requestAnimationFrame(() => { if (!ipoAllData.length) ipoLoadFromGitHub(); else renderIpoTable(); });
   if (tabId === 'sp500') requestAnimationFrame(() => renderSp500Tab());
   if (tabId === 'planned-ipos') requestAnimationFrame(() => renderPlannedIpoTab());
