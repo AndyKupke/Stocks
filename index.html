@@ -6962,14 +6962,18 @@ async function fetchSp500Data() {
 const LS_PLANNED_IPOS = 'investment_planned_ipos_v1';
 
 const PLANNED_IPOS_DEFAULT = [
-  { id:1, name:'SpaceX',     industry:'Aerospace & Defense',     country:'USA',   ipoWindow:'2026',      expMcap:1770, expPrice:135,  comment:'IPO priced at $135/share targeting June 2026 debut at a $1.77T valuation; Morningstar fair value estimate ~$780B.' },
-  { id:2, name:'Stripe',     industry:'Fintech / Payments',      country:'USA',   ipoWindow:'2026–2027', expMcap:176,  expPrice:72,   comment:'No confirmed IPO date; latest tender offer valued at $159B. Founders have signalled no near-term plans.' },
-  { id:3, name:'Anthropic',  industry:'Artificial Intelligence', country:'USA',   ipoWindow:'2026',      expMcap:965,  expPrice:null, comment:'Confidentially filed S-1 with SEC in June 2026 after closing $65B Series H at ~$965B post-money valuation.' },
-  { id:4, name:'OpenAI',     industry:'Artificial Intelligence', country:'USA',   ipoWindow:'2026',      expMcap:852,  expPrice:null, comment:'Targeting late-2026 IPO at ~$830–$852B valuation; revenue surpassed $20B in 2025.' },
-  { id:5, name:'Databricks', industry:'Data & AI / Cloud',       country:'USA',   ipoWindow:'2026–2027', expMcap:134,  expPrice:172,  comment:'Raised $4B Series L at $134B valuation (Dec 2025), $5.4B ARR growing 65% YoY. No S-1 filed yet.' },
-  { id:6, name:'Revolut',    industry:'Fintech / Neobanking',    country:'UK',    ipoWindow:'2028+',     expMcap:175,  expPrice:null, comment:'CEO signalled IPO "at least two years away"; targeting $150–200B valuation on Nasdaq. 2025 revenue $6B, net profit $1.7B.' },
-  { id:7, name:'ByteDance',  industry:'Social Media / Technology',country:'China', ipoWindow:'No plans',  expMcap:550,  expPrice:null, comment:'Valued at ~$550B in recent secondary sales. Company has explicitly stated no IPO plans; using buybacks for employee liquidity.' },
-  { id:8, name:'Anduril',    industry:'Defense Technology',      country:'USA',   ipoWindow:'2026–2027', expMcap:61,   expPrice:null, comment:'Doubled valuation to $61B in May 2026 Series H. CEO confirmed they "will definitely" go public after Arsenal-1 factory scales.' },
+  { id:1,  name:'SpaceX',               industry:'Aerospace & Defense',              country:'USA',   ipoWindow:'2026',      expMcap:1770, expPrice:135,    comment:'IPO priced at $135/share targeting June 2026 debut at a $1.77T valuation; Morningstar fair value estimate ~$780B.' },
+  { id:2,  name:'Stripe',               industry:'Fintech / Payments',               country:'USA',   ipoWindow:'2026–2027', expMcap:176,  expPrice:72,     comment:'No confirmed IPO date; latest tender offer valued at $159B. Founders have signalled no near-term plans.' },
+  { id:3,  name:'Anthropic',            industry:'Artificial Intelligence',           country:'USA',   ipoWindow:'2026',      expMcap:965,  expPrice:null,   comment:'Confidentially filed S-1 with SEC in June 2026 after closing $65B Series H at ~$965B post-money valuation.' },
+  { id:4,  name:'OpenAI',               industry:'Artificial Intelligence',           country:'USA',   ipoWindow:'2026',      expMcap:852,  expPrice:null,   comment:'Targeting late-2026 IPO at ~$830–$852B valuation; revenue surpassed $20B in 2025.' },
+  { id:5,  name:'Databricks',           industry:'Data & AI / Cloud',                country:'USA',   ipoWindow:'2026–2027', expMcap:134,  expPrice:172,    comment:'Raised $4B Series L at $134B valuation (Dec 2025), $5.4B ARR growing 65% YoY. No S-1 filed yet.' },
+  { id:6,  name:'Revolut',              industry:'Fintech / Neobanking',             country:'UK',    ipoWindow:'2028+',     expMcap:175,  expPrice:null,   comment:'CEO signalled IPO "at least two years away"; targeting $150–200B valuation on Nasdaq. 2025 revenue $6B, net profit $1.7B.' },
+  { id:7,  name:'ByteDance',            industry:'Social Media / Technology',         country:'China', ipoWindow:'No plans',  expMcap:550,  expPrice:null,   comment:'Valued at ~$550B in recent secondary sales. Company has explicitly stated no IPO plans; using buybacks for employee liquidity.' },
+  { id:8,  name:'Anduril',              industry:'Defense Technology',               country:'USA',   ipoWindow:'2026–2027', expMcap:61,   expPrice:null,   comment:'Doubled valuation to $61B in May 2026 Series H. CEO confirmed they "will definitely" go public after Arsenal-1 factory scales.' },
+  { id:9,  name:'Deel',                 industry:'HR Technology / Global Payroll',   country:'USA',   ipoWindow:'2026',      expMcap:17.3, expPrice:null,   comment:'Targeting 2026 IPO after surpassing $1B ARR and three consecutive profitable years with ~70% YoY growth. Timeline may slip due to ongoing trade-secrets lawsuit with Rippling.' },
+  { id:10, name:'Applied Intuition',    industry:'Autonomous Vehicle Software / AI', country:'USA',   ipoWindow:'2026–2027', expMcap:15,   expPrice:228.73, comment:'Raised $600M Series F at $15B valuation (mid-2025); CEO called it "likely the last round before we go public." Secondary market shares trading ~$229.' },
+  { id:11, name:'Rippling',             industry:'HR & Workforce Management',        country:'USA',   ipoWindow:'2027–2028', expMcap:16.8, expPrice:41.11,  comment:'Raised $450M at $16.8B valuation (May 2025); CEO stated IPO is "not imminent." Secondary shares ~$41. Timeline partly delayed by legal battle with Deel.' },
+  { id:12, name:'Scale AI',             industry:'AI Data Labeling & Infrastructure',country:'USA',   ipoWindow:'2027+',     expMcap:29,   expPrice:10.63,  comment:'$29B valuation driven by Meta\'s ~$14.3B investment for 49% stake (June 2025), which provided major shareholder liquidity and reduced near-term IPO urgency.' },
 ];
 
 function loadPlannedIpos() {
@@ -6979,7 +6983,19 @@ function savePlannedIpos() {
   try { localStorage.setItem(LS_PLANNED_IPOS, JSON.stringify(plannedIpos)); } catch(e) {}
 }
 
-let plannedIpos = loadPlannedIpos() || JSON.parse(JSON.stringify(PLANNED_IPOS_DEFAULT));
+// Merge: start from saved list, add any default entries not already present by name
+function mergePlannedIposDefaults(saved) {
+  const names = new Set(saved.map(c => c.name.toLowerCase()));
+  const maxId = saved.reduce((m, c) => Math.max(m, c.id || 0), 0);
+  let nextId = maxId + 1;
+  const added = PLANNED_IPOS_DEFAULT.filter(d => !names.has(d.name.toLowerCase()))
+    .map(d => ({ ...d, id: nextId++ }));
+  return added.length ? [...saved, ...added] : saved;
+}
+
+const _rawSaved = loadPlannedIpos();
+let plannedIpos = _rawSaved ? mergePlannedIposDefaults(_rawSaved) : JSON.parse(JSON.stringify(PLANNED_IPOS_DEFAULT));
+if (_rawSaved) savePlannedIpos(); // persist any newly merged defaults
 let _pioEditId = null;
 
 function renderPlannedIpoTab() {
