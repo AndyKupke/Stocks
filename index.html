@@ -2739,8 +2739,11 @@ function confirmAdd(){
   ST.push(newStock);
   markDirty();
   syncToGitHub(); // push full stockList to GitHub immediately
-  closeModal();wlFilter();renderThesesTab();renderFw();
+  closeModal();
+  wlFilter();                                           // rebuild Long List immediately
+  setTimeout(() => { renderThesesTab(); renderFw(); }, 0); // defer invisible tabs
 }
+
 
 // ══ EDIT STOCK ════════════════════════════════════════════════════════════════
 function openEditModal()  { document.getElementById('edit-modal-ov').classList.add('open'); }
@@ -2826,8 +2829,7 @@ function confirmEdit() {
 
   closeEditModal();
   wlFilter();
-  renderPortfolioTab();
-  refreshPortAnalysis();
+  setTimeout(() => { renderPortfolioTab(); if(typeof refreshPortAnalysis==='function') refreshPortAnalysis(); }, 0);
 }
 
 function removeStock(tk){
@@ -2837,7 +2839,8 @@ function removeStock(tk){
   ST=ST.filter(s=>s.t!==tk);ST.forEach((s,i)=>s.id=i+1);
   markDirty();
   syncToGitHub(); // push full stockList to GitHub immediately
-  wlFilter();renderPortfolioTab();renderThesesTab();
+  wlFilter();
+  setTimeout(() => { renderPortfolioTab(); renderThesesTab(); }, 0);
 }
 function wlReset(){
   ['wl-q','wl-th','wl-reg','wl-ind'].forEach(id=>{document.getElementById(id).value='';});
