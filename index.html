@@ -2277,44 +2277,43 @@ function wlApplySort(){
     return av<bv?-wlSortDir:av>bv?wlSortDir:0;
   });
 }
-function renderLLTable(){
-  const tb=document.getElementById('wl-tb'),tf=document.getElementById('wl-tf');
-  if(!wlDisp.length){tb.innerHTML=`<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">No stocks match filters</td></tr>`;tf.innerHTML='';return;}
-  tb.innerHTML=wlDisp.map(s=>{
-    const inP=isInPort(s.t),inB=isBuy(s.t);
-    const rc=inP?'rport':s.dp?'rdep':'';
-    const pd=priceData[s.t]||{};
-    const detH  = colGroupState.ll.details ? '' : ' hidden';
-    const perfH = colGroupState.ll.perf    ? '' : ' hidden';
-    return `<tr id="ll-row-${s.t}" class="${rc}">
-      <td style="text-align:center"><input id="ll-chk-port-${s.t}" type="checkbox" class="port-chk" ${inP?'checked':''} onchange="togglePort('${s.t}')" title="${inP?'Remove from':'Add to'} Portfolio" style="accent-color:var(--grn)"></td>
-      <td style="text-align:center"><input id="ll-chk-buy-${s.t}" type="checkbox" ${inB?'checked':''} onchange="toggleBuy('${s.t}')" title="${inB?'Remove':'Mark as'} Buy" style="accent-color:var(--ylw)"></td>
-      <td><span class="mono" style="font-size:10px;color:var(--txt3)">${s.id}</span></td>
-      <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
-      <td><span class="nm" title="${s.n}">${s.n}</span></td>
-      <td>${tp(s.th)}</td>
-      <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('ll','details')"></td>
-      <td class="cgrp-cell ll-details${detH}"><span style="font-size:10px;color:var(--txt2)">${s.ind}</span></td>
-      <td class="cgrp-cell ll-details${detH}"><span class="mono" style="font-size:10px;color:var(--txt2)">${s.reg}</span></td>
-      <td class="cgrp-cell ll-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex}</span></td>
-      <td class="price-cell">${fmtPrice(pd.price,s.ex)}</td>
-      <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('ll','perf')"></td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtMcap(pd.mcap, s.ex)}</td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg1d)}</td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg7d)}</td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg30d)}</td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg90d)}</td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg1y)}</td>
-      <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chgytd)}</td>
-      <td>${flH(s)}</td>
-      <td><span class="nm" title="${s.note}">${s.note}</span></td>
-      <td style="white-space:nowrap">
-        <button class="ab-btn" style="margin-right:3px" onclick="fetchSinglePrice('${s.t}',this)" title="Fetch live price">&#9889;</button>
-        <button class="ab-btn" style="margin-right:3px" onclick="editStock('${s.t}')">&#9998;</button>
-        <button class="ab-btn" onclick="removeStock('${s.t}')">✕</button>
-      </td>
-    </tr>`;
-  }).join('');
+// Build HTML for a single Long List row
+function buildLLRow(s, detH, perfH) {
+  const inP=isInPort(s.t),inB=isBuy(s.t);
+  const rc=inP?'rport':s.dp?'rdep':'';
+  const pd=priceData[s.t]||{};
+  return `<tr id="ll-row-${s.t}" class="${rc}">
+    <td style="text-align:center"><input id="ll-chk-port-${s.t}" type="checkbox" class="port-chk" ${inP?'checked':''} onchange="togglePort('${s.t}')" title="${inP?'Remove from':'Add to'} Portfolio" style="accent-color:var(--grn)"></td>
+    <td style="text-align:center"><input id="ll-chk-buy-${s.t}" type="checkbox" ${inB?'checked':''} onchange="toggleBuy('${s.t}')" title="${inB?'Remove':'Mark as'} Buy" style="accent-color:var(--ylw)"></td>
+    <td><span class="mono" style="font-size:10px;color:var(--txt3)">${s.id}</span></td>
+    <td><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
+    <td><span class="nm" title="${s.n}">${s.n}</span></td>
+    <td>${tp(s.th)}</td>
+    <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('ll','details')"></td>
+    <td class="cgrp-cell ll-details${detH}"><span style="font-size:10px;color:var(--txt2)">${s.ind}</span></td>
+    <td class="cgrp-cell ll-details${detH}"><span class="mono" style="font-size:10px;color:var(--txt2)">${s.reg}</span></td>
+    <td class="cgrp-cell ll-details${detH}"><span class="mono" style="font-size:9px;color:var(--txt3)">${s.ex}</span></td>
+    <td class="price-cell">${fmtPrice(pd.price,s.ex)}</td>
+    <td class="pc-grptog" style="font-size:10px;color:var(--acc);text-align:center;cursor:pointer" onclick="toggleColGroup('ll','perf')"></td>
+    <td class="cgrp-cell ll-perf${perfH}">${fmtMcap(pd.mcap, s.ex)}</td>
+    <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg1d)}</td>
+    <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg7d)}</td>
+    <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg30d)}</td>
+    <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg90d)}</td>
+    <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chg1y)}</td>
+    <td class="cgrp-cell ll-perf${perfH}">${fmtChg(pd.chgytd)}</td>
+    <td>${flH(s)}</td>
+    <td><span class="nm" title="${s.note}">${s.note}</span></td>
+    <td style="white-space:nowrap">
+      <button class="ab-btn" style="margin-right:3px" onclick="fetchSinglePrice('${s.t}',this)" title="Fetch live price">&#9889;</button>
+      <button class="ab-btn" style="margin-right:3px" onclick="editStock('${s.t}')">&#9998;</button>
+      <button class="ab-btn" onclick="removeStock('${s.t}')">✕</button>
+    </td>
+  </tr>`;
+}
+
+function renderLLFooter() {
+  const tf=document.getElementById('wl-tf'); if(!tf) return;
   const portInView=wlDisp.filter(s=>isInPort(s.t)).length;
   const allPort=ST.filter(s=>isInPort(s.t)).length;
   const isFiltered=wlDisp.length<ST.length;
@@ -2324,6 +2323,47 @@ function renderLLTable(){
     <td colspan="17" style="text-align:right;"><span class="tf-lbl">${isFiltered?`${wlDisp.length} of ${ST.length} stocks`:` ${ST.length} stocks total`}&nbsp;&nbsp;${isFiltered?`${portInView} portfolio (in view) · ${inBuy} buy (in view)`:`${allPort} portfolio · ${allBuy} buy`}</span></td>
     <td colspan="3"><span class="tf-grn">${isFiltered?portInView:allPort} / ${ST.length}</span></td>
   </tr>`;
+}
+
+let _llRenderGen = 0;   // cancel stale in-progress renders
+let _llDirty = false;   // true when table needs re-render but tab is hidden
+
+function renderLLTable() {
+  // If Long List tab is not visible, skip the expensive DOM work and just set a dirty flag.
+  // The table will be rendered when the tab is opened via menuNav('longlist').
+  const sec = document.getElementById('sec-longlist');
+  if (sec && !sec.classList.contains('active')) { _llDirty = true; return; }
+  _llDirty = false;
+
+  const tb=document.getElementById('wl-tb'),tf=document.getElementById('wl-tf');
+  if(!tb) return;
+  if(!wlDisp.length){
+    tb.innerHTML=`<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px;">No stocks match filters</td></tr>`;
+    if(tf) tf.innerHTML='';
+    return;
+  }
+
+  const gen = ++_llRenderGen;
+  const CHUNK = 30;
+  const detH  = colGroupState.ll.details ? '' : ' hidden';
+  const perfH = colGroupState.ll.perf    ? '' : ' hidden';
+
+  // First chunk rendered synchronously so rows appear immediately
+  tb.innerHTML = wlDisp.slice(0, CHUNK).map(s => buildLLRow(s, detH, perfH)).join('');
+
+  if (wlDisp.length <= CHUNK) { renderLLFooter(); return; }
+
+  // Remaining rows added in chunks — browser stays responsive between each
+  let idx = CHUNK;
+  function addChunk() {
+    if (gen !== _llRenderGen) return; // newer render started, abort this one
+    const end = Math.min(idx + CHUNK, wlDisp.length);
+    tb.insertAdjacentHTML('beforeend', wlDisp.slice(idx, end).map(s => buildLLRow(s, detH, perfH)).join(''));
+    idx = end;
+    if (idx < wlDisp.length) setTimeout(addChunk, 0);
+    else renderLLFooter();
+  }
+  setTimeout(addChunk, 0);
 }
 function renderLLCoverage(){
   document.getElementById('ll-coverage').innerHTML=Object.entries(TM).map(([k,m])=>{
@@ -4593,6 +4633,7 @@ function menuNav(tabId) {
   showTab(tabId, null);   // no tab bar buttons — null is safe
   if (tabId === 'fx') renderFxTab();
   if (tabId === 'financial-analysis') renderFinancialTab();
+  if (tabId === 'longlist') requestAnimationFrame(() => { if (_llDirty) { wlApplySort(); renderLLTable(); renderLLCoverage(); } });
   if (tabId === 'ipos') requestAnimationFrame(() => { if (!ipoAllData.length) ipoLoadFromGitHub(); else renderIpoTable(); });
   if (tabId === 'sp500') requestAnimationFrame(() => renderSp500Tab());
   if (tabId === 'planned-ipos') requestAnimationFrame(() => renderPlannedIpoTab());
