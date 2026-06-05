@@ -32,6 +32,10 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font
 .tab.active{color:var(--acc);border-bottom-color:var(--acc);}
 .sec{display:none;padding:14px 22px;}
 .sec.active{display:block;}
+#wl-tbl{table-layout:fixed;width:100%;}
+#wl-tbl td,#wl-tbl th{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#wl-tbl .nm{white-space:normal;}
+#wl-tbl td:last-child{white-space:nowrap;overflow:visible;}
 .fbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
 .fbar input[type=text]{background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'DM Mono',monospace;font-size:11px;padding:5px 9px;border-radius:4px;outline:none;width:190px;}
 .fbar input[type=text]:focus{border-color:var(--acc);}
@@ -2257,14 +2261,16 @@ function wlSort(key){
   if(el){el.classList.add('sorted');if(wlSortDir===-1)el.classList.add('desc');}
   wlApplySort();
 
-  // Re-order existing DOM rows instead of rebuilding HTML.
-  // Moving <tr> nodes is O(n) DOM moves — no HTML generation, no browser
-  // parsing, no full table layout recomputation (just positional update).
+  // Re-order existing DOM rows: replaceChildren is a single DOM operation.
+  // With table-layout:fixed, no column-width rescan needed — just positional update.
   const tb = document.getElementById('wl-tb');
   if (tb && wlDisp.length && document.getElementById('ll-row-' + wlDisp[0].t)) {
-    const frag = document.createDocumentFragment();
-    wlDisp.forEach(s => { const r = document.getElementById('ll-row-' + s.t); if(r) frag.appendChild(r); });
-    tb.appendChild(frag);
+    const rows = wlDisp.map(s => document.getElementById('ll-row-' + s.t)).filter(Boolean);
+    if (rows.length === wlDisp.length) {
+      tb.replaceChildren(...rows); // single DOM op: detach all, reattach in order
+    } else {
+      renderLLTable();
+    }
   } else {
     renderLLTable(); // rows not in DOM yet — fall back to full render
   }
@@ -5057,27 +5063,29 @@ function buildLLThead() {
   const dClr = det ? 'color:var(--acc)' : '';
   const pClr = prf ? 'color:var(--acc)' : '';
   return `<tr>
-    <th style="width:38px;text-align:center;font-size:8px;color:var(--grn)" title="In Portfolio">Port.</th>
-    <th style="width:32px;text-align:center;font-size:8px;color:var(--ylw)" title="Mark as Long">Long</th>
-    <th style="width:32px;text-align:center;font-size:8px;color:#e05c5c" title="Mark as Short">Short</th>
-    <th onclick="wlSort('id')" style="min-width:30px">#</th>
-    <th onclick="wlSort('ticker')">Ticker</th>
+    <th style="width:34px;text-align:center;font-size:8px;color:var(--grn)" title="In Portfolio">Port.</th>
+    <th style="width:34px;text-align:center;font-size:8px;color:var(--ylw)" title="Mark as Long">Long</th>
+    <th style="width:34px;text-align:center;font-size:8px;color:#e05c5c" title="Mark as Short">Short</th>
+    <th style="width:28px" onclick="wlSort('id')">#</th>
+    <th style="width:74px" onclick="wlSort('ticker')">Ticker</th>
     <th onclick="wlSort('name')">Company</th>
-    <th onclick="wlSort('thesis')">Thesis</th>
-    <th class="cgrp-toggle" onclick="toggleColGroup('ll','details')" style="${dClr}" title="Industry, Region, Exchange">${dLbl}</th>
-    <th class="cgrp-hdr${dH}" onclick="wlSort('industry')">Industry</th>
-    <th class="cgrp-hdr${dH}" onclick="wlSort('region')">Region</th>
-    <th class="cgrp-hdr${dH}" onclick="wlSort('exchange')">Exch.</th>
-    <th style="text-align:right" onclick="wlSort('price')">Price</th>
-    <th class="cgrp-toggle" onclick="toggleColGroup('ll','perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y">${pLbl}</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('mcap')">Mkt Cap</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1d')">1D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg7d')">7D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg30d')">30D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg90d')">90D</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chg1y')">1Y</th>
-    <th class="cgrp-hdr${pH}" style="text-align:right" onclick="wlSort('chgytd')">YTD</th>
-    <th>Flags</th><th>Note</th><th></th>
+    <th style="width:62px" onclick="wlSort('thesis')">Thesis</th>
+    <th style="width:62px" class="cgrp-toggle" onclick="toggleColGroup('ll','details')" style="${dClr}" title="Industry, Region, Exchange">${dLbl}</th>
+    <th style="width:110px" class="cgrp-hdr${dH}" onclick="wlSort('industry')">Industry</th>
+    <th style="width:62px" class="cgrp-hdr${dH}" onclick="wlSort('region')">Region</th>
+    <th style="width:50px" class="cgrp-hdr${dH}" onclick="wlSort('exchange')">Exch.</th>
+    <th style="width:98px;text-align:right" onclick="wlSort('price')">Price</th>
+    <th style="width:54px" class="cgrp-toggle" onclick="toggleColGroup('ll','perf')" style="${pClr}" title="Mkt Cap, 1D, 7D, 30D, 90D, 1Y">${pLbl}</th>
+    <th style="width:70px" class="cgrp-hdr${pH}" onclick="wlSort('mcap')">Mkt Cap</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg1d')">1D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg7d')">7D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg30d')">30D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg90d')">90D</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chg1y')">1Y</th>
+    <th style="width:46px" class="cgrp-hdr${pH}" onclick="wlSort('chgytd')">YTD</th>
+    <th style="width:48px">Flags</th>
+    <th style="width:82px">Note</th>
+    <th style="width:80px"></th>
   </tr>`;
 }
 
