@@ -4011,6 +4011,23 @@
       "ipo": false,
       "note": "",
       "id": 236
+    },
+    {
+      "t": "QSR",
+      "n": "Restaurant Brands International",
+      "th": "T8",
+      "ind": "Luxury / Consumer",
+      "reg": "US",
+      "ex": "NYSE",
+      "cv": "H",
+      "rk": 2,
+      "dp": false,
+      "etf": false,
+      "hr": false,
+      "priv": false,
+      "ipo": false,
+      "note": "",
+      "id": 237
     }
   ],
   "portfolio": {
@@ -17768,5 +17785,5 @@
       "lastUpdated": "2026-05-21T18:31:54.277Z"
     }
   },
-  "lastUpdated": "2026-06-05T06:10:17.175Z"
+  "lastUpdated": "2026-06-05T06:12:15.724Z"
 }
