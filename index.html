@@ -5954,22 +5954,28 @@ async function ghSaveIpos(records, lastFetched) {
 // CORS. We query one month at a time for the required date range.
 async function _nasdaqFetchMonth(yearMonth) {
   const base = `https://api.nasdaq.com/api/ipo/calendar?date=${yearMonth}`;
-  const hdrs = { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' };
+  const enc  = encodeURIComponent(base);
   const tries = [
-    { url: base, hdrs },
-    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`, hdrs: {} },
-    { url: `https://corsproxy.io/?${encodeURIComponent(base)}`, hdrs: {} },
-    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`, hdrs: {} },
+    { url: base, hdrs: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' } },
+    { url: `https://api.codetabs.com/v1/proxy?quest=${enc}`,                          hdrs: {} },
+    { url: `https://corsproxy.io/?${enc}`,                                             hdrs: {} },
+    { url: `https://api.allorigins.win/raw?url=${enc}`,                               hdrs: {} },
+    { url: `https://api.allorigins.win/get?url=${enc}`,                               hdrs: {} },
+    { url: `https://thingproxy.freeboard.io/fetch/${base}`,                           hdrs: {} },
   ];
   for (const { url, hdrs: h } of tries) {
     try {
-      const r = await fetch(url, { headers: h });
+      const r = await fetch(url, { headers: h, signal: AbortSignal.timeout(8000) });
       if (!r.ok) continue;
-      const j = await r.json();
-      if (j?.data) return j.data;        // valid Nasdaq response
-    } catch(e) { /* next */ }
+      const text = await r.text();
+      // allorigins /get wraps in {contents:"..."}
+      let j;
+      try { j = JSON.parse(text); } catch(e) { continue; }
+      if (j?.contents) { try { j = JSON.parse(j.contents); } catch(e) { continue; } }
+      if (j?.data) return j.data;
+    } catch(e) { /* try next proxy */ }
   }
-  return null;   // all attempts failed
+  return null;
 }
 
 function _parseMDY(d) {
