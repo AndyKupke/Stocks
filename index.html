@@ -15,6 +15,34 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font
 /* ── HAMBURGER MENU ── */
 #menu-btn:hover span{background:var(--acc)!important;}
 .menu-nav-btn{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:var(--txt2);font-family:'DM Mono',monospace;font-size:11px;padding:10px 18px;cursor:pointer;text-align:left;transition:all .12s;border-left:3px solid transparent;}
+.menu-sub-btn{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;color:var(--txt3);font-family:'DM Mono',monospace;font-size:10px;padding:7px 18px 7px 34px;cursor:pointer;text-align:left;transition:all .12s;border-left:3px solid transparent;}
+.menu-sub-btn:hover{background:var(--surf2);color:var(--txt);border-left-color:var(--acc);}
+.menu-sub-btn.active-menu{background:var(--surf2);color:var(--acc);border-left-color:var(--acc);}
+.menu-section-toggle{justify-content:space-between;}
+.st-block{background:var(--surf);border:1px solid var(--bdr);border-radius:6px;padding:18px 20px;margin-bottom:16px;}
+.st-block-title{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.st-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:4px;}
+.st-kpi{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:10px 14px;}
+.st-kpi-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.st-kpi-val{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--txt);}
+.st-kpi-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);margin-top:2px;}
+.st-fin-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.st-fin-tbl th{font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.4px;padding:5px 8px;border-bottom:1px solid var(--bdr);text-align:right;}
+.st-fin-tbl th:first-child{text-align:left;}
+.st-fin-tbl td{font-family:'DM Mono',monospace;font-size:11px;color:var(--txt2);padding:7px 8px;border-bottom:1px solid var(--bdr);text-align:right;}
+.st-fin-tbl td:first-child{text-align:left;color:var(--txt3);}
+.st-fin-tbl tr:last-child td{border-bottom:none;}
+.st-ticker-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.st-ticker-input{background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'DM Mono',monospace;font-size:20px;font-weight:700;padding:6px 12px;border-radius:4px;outline:none;width:120px;text-transform:uppercase;}
+.st-ticker-input:focus{border-color:var(--acc);}
+.st-news-item{padding:10px 0;border-bottom:1px solid var(--bdr);font-size:11px;color:var(--txt2);}
+.st-news-item:last-child{border-bottom:none;}
+.st-news-date{font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);margin-bottom:3px;}
+.st-plan-area{width:100%;min-height:120px;background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'DM Mono',monospace;font-size:11px;padding:10px 12px;border-radius:4px;outline:none;resize:vertical;line-height:1.6;box-sizing:border-box;}
+.st-plan-area:focus{border-color:var(--acc);}
+.st-consensus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.st-rating-bar{height:6px;background:var(--bdr);border-radius:3px;margin-top:4px;overflow:hidden;}
+.st-rating-fill{height:100%;border-radius:3px;background:var(--grn);}
 .menu-nav-btn:hover{background:var(--surf2);color:var(--txt);border-left-color:var(--acc);}
 .menu-nav-btn.active-menu{background:var(--surf2);color:var(--acc);border-left-color:var(--acc);}
 .menu-nav-icon{font-size:11px;width:16px;text-align:center;flex-shrink:0;color:#FFCC00;}
@@ -511,6 +539,17 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="menu-nav-btn" onclick="menuNav('financial-analysis')">
       <span class="menu-nav-icon">&#9783;</span>Stock Financial Analysis
     </button>
+    <!-- Stock Tracking collapsible sub-menu -->
+    <button class="menu-nav-btn menu-section-toggle" onclick="stToggleMenu()" id="st-menu-toggle">
+      <span style="display:flex;align-items:center;gap:10px"><span class="menu-nav-icon">&#128200;</span>Stock Tracking</span>
+      <span id="st-menu-arrow" style="font-size:9px;color:var(--txt3)">&#9660;</span>
+    </button>
+    <div id="st-submenu" style="display:none">
+      <div id="st-submenu-items"><!-- rendered by JS --></div>
+      <button class="menu-sub-btn" onclick="stAddTracker()" style="color:var(--acc)">
+        &#43; new Ticker
+      </button>
+    </div>
     <button class="menu-nav-btn" onclick="menuNav('plan')">
       <span class="menu-nav-icon">&#8734;</span>Long-term Plan
     </button>
@@ -803,6 +842,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     </div>
   </div>
 </div>
+
+<!-- STOCK TRACKER SECTIONS (dynamically generated) -->
+<div id="st-sections-container"></div>
 
 <!-- THESES TAB -->
 <div class="sec" id="sec-theses">
@@ -4742,6 +4784,16 @@ function menuNav(tabId) {
   // Tab shows instantly via showTab CSS; render fills it in on the next frame.
   if (tabId === 'longlist') requestAnimationFrame(() => { if (_llNeedsRefresh) { wlApplySort(); renderLLTable(); } });
   if (tabId === 'ipos') requestAnimationFrame(() => { if (!ipoAllData.length) ipoLoadFromGitHub(); else renderIpoTable(); });
+  if (tabId.startsWith('st-')) {
+    // Keep Stock Tracking sub-menu open and highlight active item
+    if (!stMenuOpen) stToggleMenu();
+    document.querySelectorAll('[id^="st-menu-btn-"]').forEach(b => b.classList.remove('active-menu'));
+    const activeBtn = document.getElementById('st-menu-btn-' + tabId.slice(3));
+    if (activeBtn) activeBtn.classList.add('active-menu');
+    // Sync active-menu on the parent toggle button
+    const tog = document.getElementById('st-menu-toggle');
+    if (tog) tog.classList.add('active-menu');
+  }
   if (tabId === 'upcoming-ipos') requestAnimationFrame(() => { renderUpcomingIpoTab(); uipoBuildExchangeDropdown(); });
   if (tabId === 'sp500') requestAnimationFrame(() => renderSp500Tab());
   if (tabId === 'planned-ipos') requestAnimationFrame(() => renderPlannedIpoTab());
@@ -7156,6 +7208,266 @@ async function fetchSp500Data() {
   }
 }
 
+// ── STOCK TRACKING ────────────────────────────────────────────────────────────
+const LS_ST_KEY = 'investment_stock_trackers_v1';
+
+function loadTrackers() {
+  try {
+    const r = localStorage.getItem(LS_ST_KEY);
+    return r ? JSON.parse(r) : null;
+  } catch(e) { return null; }
+}
+function saveTrackers() {
+  try { localStorage.setItem(LS_ST_KEY, JSON.stringify(stTrackers)); } catch(e) {}
+}
+
+let stTrackers = loadTrackers() || [
+  { id: 1, label: 'Stock 1', ticker: '', plan: '' },
+  { id: 2, label: 'Stock 2', ticker: '', plan: '' },
+  { id: 3, label: 'Stock 3', ticker: '', plan: '' },
+];
+let stMenuOpen = true;
+
+function stToggleMenu() {
+  stMenuOpen = !stMenuOpen;
+  document.getElementById('st-submenu').style.display = stMenuOpen ? 'block' : 'none';
+  document.getElementById('st-menu-arrow').innerHTML = stMenuOpen ? '&#9650;' : '&#9660;';
+}
+
+function stAddTracker() {
+  const nextId = stTrackers.length ? Math.max(...stTrackers.map(t => t.id)) + 1 : 1;
+  stTrackers.push({ id: nextId, label: `Stock ${nextId}`, ticker: '', plan: '' });
+  saveTrackers();
+  stRenderMenu();
+  stEnsureSections();
+  menuNav('st-' + nextId);
+}
+
+function stRenderMenu() {
+  const container = document.getElementById('st-submenu-items');
+  if (!container) return;
+  container.innerHTML = stTrackers.map(t => `
+    <button class="menu-sub-btn" id="st-menu-btn-${t.id}" onclick="menuNav('st-${t.id}')">
+      <span style="font-size:10px">&#128200;</span>
+      <span id="st-menu-label-${t.id}">${t.ticker || t.label}</span>
+    </button>`).join('');
+}
+
+function stEnsureSections() {
+  const container = document.getElementById('st-sections-container');
+  if (!container) return;
+  stTrackers.forEach(t => {
+    if (!document.getElementById('sec-st-' + t.id)) {
+      const div = document.createElement('div');
+      div.className = 'sec';
+      div.id = 'sec-st-' + t.id;
+      div.innerHTML = stBuildTemplate(t);
+      container.appendChild(div);
+    }
+  });
+}
+
+function stBuildTemplate(t) {
+  const quarters = ['Q1\'26', 'Q4\'25', 'Q3\'25', 'Q2\'25'];
+  const finRows = [
+    { label: 'Revenue',        key: 'rev' },
+    { label: 'Gross Profit',   key: 'gp'  },
+    { label: 'EBITDA',         key: 'ebitda' },
+    { label: 'Net Income',     key: 'ni'  },
+    { label: 'EPS (diluted)',  key: 'eps' },
+    { label: 'Free Cash Flow', key: 'fcf' },
+  ];
+  const kpis = [
+    { label: 'Gross Margin',   sub: 'LTM' },
+    { label: 'EBITDA Margin',  sub: 'LTM' },
+    { label: 'Net Margin',     sub: 'LTM' },
+    { label: 'Revenue Growth', sub: 'YoY' },
+    { label: 'P/E (fwd)',      sub: 'consensus' },
+    { label: 'EV/EBITDA',      sub: 'fwd' },
+    { label: 'EV/Revenue',     sub: 'fwd' },
+    { label: 'FCF Yield',      sub: 'LTM' },
+  ];
+  return `
+  <div class="st-ticker-bar">
+    <input class="st-ticker-input" id="st-ticker-${t.id}" type="text"
+      value="${t.ticker}" placeholder="TICKER"
+      oninput="stUpdateTicker(${t.id},this.value)"
+      onblur="stSaveTicker(${t.id},this.value)">
+    <span id="st-name-${t.id}" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--txt2)">${t.name || ''}</span>
+    <div class="spacer"></div>
+    <button class="fetch-btn" onclick="stFetchData(${t.id})" style="font-size:11px;padding:6px 14px">&#9889; Load Data</button>
+    <span id="st-status-${t.id}" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3)"></span>
+  </div>
+
+  <!-- Financial Statements -->
+  <div class="st-block">
+    <div class="st-block-title">&#128196; Financial Statements <span style="font-weight:400;color:var(--txt3);font-size:9px;margin-left:8px">QUARTERLY</span></div>
+    <div style="overflow-x:auto">
+      <table class="st-fin-tbl" id="st-fin-${t.id}">
+        <thead><tr>
+          <th style="text-align:left">Metric</th>
+          ${quarters.map(q => `<th>${q}</th>`).join('')}
+          <th>YoY Δ</th>
+        </tr></thead>
+        <tbody>
+          ${finRows.map(r => `<tr>
+            <td>${r.label}</td>
+            ${quarters.map(() => `<td style="color:var(--bdr)">—</td>`).join('')}
+            <td>—</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Core KPIs -->
+  <div class="st-block">
+    <div class="st-block-title">&#9889; Core KPIs</div>
+    <div class="st-kpi-grid" id="st-kpis-${t.id}">
+      ${kpis.map(k => `<div class="st-kpi">
+        <div class="st-kpi-label">${k.label}</div>
+        <div class="st-kpi-val">—</div>
+        <div class="st-kpi-sub">${k.sub}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Analyst Consensus -->
+  <div class="st-block">
+    <div class="st-block-title">&#128202; Analyst Consensus</div>
+    <div class="st-consensus-grid" id="st-consensus-${t.id}">
+      <div class="st-kpi">
+        <div class="st-kpi-label">Price Target</div>
+        <div class="st-kpi-val">—</div>
+        <div class="st-kpi-sub">mean · N analysts</div>
+      </div>
+      <div class="st-kpi">
+        <div class="st-kpi-label">Upside / Downside</div>
+        <div class="st-kpi-val">—</div>
+        <div class="st-kpi-sub">vs current price</div>
+      </div>
+      <div class="st-kpi">
+        <div class="st-kpi-label">Consensus Rating</div>
+        <div class="st-kpi-val">—</div>
+        <div class="st-kpi-sub">Buy · Hold · Sell</div>
+      </div>
+    </div>
+    <div style="margin-top:14px" id="st-ratings-${t.id}">
+      ${[['Strong Buy','var(--grn)'],['Buy','#5cb85c'],['Hold','var(--ylw)'],['Sell','var(--org)'],['Strong Sell','var(--red)']].map(([l,c]) => `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);width:80px">${l}</span>
+        <div class="st-rating-bar" style="flex:1"><div class="st-rating-fill" style="width:0%;background:${c}"></div></div>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--txt3);width:20px">0</span>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- News -->
+  <div class="st-block">
+    <div class="st-block-title">&#128240; News</div>
+    <div id="st-news-${t.id}">
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--txt3);padding:10px 0">
+        Enter a ticker and click Load Data to fetch recent news.
+      </div>
+    </div>
+  </div>
+
+  <!-- Investment Plan -->
+  <div class="st-block">
+    <div class="st-block-title">&#128221; Investment Plan</div>
+    <div style="margin-bottom:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3)">
+      Thesis · entry criteria · target price · position sizing · exit plan
+    </div>
+    <textarea class="st-plan-area" id="st-plan-${t.id}"
+      placeholder="Write your investment thesis here…"
+      onblur="stSavePlan(${t.id},this.value)">${t.plan || ''}</textarea>
+  </div>`;
+}
+
+function stUpdateTicker(id, val) {
+  const t = stTrackers.find(x => x.id === id);
+  if (!t) return;
+  t.ticker = val.toUpperCase();
+  const lbl = document.getElementById('st-menu-label-' + id);
+  if (lbl) lbl.textContent = t.ticker || t.label;
+}
+
+function stSaveTicker(id, val) {
+  const t = stTrackers.find(x => x.id === id);
+  if (!t) return;
+  t.ticker = val.toUpperCase();
+  const input = document.getElementById('st-ticker-' + id);
+  if (input) input.value = t.ticker;
+  const lbl = document.getElementById('st-menu-label-' + id);
+  if (lbl) lbl.textContent = t.ticker || t.label;
+  saveTrackers();
+}
+
+function stSavePlan(id, val) {
+  const t = stTrackers.find(x => x.id === id);
+  if (t) { t.plan = val; saveTrackers(); }
+}
+
+async function stFetchData(id) {
+  const t = stTrackers.find(x => x.id === id);
+  if (!t || !t.ticker) {
+    alert('Enter a ticker symbol first.');
+    return;
+  }
+  const statusEl = document.getElementById('st-status-' + id);
+  if (statusEl) statusEl.textContent = 'Loading…';
+
+  // Use existing Financial Analysis infrastructure
+  const savedTicker = finSelectedTicker;
+  finSelectedTicker = t.ticker;
+  try {
+    const result = await (getAvKey() ? avFetchFinancials(t.ticker) : null) ||
+                   await (getFmpKey() ? fmpFetchFinancials(t.ticker) : null);
+    if (result) {
+      stPopulateFinancials(id, result);
+      if (statusEl) statusEl.textContent = `Updated ✓`;
+    } else {
+      if (statusEl) statusEl.textContent = 'No data — check API keys in Settings';
+    }
+  } catch(e) {
+    if (statusEl) statusEl.textContent = 'Error: ' + e.message;
+  }
+  finSelectedTicker = savedTicker;
+}
+
+function stPopulateFinancials(id, result) {
+  // Fill quarterly financial table from fetched data
+  const quarters = result.quarterlyPeriods || result.quarterly || [];
+  if (!quarters.length) return;
+
+  const fmtVal = v => {
+    if (v == null) return '—';
+    const abs = Math.abs(v);
+    const s = v < 0 ? '-' : '';
+    if (abs >= 1e9) return s + '$' + (abs/1e9).toFixed(1) + 'B';
+    if (abs >= 1e6) return s + '$' + (abs/1e6).toFixed(0) + 'M';
+    return s + '$' + abs.toLocaleString();
+  };
+
+  const q4 = quarters.slice(0, 4);
+  const metrics = ['totalRevenue','grossProfit','ebitda','netIncome','freeCashflow'];
+  const labels  = ['Revenue','Gross Profit','EBITDA','Net Income','Free Cash Flow'];
+  const tbl = document.getElementById('st-fin-' + id);
+  if (!tbl) return;
+
+  const qHeaders = q4.map(q => q.endDate?.slice(0,7) || '—');
+  tbl.querySelector('thead tr').innerHTML =
+    `<th style="text-align:left">Metric</th>${qHeaders.map(h=>`<th>${h}</th>`).join('')}<th>YoY Δ</th>`;
+
+  const rows = metrics.map((key, i) => {
+    const vals = q4.map(q => q[key] ?? null);
+    const yoy = (vals[0] != null && vals[4-1] != null && vals[4-1] !== 0)
+      ? ((vals[0] - vals[3]) / Math.abs(vals[3]) * 100).toFixed(1) + '%' : '—';
+    return `<tr><td>${labels[i]}</td>${vals.map(v=>`<td>${fmtVal(v)}</td>`).join('')}<td>${yoy}</td></tr>`;
+  });
+  tbl.querySelector('tbody').innerHTML = rows.join('');
+}
+
 // ── UPCOMING IPOs ────────────────────────────────────────────────────────────
 const LS_UPCOMING_IPOS = 'investment_upcoming_ipos_v1';
 
@@ -7591,6 +7903,10 @@ async function init(){
   // Show app skeleton immediately — all heavy renders deferred to after first paint
   document.getElementById('lov').style.display='none';
   document.getElementById('app').style.display='block';
+
+  // Init Stock Tracking (fast — just renders menu buttons and creates section divs)
+  stRenderMenu();
+  stEnsureSections();
 
   // First tick: render the visible portfolio tab
   setTimeout(() => {
