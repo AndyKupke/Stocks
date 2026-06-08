@@ -694,7 +694,7 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 <div class="sec" id="sec-upcoming-ipos">
   <div class="fetch-bar">
     <button class="fetch-btn" id="upcoming-ipo-fetch-btn" onclick="fetchUpcomingIpos()">&#9889; Fetch Upcoming IPOs</button>
-    <span class="fetch-status" id="upcoming-ipo-status">Requires a free Finnhub key — add it in Settings (finnhub.io)</span>
+    <span class="fetch-status" id="upcoming-ipo-status">Fetches upcoming IPOs from NASDAQ — no API key needed</span>
   </div>
   <div class="fbar">
     <input type="text" id="uipo-q" placeholder="Search company or ticker…" oninput="renderUpcomingIpoTab()" style="min-width:160px">
@@ -7153,68 +7153,83 @@ function saveUpcomingIpos() {
 }
 let upcomingIpos = loadUpcomingIpos();
 
-async function fetchUpcomingIpos() {
-  const fhKey  = getFinnhubKey();
-  const fmpKey = getFmpKey();
-  if (!fhKey && !fmpKey) {
-    alert('Add a Finnhub API key in Settings → Finnhub (free at finnhub.io). FMP does not include IPO calendar on its free tier.');
-    return;
+// Fetch one month of NASDAQ IPO data via CORS proxy
+async function fetchNasdaqIpoMonth(yyyymm) {
+  const nasdaqUrl = `https://api.nasdaq.com/api/ipo/us?date=${yyyymm}&assetclass=stocks&offset=0&limit=50&type=upcoming`;
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(nasdaqUrl)}`,
+    `https://corsproxy.io/?${encodeURIComponent(nasdaqUrl)}`,
+  ];
+  for (const proxy of proxies) {
+    try {
+      const r = await fetch(proxy, { signal: AbortSignal.timeout(12000) });
+      if (!r.ok) continue;
+      const text = await r.text();
+      const json = JSON.parse(text);
+      const rows = json?.data?.upcoming?.rows || json?.data?.rows || [];
+      if (rows.length >= 0) return rows; // empty array is valid
+    } catch(e) { console.warn('[UpcomingIPO] proxy failed:', proxy, e.message); }
   }
+  return null;
+}
+
+async function fetchUpcomingIpos() {
   const btn    = document.getElementById('upcoming-ipo-fetch-btn');
   const status = document.getElementById('upcoming-ipo-status');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
 
-  const today  = new Date();
-  const from   = today.toISOString().slice(0, 10);
-  const toDate = new Date(today); toDate.setDate(today.getDate() + 90);
-  const to     = toDate.toISOString().slice(0, 10);
-
   try {
-    let raw = null;
-    let source = '';
+    // Fetch current month + next 2 months to cover ~90 days of upcoming IPOs
+    const today = new Date();
+    const months = [0, 1, 2].map(offset => {
+      const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    });
 
-    // Primary: Finnhub (free, CORS-enabled, includes status field)
-    if (fhKey) {
-      if (status) status.textContent = 'Fetching from Finnhub…';
-      const url = `https://finnhub.io/api/v1/calendar/ipo?from=${from}&to=${to}&token=${fhKey}`;
-      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
-      if (r.ok) {
-        const d = await r.json();
-        if (Array.isArray(d.ipoCalendar)) { raw = d.ipoCalendar; source = 'Finnhub'; }
-      } else {
-        console.warn('[UpcomingIPO] Finnhub HTTP', r.status);
-      }
-    }
+    if (status) status.textContent = 'Fetching from NASDAQ…';
+    const results = await Promise.all(months.map(m => fetchNasdaqIpoMonth(m)));
 
-    // Fallback: FMP (IPO calendar is a paid endpoint but try anyway)
-    if (!raw && fmpKey) {
-      if (status) status.textContent = 'Trying FMP…';
-      const url = `https://financialmodelingprep.com/api/v3/ipo_calendar?from=${from}&to=${to}&apikey=${fmpKey}`;
-      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
-      if (r.ok) {
-        const d = await r.json();
-        if (Array.isArray(d) && d.length) { raw = d; source = 'FMP'; }
-      } else {
-        console.warn('[UpcomingIPO] FMP HTTP', r.status, '(IPO calendar requires paid plan)');
-      }
-    }
+    const allRows = results.flatMap(r => r || []);
+    if (results.every(r => r === null)) throw new Error('All proxies failed — NASDAQ may be unreachable. Try again later.');
 
-    if (!raw) throw new Error('No data returned. Add a free Finnhub key in Settings.');
-
-    // Normalise fields from either source
-    upcomingIpos = raw.map(d => ({
-      date:       d.date                          || null,
-      company:    d.name    || d.company          || '—',
-      symbol:     d.symbol                        || '—',
-      exchange:   d.exchange                      || '—',
-      priceRange: d.price   || d.priceRange       || '—',
-      shares:     d.numberOfShares || d.shares    || null,
-      marketCap:  d.totalSharesValue || d.marketCap || null,
-      status:     d.status                        || null,
-    })).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    // Parse NASDAQ row format
+    const seen = new Set();
+    upcomingIpos = allRows
+      .filter(d => {
+        const key = (d.proposedTickerSymbol || d.companyName || '') + (d.ipoDate || '');
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map(d => {
+        // NASDAQ date format: "06/15/2026" → "2026-06-15"
+        let date = d.ipoDate || d.expectedPriceDate || '';
+        if (date && date.includes('/')) {
+          const [mm, dd, yyyy] = date.split('/');
+          date = `${yyyy}-${mm}-${dd}`;
+        }
+        // Parse deal size string like "$80,000,000" or "80000000"
+        const parseDollar = v => {
+          if (!v) return null;
+          const n = parseFloat(String(v).replace(/[$,]/g, ''));
+          return isNaN(n) ? null : n;
+        };
+        return {
+          date,
+          company:    d.companyName            || '—',
+          symbol:     d.proposedTickerSymbol   || '—',
+          exchange:   d.proposedExchange       || '—',
+          priceRange: d.priceRange             || '—',
+          shares:     parseDollar(d.sharesOffered || d.shares),
+          marketCap:  parseDollar(d.dealSize   || d.marketCap),
+          status:     'expected',
+        };
+      })
+      .filter(d => d.date >= today.toISOString().slice(0,10)) // only future dates
+      .sort((a, b) => a.date.localeCompare(b.date));
 
     saveUpcomingIpos();
-    if (status) status.textContent = `Loaded ${upcomingIpos.length} upcoming IPOs via ${source} (${from} → ${to}) ✓`;
+    if (status) status.textContent = `Loaded ${upcomingIpos.length} upcoming IPOs from NASDAQ ✓`;
     renderUpcomingIpoTab();
     uipoBuildExchangeDropdown();
   } catch(e) {
