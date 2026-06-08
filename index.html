@@ -7153,79 +7153,60 @@ function saveUpcomingIpos() {
 }
 let upcomingIpos = loadUpcomingIpos();
 
-// Fetch one month of NASDAQ IPO data via CORS proxy
-async function fetchNasdaqIpoMonth(yyyymm) {
-  const nasdaqUrl = `https://api.nasdaq.com/api/ipo/us?date=${yyyymm}&assetclass=stocks&offset=0&limit=50&type=upcoming`;
-  const proxies = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(nasdaqUrl)}`,
-    `https://corsproxy.io/?${encodeURIComponent(nasdaqUrl)}`,
-  ];
-  for (const proxy of proxies) {
-    try {
-      const r = await fetch(proxy, { signal: AbortSignal.timeout(12000) });
-      if (!r.ok) continue;
-      const text = await r.text();
-      const json = JSON.parse(text);
-      const rows = json?.data?.upcoming?.rows || json?.data?.rows || [];
-      if (rows.length >= 0) return rows; // empty array is valid
-    } catch(e) { console.warn('[UpcomingIPO] proxy failed:', proxy, e.message); }
-  }
-  return null;
-}
-
 async function fetchUpcomingIpos() {
   const btn    = document.getElementById('upcoming-ipo-fetch-btn');
   const status = document.getElementById('upcoming-ipo-status');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
 
   try {
-    // Fetch current month + next 2 months to cover ~90 days of upcoming IPOs
-    const today = new Date();
+    const today  = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+
+    // Fetch current month + next 2 months using the same _nasdaqFetchMonth
+    // function that already works for the existing IPO tab
     const months = [0, 1, 2].map(offset => {
       const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     });
 
     if (status) status.textContent = 'Fetching from NASDAQ…';
-    const results = await Promise.all(months.map(m => fetchNasdaqIpoMonth(m)));
+    const results = await Promise.all(months.map(m => _nasdaqFetchMonth(m)));
 
-    const allRows = results.flatMap(r => r || []);
-    if (results.every(r => r === null)) throw new Error('All proxies failed — NASDAQ may be unreachable. Try again later.');
+    if (results.every(r => r === null))
+      throw new Error('NASDAQ unreachable via all proxies. Try again later.');
 
-    // Parse NASDAQ row format
     const seen = new Set();
-    upcomingIpos = allRows
-      .filter(d => {
-        const key = (d.proposedTickerSymbol || d.companyName || '') + (d.ipoDate || '');
+    upcomingIpos = results
+      .flatMap(data => {
+        if (!data) return [];
+        // The upcoming table is nested under data.upcoming.upcomingTable.rows
+        return data.upcoming?.upcomingTable?.rows || [];
+      })
+      .filter(row => {
+        const key = (row.proposedTickerSymbol || '') + (row.expectedPriceDate || '');
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       })
-      .map(d => {
-        // NASDAQ date format: "06/15/2026" → "2026-06-15"
-        let date = d.ipoDate || d.expectedPriceDate || '';
-        if (date && date.includes('/')) {
-          const [mm, dd, yyyy] = date.split('/');
-          date = `${yyyy}-${mm}-${dd}`;
-        }
-        // Parse deal size string like "$80,000,000" or "80000000"
+      .map(row => {
+        const date = _parseMDY(row.expectedPriceDate || row.pricedDate || '');
         const parseDollar = v => {
           if (!v) return null;
-          const n = parseFloat(String(v).replace(/[$,]/g, ''));
+          const n = parseFloat(String(v).replace(/[$,\s]/g, ''));
           return isNaN(n) ? null : n;
         };
         return {
           date,
-          company:    d.companyName            || '—',
-          symbol:     d.proposedTickerSymbol   || '—',
-          exchange:   d.proposedExchange       || '—',
-          priceRange: d.priceRange             || '—',
-          shares:     parseDollar(d.sharesOffered || d.shares),
-          marketCap:  parseDollar(d.dealSize   || d.marketCap),
+          company:    row.companyName           || '—',
+          symbol:     row.proposedTickerSymbol  || '—',
+          exchange:   row.proposedExchange      || '—',
+          priceRange: row.proposedSharePrice    || row.priceRange || '—',
+          shares:     parseDollar(row.sharesOffered),
+          marketCap:  parseDollar(row.dealSize),
           status:     'expected',
         };
       })
-      .filter(d => d.date >= today.toISOString().slice(0,10)) // only future dates
+      .filter(d => d.date && d.date >= todayStr)
       .sort((a, b) => a.date.localeCompare(b.date));
 
     saveUpcomingIpos();
