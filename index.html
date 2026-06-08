@@ -694,7 +694,7 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
 <div class="sec" id="sec-upcoming-ipos">
   <div class="fetch-bar">
     <button class="fetch-btn" id="upcoming-ipo-fetch-btn" onclick="fetchUpcomingIpos()">&#9889; Fetch Upcoming IPOs</button>
-    <span class="fetch-status" id="upcoming-ipo-status">Fetches the next 90 days of IPOs via FMP (requires API key in Settings)</span>
+    <span class="fetch-status" id="upcoming-ipo-status">Requires a free Finnhub key — add it in Settings (finnhub.io)</span>
   </div>
   <div class="fbar">
     <input type="text" id="uipo-q" placeholder="Search company or ticker…" oninput="renderUpcomingIpoTab()" style="min-width:160px">
@@ -1059,6 +1059,17 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
           <span id="fmp-key-status" style="font-size:11px;color:var(--txt3);"></span>
         </div>
         <p id="fmp-key-hint" style="font-size:10px;color:var(--txt3);margin-top:6px;"></p>
+      </div>
+
+      <div style="margin-top:18px;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Finnhub <span style="color:var(--txt3);margin-left:6px;">● Upcoming IPOs calendar (free at finnhub.io)</span></div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="finnhub-key-input" class="shares-input" style="width:280px;font-size:11px;"
+            placeholder="Paste Finnhub API key here…">
+          <button class="fbtn" onclick="saveFinnhubKey()">Save Key</button>
+          <span id="finnhub-key-status" style="font-size:11px;color:var(--txt3);"></span>
+        </div>
+        <p id="finnhub-key-hint" style="font-size:10px;color:var(--txt3);margin-top:6px;">Free key at <a href="https://finnhub.io" target="_blank" style="color:var(--acc)">finnhub.io</a> — used for Upcoming IPOs tab.</p>
       </div>
     </div>
   </div>
@@ -3006,6 +3017,19 @@ function saveFmpKey(){
   if (hint) hint.textContent = val ? 'Key stored in browser localStorage only — never sent to GitHub.' : '';
 }
 
+const LS_FINNHUB_KEY = 'investment_finnhub_key_v1';
+function getFinnhubKey(){ return localStorage.getItem(LS_FINNHUB_KEY) || ''; }
+function saveFinnhubKey(){
+  const input = document.getElementById('finnhub-key-input');
+  const val = input?.value?.trim() || '';
+  if (val) localStorage.setItem(LS_FINNHUB_KEY, val);
+  else localStorage.removeItem(LS_FINNHUB_KEY);
+  const st = document.getElementById('finnhub-key-status');
+  const hint = document.getElementById('finnhub-key-hint');
+  if (st) { st.textContent = val ? 'Saved ✓' : 'Key cleared'; st.style.color = val ? 'var(--grn)' : 'var(--txt3)'; setTimeout(()=>{ st.textContent=''; },3000); }
+  if (hint && val) hint.innerHTML = 'Key stored in browser localStorage only — never sent to GitHub.';
+}
+
 function renderFxTab() {
   const tbody = document.getElementById('fx-tbody');
   if (!tbody) return;
@@ -3040,6 +3064,12 @@ function renderFxTab() {
     fmpInput.value = k ? k.slice(0,6) + '...' + k.slice(-4) : '';
     const hint = document.getElementById('fmp-key-hint');
     if (hint) hint.textContent = k ? 'Key stored in browser localStorage only — never sent to GitHub.' : '';
+  }
+  // Populate Finnhub key input
+  const fhInput = document.getElementById('finnhub-key-input');
+  if (fhInput) {
+    const k = getFinnhubKey();
+    fhInput.value = k ? k.slice(0,6) + '...' + k.slice(-4) : '';
   }
 }
 
@@ -7124,37 +7154,67 @@ function saveUpcomingIpos() {
 let upcomingIpos = loadUpcomingIpos();
 
 async function fetchUpcomingIpos() {
-  const apiKey = getFmpKey();
-  if (!apiKey) { alert('FMP API key required — add it in Settings.'); return; }
+  const fhKey  = getFinnhubKey();
+  const fmpKey = getFmpKey();
+  if (!fhKey && !fmpKey) {
+    alert('Add a Finnhub API key in Settings → Finnhub (free at finnhub.io). FMP does not include IPO calendar on its free tier.');
+    return;
+  }
   const btn    = document.getElementById('upcoming-ipo-fetch-btn');
   const status = document.getElementById('upcoming-ipo-status');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Fetching…'; }
 
-  const today = new Date();
-  const from  = today.toISOString().slice(0, 10);
+  const today  = new Date();
+  const from   = today.toISOString().slice(0, 10);
   const toDate = new Date(today); toDate.setDate(today.getDate() + 90);
-  const to = toDate.toISOString().slice(0, 10);
+  const to     = toDate.toISOString().slice(0, 10);
 
   try {
-    const url = `https://financialmodelingprep.com/api/v3/ipo_calendar?from=${from}&to=${to}&apikey=${apiKey}`;
-    const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const data = await r.json();
-    if (!Array.isArray(data)) throw new Error('Unexpected response');
+    let raw = null;
+    let source = '';
 
-    upcomingIpos = data.map(d => ({
-      date:       d.date        || null,
-      company:    d.company     || d.name || '—',
-      symbol:     d.symbol      || '—',
-      exchange:   d.exchange    || '—',
-      priceRange: d.priceRange  || d.price || '—',
-      shares:     d.shares      || d.numberOfShares || null,
-      marketCap:  d.marketCap   || null,
-      actions:    d.actions     || null,
+    // Primary: Finnhub (free, CORS-enabled, includes status field)
+    if (fhKey) {
+      if (status) status.textContent = 'Fetching from Finnhub…';
+      const url = `https://finnhub.io/api/v1/calendar/ipo?from=${from}&to=${to}&token=${fhKey}`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      if (r.ok) {
+        const d = await r.json();
+        if (Array.isArray(d.ipoCalendar)) { raw = d.ipoCalendar; source = 'Finnhub'; }
+      } else {
+        console.warn('[UpcomingIPO] Finnhub HTTP', r.status);
+      }
+    }
+
+    // Fallback: FMP (IPO calendar is a paid endpoint but try anyway)
+    if (!raw && fmpKey) {
+      if (status) status.textContent = 'Trying FMP…';
+      const url = `https://financialmodelingprep.com/api/v3/ipo_calendar?from=${from}&to=${to}&apikey=${fmpKey}`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      if (r.ok) {
+        const d = await r.json();
+        if (Array.isArray(d) && d.length) { raw = d; source = 'FMP'; }
+      } else {
+        console.warn('[UpcomingIPO] FMP HTTP', r.status, '(IPO calendar requires paid plan)');
+      }
+    }
+
+    if (!raw) throw new Error('No data returned. Add a free Finnhub key in Settings.');
+
+    // Normalise fields from either source
+    upcomingIpos = raw.map(d => ({
+      date:       d.date                          || null,
+      company:    d.name    || d.company          || '—',
+      symbol:     d.symbol                        || '—',
+      exchange:   d.exchange                      || '—',
+      priceRange: d.price   || d.priceRange       || '—',
+      shares:     d.numberOfShares || d.shares    || null,
+      marketCap:  d.totalSharesValue || d.marketCap || null,
+      status:     d.status                        || null,
     })).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
     saveUpcomingIpos();
-    if (status) status.textContent = `Loaded ${upcomingIpos.length} upcoming IPOs (${from} → ${to}) ✓`;
+    if (status) status.textContent = `Loaded ${upcomingIpos.length} upcoming IPOs via ${source} (${from} → ${to}) ✓`;
     renderUpcomingIpoTab();
     uipoBuildExchangeDropdown();
   } catch(e) {
@@ -7200,18 +7260,24 @@ function renderUpcomingIpoTab() {
     <th>Company</th>
     <th style="width:70px">Ticker</th>
     <th style="width:120px">Exchange</th>
-    <th style="width:100px;text-align:right">Price Range</th>
-    <th style="width:100px;text-align:right">Shares</th>
-    <th style="width:110px;text-align:right">Mkt Cap</th>
+    <th style="width:90px;text-align:right">Price Range</th>
+    <th style="width:90px;text-align:right">Shares</th>
+    <th style="width:100px;text-align:right">Deal Size</th>
+    <th style="width:80px;text-align:center">Status</th>
   </tr>`;
 
   if (!rows.length) {
-    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px">${upcomingIpos.length ? 'No results match filters.' : 'No data yet — click Fetch Upcoming IPOs.'}</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px">${upcomingIpos.length ? 'No results match filters.' : 'No data yet — click Fetch Upcoming IPOs.'}</td></tr>`;
     return;
   }
 
   const fmtShares = v => v == null ? '—' : (v >= 1e9 ? `${(v/1e9).toFixed(1)}B` : v >= 1e6 ? `${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `${(v/1e3).toFixed(0)}K` : v.toString());
   const fmtMktCap = v => v == null ? '—' : (v >= 1e12 ? `$${(v/1e12).toFixed(2)}T` : v >= 1e9 ? `$${(v/1e9).toFixed(1)}B` : v >= 1e6 ? `$${(v/1e6).toFixed(0)}M` : `$${v}`);
+  const statusBadge = s => {
+    if (!s) return '—';
+    const c = s === 'priced' ? 'var(--grn)' : s === 'withdrawn' ? 'var(--red)' : 'var(--ylw)';
+    return `<span style="color:${c};font-size:10px;text-transform:capitalize">${s}</span>`;
+  };
 
   tb.innerHTML = rows.map(d => `<tr style="border-bottom:1px solid var(--bdr)">
     <td style="padding:7px 10px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ylw);white-space:nowrap">${d.date || '—'}</td>
@@ -7221,6 +7287,7 @@ function renderUpcomingIpoTab() {
     <td style="padding:7px 10px;font-family:'DM Mono',monospace;font-size:11px;color:var(--grn);text-align:right">${d.priceRange || '—'}</td>
     <td style="padding:7px 10px;font-family:'DM Mono',monospace;font-size:11px;color:var(--txt2);text-align:right">${fmtShares(d.shares)}</td>
     <td style="padding:7px 10px;font-family:'DM Mono',monospace;font-size:11px;color:var(--grn);text-align:right">${fmtMktCap(d.marketCap)}</td>
+    <td style="padding:7px 10px;text-align:center">${statusBadge(d.status)}</td>
   </tr>`).join('');
 }
 
