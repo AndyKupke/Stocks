@@ -524,6 +524,9 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
     <button class="menu-nav-btn" onclick="menuNav('longlist')">
       <span class="menu-nav-icon">&#9776;</span>Long List
     </button>
+    <button class="menu-nav-btn" onclick="menuNav('big')">
+      <span class="menu-nav-icon">&#127894;</span>BIG
+    </button>
     <button class="menu-nav-btn" onclick="menuNav('ipos')">
       <span class="menu-nav-icon">&#9733;</span>IPOs
     </button>
@@ -634,6 +637,37 @@ tbody tr.rbuy:hover{background:rgba(210,153,34,.09);}
   </div>
   <div class="tw"><table id="port-tbl"><thead id="port-thead"></thead><tbody id="port-tb"></tbody><tfoot id="port-tf"></tfoot></table></div>
   <div id="port-analysis" style="margin-top:14px;"></div>
+</div>
+
+<!-- BIG TAB -->
+<div class="sec" id="sec-big">
+  <div class="fetch-bar">
+    <button class="fetch-btn" id="big-fetch-btn" onclick="fetchBigPrices()">&#9889; Fetch Live Prices</button>
+    <span class="fetch-status" id="big-status"></span>
+  </div>
+  <div class="fbar">
+    <input type="text" id="big-q" placeholder="Search ticker or name…" oninput="bigRender()" style="min-width:160px">
+    <label>Group</label>
+    <select id="big-group" onchange="bigRender()">
+      <option value="">All</option>
+      <option value="1T">1T+</option>
+      <option value="100bn">100bn+</option>
+    </select>
+    <label>Sector</label>
+    <select id="big-sector" onchange="bigRender()">
+      <option value="">All</option>
+    </select>
+    <label>Country</label>
+    <select id="big-country" onchange="bigRender()">
+      <option value="">All</option>
+    </select>
+    <div class="spacer"></div>
+    <button class="fbtn" onclick="bigReset()">Reset</button>
+  </div>
+  <div class="tw"><table id="big-tbl" style="width:100%">
+    <thead id="big-thead"></thead>
+    <tbody id="big-tb"></tbody>
+  </table></div>
 </div>
 
 <!-- LONG LIST TAB -->
@@ -4783,6 +4817,7 @@ function menuNav(tabId) {
   // Render Long List only if data has changed since last visit (dirty flag).
   // Tab shows instantly via showTab CSS; render fills it in on the next frame.
   if (tabId === 'longlist') requestAnimationFrame(() => { if (_llNeedsRefresh) { wlApplySort(); renderLLTable(); } });
+  if (tabId === 'big') requestAnimationFrame(() => { bigBuildDropdowns(); bigRender(); });
   if (tabId === 'ipos') requestAnimationFrame(() => { if (!ipoAllData.length) ipoLoadFromGitHub(); else renderIpoTable(); });
   if (tabId.startsWith('st-')) {
     // Keep Stock Tracking sub-menu open and highlight active item
@@ -7206,6 +7241,215 @@ async function fetchSp500Data() {
     status.textContent = `Done: ${succeeded}/${done} updated${avNote}${failCount ? ` · ${failCount} failed` : ' ✓'}`;
     setTimeout(() => { if (status) status.textContent = ''; }, 8000);
   }
+}
+
+// ── BIG LIST ─────────────────────────────────────────────────────────────────
+const BIG_LIST = [
+  {t:'GOOGL', n:'Alphabet Inc.',                  country:'United States', sector:'Technology',              industry:'Software - Internet',         group:'1T'},
+  {t:'MSFT',  n:'Microsoft Corporation',          country:'United States', sector:'Technology',              industry:'Software - Prepackaged',       group:'1T'},
+  {t:'AMZN',  n:'Amazon.com Inc.',                country:'United States', sector:'Consumer Discretionary',  industry:'E-Commerce / Retail',          group:'1T'},
+  {t:'SPCX',  n:'Space Exploration Technologies', country:'United States', sector:'Technology',              industry:'Software - Internet',          group:'1T'},
+  {t:'TSM',   n:'Taiwan Semiconductor Mfg.',      country:'Taiwan',        sector:'Technology',              industry:'Semiconductors',               group:'1T'},
+  {t:'AVGO',  n:'Broadcom Inc.',                  country:'United States', sector:'Technology',              industry:'Semiconductors',               group:'1T'},
+  {t:'META',  n:'Meta Platforms Inc.',            country:'United States', sector:'Technology',              industry:'Software - Internet',          group:'1T'},
+  {t:'TSLA',  n:'Tesla Inc.',                     country:'United States', sector:'Industrials',             industry:'Auto Manufacturing',           group:'1T'},
+  {t:'MU',    n:'Micron Technology Inc.',         country:'United States', sector:'Technology',              industry:'Semiconductors',               group:'1T'},
+  {t:'JPM',   n:'JP Morgan Chase & Co.',          country:'United States', sector:'Finance',                 industry:'Major Banks',                  group:'100bn'},
+  {t:'AMD',   n:'Advanced Micro Devices',         country:'United States', sector:'Technology',              industry:'Semiconductors',               group:'100bn'},
+  {t:'ASML',  n:'ASML Holding N.V.',              country:'Netherlands',   sector:'Technology',              industry:'Industrial Machinery',         group:'100bn'},
+  {t:'XOM',   n:'Exxon Mobil Corporation',        country:'United States', sector:'Energy',                  industry:'Integrated Oil Companies',     group:'100bn'},
+  {t:'JNJ',   n:'Johnson & Johnson',              country:'United States', sector:'Health Care',             industry:'Pharmaceuticals',              group:'100bn'},
+  {t:'AZN',   n:'AstraZeneca PLC',                country:'United Kingdom',sector:'Health Care',             industry:'Pharmaceuticals',              group:'100bn'},
+  {t:'ORCL',  n:'Oracle Corporation',             country:'United States', sector:'Technology',              industry:'Software - Prepackaged',       group:'100bn'},
+  {t:'CSCO',  n:'Cisco Systems Inc.',             country:'United States', sector:'Telecommunications',      industry:'Computer Communications',      group:'100bn'},
+  {t:'AMAT',  n:'Applied Materials Inc.',         country:'United States', sector:'Technology',              industry:'Semiconductors',               group:'100bn'},
+  {t:'ARM',   n:'Arm Holdings plc',               country:'United Kingdom',sector:'Technology',              industry:'Semiconductors',               group:'100bn'},
+  {t:'CVX',   n:'Chevron Corporation',            country:'United States', sector:'Energy',                  industry:'Integrated Oil Companies',     group:'100bn'},
+  {t:'PG',    n:'Procter & Gamble Company',       country:'United States', sector:'Consumer Discretionary',  industry:'Package Goods/Cosmetics',      group:'100bn'},
+  {t:'MS',    n:'Morgan Stanley',                 country:'United States', sector:'Finance',                 industry:'Investment Banking',           group:'100bn'},
+  {t:'NFLX',  n:'Netflix Inc.',                   country:'United States', sector:'Consumer Discretionary',  industry:'Consumer Electronics/Video',   group:'100bn'},
+  {t:'GS',    n:'Goldman Sachs Group',            country:'United States', sector:'Finance',                 industry:'Investment Banking',           group:'100bn'},
+  {t:'PLTR',  n:'Palantir Technologies',          country:'United States', sector:'Technology',              industry:'Software - Prepackaged',       group:'100bn'},
+  {t:'SNDK',  n:'Sandisk Corporation',            country:'United States', sector:'Technology',              industry:'Electronic Components',        group:'100bn'},
+  {t:'NVS',   n:'Novartis AG',                    country:'Switzerland',   sector:'Health Care',             industry:'Pharmaceuticals',              group:'100bn'},
+  {t:'MRK',   n:'Merck & Company',                country:'United States', sector:'Health Care',             industry:'Pharmaceuticals',              group:'100bn'},
+  {t:'LIN',   n:'Linde plc',                      country:'United States', sector:'Basic Materials',         industry:'Major Chemicals',              group:'100bn'},
+  {t:'SHEL',  n:'Shell PLC',                      country:'Netherlands',   sector:'Energy',                  industry:'Oil & Gas Production',         group:'100bn'},
+  {t:'PANW',  n:'Palo Alto Networks',             country:'United States', sector:'Technology',              industry:'Computer Peripheral Equipment',group:'100bn'},
+  {t:'QCOM',  n:'QUALCOMM Incorporated',          country:'United States', sector:'Technology',              industry:'Semiconductors / Radio',       group:'100bn'},
+  {t:'SAP',   n:'SAP SE',                         country:'Germany',       sector:'Technology',              industry:'Software - Prepackaged',       group:'100bn'},
+  {t:'ADI',   n:'Analog Devices Inc.',            country:'United States', sector:'Technology',              industry:'Semiconductors',               group:'100bn'},
+  {t:'TMUS',  n:'T-Mobile US Inc.',               country:'United States', sector:'Telecommunications',      industry:'Telecommunications Equipment', group:'100bn'},
+  {t:'NVO',   n:'Novo Nordisk A/S',               country:'Denmark',       sector:'Health Care',             industry:'Pharmaceuticals',              group:'100bn'},
+  {t:'TTE',   n:'TotalEnergies SE',               country:'France',        sector:'Energy',                  industry:'Oil & Gas Production',         group:'100bn'},
+  {t:'CRWD',  n:'CrowdStrike Holdings',           country:'United States', sector:'Technology',              industry:'Software - Prepackaged',       group:'100bn'},
+  {t:'BLK',   n:'BlackRock Inc.',                 country:'United States', sector:'Finance',                 industry:'Investment Banking',           group:'100bn'},
+  {t:'ETN',   n:'Eaton Corporation PLC',          country:'Ireland',       sector:'Technology',              industry:'Industrial Machinery',         group:'100bn'},
+  {t:'DE',    n:'Deere & Company',                country:'United States', sector:'Industrials',             industry:'Industrial Machinery',         group:'100bn'},
+  {t:'UBS',   n:'UBS Group AG',                   country:'Switzerland',   sector:'Finance',                 industry:'Major Banks',                  group:'100bn'},
+  {t:'UBER',  n:'Uber Technologies',              country:'United States', sector:'Consumer Discretionary',  industry:'Business Services',            group:'100bn'},
+  {t:'SHOP',  n:'Shopify Inc.',                   country:'Canada',        sector:'Technology',              industry:'Software - Prepackaged',       group:'100bn'},
+  {t:'CRM',   n:'Salesforce Inc.',                country:'United States', sector:'Technology',              industry:'Software - Prepackaged',       group:'100bn'},
+  {t:'LMT',   n:'Lockheed Martin Corporation',   country:'United States', sector:'Industrials',             industry:'Military/Government',          group:'100bn'},
+  {t:'NOW',   n:'ServiceNow Inc.',                country:'United States', sector:'Technology',              industry:'Software - Prepackaged',       group:'100bn'},
+];
+
+let bigSortKey = 'mcap', bigSortDir = -1;
+let bigFetching = false;
+
+function bigBuildDropdowns() {
+  const sectors   = [...new Set(BIG_LIST.map(s => s.sector))].sort();
+  const countries = [...new Set(BIG_LIST.map(s => s.country))].sort();
+  const sEl = document.getElementById('big-sector');
+  const cEl = document.getElementById('big-country');
+  if (sEl && sEl.options.length <= 1) sectors.forEach(v => { const o = document.createElement('option'); o.value = o.textContent = v; sEl.appendChild(o); });
+  if (cEl && cEl.options.length <= 1) countries.forEach(v => { const o = document.createElement('option'); o.value = o.textContent = v; cEl.appendChild(o); });
+}
+
+function bigReset() {
+  ['big-q','big-group','big-sector','big-country'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  bigRender();
+}
+
+function bigSort(key) {
+  if (bigSortKey === key) bigSortDir = -bigSortDir;
+  else { bigSortKey = key; bigSortDir = key === 'ticker' || key === 'name' || key === 'country' || key === 'sector' ? 1 : -1; }
+  bigRender();
+}
+
+function bigRender() {
+  const thead = document.getElementById('big-thead');
+  const tb    = document.getElementById('big-tb');
+  if (!thead || !tb) return;
+
+  const q       = (document.getElementById('big-q')?.value       || '').toLowerCase().trim();
+  const group   = document.getElementById('big-group')?.value    || '';
+  const sector  = document.getElementById('big-sector')?.value   || '';
+  const country = document.getElementById('big-country')?.value  || '';
+
+  // Enrich with live price data
+  let rows = BIG_LIST.map(s => {
+    const pd  = priceData[s.t] || {};
+    const price  = pd.price  ?? null;
+    const mcapB  = pd.mcap   ?? null;               // billions from Yahoo (price × shares / 1e9)
+    const shares = (price > 0 && mcapB > 0) ? mcapB * 1e9 / price : null;
+    return { ...s, price, mcapB, shares };
+  });
+
+  // Filter
+  if (q)       rows = rows.filter(r => r.t.toLowerCase().includes(q) || r.n.toLowerCase().includes(q));
+  if (group)   rows = rows.filter(r => r.group === group);
+  if (sector)  rows = rows.filter(r => r.sector === sector);
+  if (country) rows = rows.filter(r => r.country === country);
+
+  // Sort
+  const inf = bigSortDir > 0 ? Infinity : -Infinity;
+  rows.sort((a, b) => {
+    let av, bv;
+    switch(bigSortKey) {
+      case 'ticker':  return bigSortDir * a.t.localeCompare(b.t);
+      case 'name':    return bigSortDir * a.n.localeCompare(b.n);
+      case 'country': return bigSortDir * a.country.localeCompare(b.country);
+      case 'sector':  return bigSortDir * a.sector.localeCompare(b.sector);
+      case 'group':   return bigSortDir * a.group.localeCompare(b.group);
+      case 'price':   av = a.price  ?? inf; bv = b.price  ?? inf; break;
+      case 'shares':  av = a.shares ?? inf; bv = b.shares ?? inf; break;
+      case 'mcap':    av = a.mcapB  ?? inf; bv = b.mcapB  ?? inf; break;
+      default: av = 0; bv = 0;
+    }
+    return bigSortDir * (av - bv);
+  });
+
+  const arrow = k => bigSortKey === k ? (bigSortDir > 0 ? ' ▲' : ' ▼') : '';
+  const th = (label, key, align) =>
+    `<th onclick="bigSort('${key}')" style="cursor:pointer;user-select:none;${align?'text-align:'+align:''}">
+      ${label}${arrow(key)}</th>`;
+
+  thead.innerHTML = `<tr>
+    <th style="width:28px">#</th>
+    ${th('Ticker',  'ticker')}
+    ${th('Company', 'name')}
+    ${th('Country', 'country')}
+    ${th('Sector',  'sector')}
+    ${th('Industry','industry')}
+    ${th('Group',   'group')}
+    ${th('Price',   'price',  'right')}
+    ${th('Shares Outstanding','shares','right')}
+    ${th('Market Cap','mcap', 'right')}
+  </tr>`;
+
+  if (!rows.length) {
+    tb.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--txt3);font-family:'DM Mono',monospace;font-size:11px">No stocks match filters.</td></tr>`;
+    return;
+  }
+
+  const dash = `<span style="color:var(--txt3)">—</span>`;
+  const fmtP = v => v == null ? dash : fmtPrice(v, 'NYSE'); // USD prices
+  const fmtS = v => v == null ? dash : `<span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--txt2)">${(v/1e9).toFixed(2)}B</span>`;
+  const fmtM = v => v == null ? dash : fmtMcap(v, 'NYSE');
+
+  tb.innerHTML = rows.map((r, i) => `<tr style="border-bottom:1px solid var(--bdr)">
+    <td style="padding:6px 8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3)">${i+1}</td>
+    <td style="padding:6px 10px;font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--acc)">${r.t}</td>
+    <td style="padding:6px 10px;font-size:11px;color:var(--txt)">${r.n}</td>
+    <td style="padding:6px 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3)">${r.country}</td>
+    <td style="padding:6px 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--txt2)">${r.sector}</td>
+    <td style="padding:6px 10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--txt3)">${r.industry}</td>
+    <td style="padding:6px 10px;font-family:'DM Mono',monospace;font-size:10px;text-align:center">
+      <span style="background:${r.group==='1T'?'var(--acc)':'var(--surf2)'};color:${r.group==='1T'?'#fff':'var(--txt2)'};padding:2px 7px;border-radius:3px;font-family:'DM Mono',monospace;font-size:9px">${r.group}</span>
+    </td>
+    <td style="padding:6px 10px;text-align:right">${fmtP(r.price)}</td>
+    <td style="padding:6px 10px;text-align:right">${fmtS(r.shares)}</td>
+    <td style="padding:6px 10px;text-align:right">${fmtM(r.mcapB)}</td>
+  </tr>`).join('');
+}
+
+async function fetchBigPrices() {
+  if (bigFetching) return;
+  bigFetching = true;
+  const btn    = document.getElementById('big-fetch-btn');
+  const status = document.getElementById('big-status');
+  if (btn) { btn.disabled = true; btn.classList.add('spinning'); }
+
+  const tickers = BIG_LIST.map(s => s.t);
+  let fetched = 0;
+  const CONC = 8;
+
+  setStatus('Fetching BIG prices…');
+  for (let i = 0; i < tickers.length; i += CONC) {
+    const batch = tickers.slice(i, i + CONC);
+    const results = await Promise.all(batch.map(async sym => {
+      try {
+        const r = await yahooFetchOne(sym);
+        if (!r) return null;
+        if (r._quoteOnly) {
+          const q = r.quote;
+          fetched++;
+          return { sym, price: q.regularMarketPrice,
+            mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice) ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9 : (q.marketCap ? q.marketCap/1e9 : null),
+            chg1d: q.regularMarketChangePercent ?? null, chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
+        }
+        const d = processYahooCandles(sym, r);
+        if (d) { fetched++; return { sym, ...d }; }
+      } catch(e) {}
+      return null;
+    }));
+    applyFetchedPrices(results.filter(Boolean));
+    if (status) status.textContent = `${fetched}/${tickers.length} prices loaded…`;
+    bigRender();
+    if (i + CONC < tickers.length) await new Promise(r => setTimeout(r, 150));
+  }
+
+  bigFetching = false;
+  if (btn) { btn.disabled = false; btn.classList.remove('spinning'); }
+  const t = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  if (status) status.textContent = `✓ ${fetched}/${tickers.length} prices loaded · ${t}`;
+  bigRender();
+
+  function setStatus(msg) { if (status) status.textContent = msg; }
 }
 
 // ── STOCK TRACKING ────────────────────────────────────────────────────────────
