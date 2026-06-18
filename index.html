@@ -7413,83 +7413,86 @@ async function fetchBigPrices() {
   const btn    = document.getElementById('big-fetch-btn');
   const status = document.getElementById('big-status');
   if (btn) { btn.disabled = true; btn.classList.add('spinning'); }
-
-  const tickers = BIG_LIST.map(s => s.t);
-  let fetched = 0;
-  const CONC = 8;
   const setStatus = msg => { if (status) status.textContent = msg; };
 
-  // ── Phase 1: Yahoo Finance for price (+ mcap when available) ──
-  setStatus('Fetching prices…');
-  for (let i = 0; i < tickers.length; i += CONC) {
-    const batch = tickers.slice(i, i + CONC);
-    const results = await Promise.all(batch.map(async sym => {
-      try {
-        const r = await yahooFetchOne(sym);
-        if (!r) return null;
-        if (r._quoteOnly) {
-          const q = r.quote;
-          fetched++;
-          return { sym, price: q.regularMarketPrice,
-            mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice)
-              ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9
-              : (q.marketCap ? q.marketCap / 1e9 : null),
-            chg1d: q.regularMarketChangePercent ?? null, chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
-        }
-        const d = processYahooCandles(sym, r);
-        if (d) { fetched++; return { sym, ...d }; }
-      } catch(e) {}
-      return null;
+  const syms = BIG_LIST.map(s => s.t);
+  let fetched = 0;
+
+  // Mirrors fetchAllPrices adaptive concurrency to avoid allorigins.win rate limits
+  async function tryFetch(sym) {
+    try {
+      const result = await yahooFetchOne(sym);
+      if (!result) return null;
+      if (result._quoteOnly) {
+        const q = result.quote;
+        fetched++;
+        return { sym, price: q.regularMarketPrice,
+          mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice)
+            ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9
+            : (q.marketCap ? q.marketCap / 1e9 : null),
+          chg1d: q.regularMarketChangePercent ?? null,
+          chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
+      }
+      const d = processYahooCandles(sym, result);
+      if (d) { fetched++; return { sym, ...d }; }
+    } catch(e) {}
+    return null;
+  }
+
+  // ── Pass 1: adaptive concurrency with per-request stagger ──
+  const failed = [];
+  const CONCUR = 8;
+  let delay = 150;
+  setStatus('Fetching BIG prices…');
+
+  for (let i = 0; i < syms.length; i += CONCUR) {
+    const batch = syms.slice(i, i + CONCUR);
+    setStatus(`Fetching ${i+1}–${Math.min(i+CONCUR,syms.length)} of ${syms.length} · ${fetched} ok`);
+    const results = await Promise.all(batch.map(async (sym, bi) => {
+      await new Promise(r => setTimeout(r, bi * 25)); // stagger within batch
+      const r = await tryFetch(sym);
+      if (!r) failed.push(sym);
+      return r;
     }));
     applyFetchedPrices(results.filter(Boolean));
-    if (i + CONC < tickers.length) await new Promise(r => setTimeout(r, 150));
+    bigRender();
+    const ok = results.filter(Boolean).length;
+    if (ok === 0)     delay = Math.min(delay * 2, 1200); // all failed → slow down
+    else if (ok >= 6) delay = Math.max(delay * 0.8, 100); // mostly ok → speed up
+    if (i + CONCUR < syms.length) await new Promise(r => setTimeout(r, delay));
   }
-  setStatus(`Prices loaded (${fetched}/${tickers.length}) · fetching market cap…`);
-  bigRender();
 
-  // ── Phase 2: FMP quote for market cap + shares outstanding ──
-  // Yahoo's candles path often omits marketCap/sharesOutstanding from meta.
-  // FMP quote endpoint reliably provides both for all major US stocks.
-  const fmpKey = getFmpKey();
-  if (fmpKey) {
-    // Find tickers still missing mcap
-    const needMcap = tickers.filter(t => !(priceData[t]?.mcap > 0));
-    const FMP_CONC = 5;
-    let mcapFetched = 0;
-    for (let i = 0; i < needMcap.length; i += FMP_CONC) {
-      const batch = needMcap.slice(i, i + FMP_CONC);
-      // FMP batch quote: /api/v3/quote/AAPL,MSFT,GOOGL
-      try {
-        const syms = batch.join(',');
-        const url  = `https://financialmodelingprep.com/api/v3/quote/${encodeURIComponent(syms)}?apikey=${fmpKey}`;
-        const r    = await fetch(url, { signal: AbortSignal.timeout(12000) });
-        if (r.ok) {
-          const quotes = await r.json();
-          if (Array.isArray(quotes)) {
-            quotes.forEach(q => {
-              const sym = q.symbol;
-              if (!sym) return;
-              const existing = priceData[sym] || {};
-              const price = existing.price || q.price || null;
-              const mcap  = q.marketCap ? q.marketCap / 1e9 : null;
-              if (mcap > 0) {
-                priceData[sym] = { ...existing, sym, price, mcap };
-                mcapFetched++;
-              }
-            });
-          }
-        }
-      } catch(e) { /* skip batch */ }
-      if (i + FMP_CONC < needMcap.length) await new Promise(r => setTimeout(r, 300));
+  // ── Pass 2: retry failed tickers after a rest ──
+  if (failed.length > 0) {
+    setStatus(`Pass 1 done · ${fetched} loaded · retrying ${failed.length} failed…`);
+    await new Promise(r => setTimeout(r, 3000));
+    const stillFailed = [];
+    for (let i = 0; i < failed.length; i += 3) {
+      const batch = failed.slice(i, i + 3);
+      const results = await Promise.all(batch.map(async sym => {
+        await new Promise(r => setTimeout(r, Math.random() * 200));
+        const r = await tryFetch(sym);
+        if (!r) stillFailed.push(sym);
+        return r;
+      }));
+      applyFetchedPrices(results.filter(Boolean));
+      bigRender();
+      if (i + 3 < failed.length) await new Promise(r => setTimeout(r, 400));
     }
-    setStatus(`Prices + market cap loaded · ${mcapFetched} via FMP ✓`);
-  } else {
-    setStatus(`✓ ${fetched}/${tickers.length} prices loaded (add FMP key in Settings for market cap)`);
+
+    // ── Pass 3: one at a time for anything still failing ──
+    if (stillFailed.length > 0) {
+      await new Promise(r => setTimeout(r, 3000));
+      for (const sym of stillFailed) {
+        const r = await tryFetch(sym);
+        if (r) applyFetchedPrices([r]);
+        await new Promise(r => setTimeout(r, 600));
+      }
+    }
   }
 
   const t = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-  if (status && fmpKey) status.textContent += ` · ${t}`;
-
+  setStatus(`✓ ${fetched}/${syms.length} prices loaded · ${t}`);
   bigFetching = false;
   if (btn) { btn.disabled = false; btn.classList.remove('spinning'); }
   bigRender();
