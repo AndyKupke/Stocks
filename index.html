@@ -1762,12 +1762,27 @@ function loadPortfolio(){
     const out = {};
     for(const [k,v] of Object.entries(d)){
       if(v===true||v===false){ out[k]={shares:0}; }
-      else if(typeof v==='object'){ out[k]={shares:v.shares||0, ...(v._portChecked!==undefined&&{_portChecked:v._portChecked})}; }
+      else if(typeof v==='object'){ out[k]={shares:v.shares||0, ...(v._portChecked!==undefined&&{_portChecked:v._portChecked}), ...(v.lt&&{lt:v.lt})}; }
     }
     return out;
   }catch(e){ return {}; }
 }
 function savePortfolio(p){ try{localStorage.setItem(LS_KEY,JSON.stringify(p)); markDirty();}catch(e){} scheduleSave(); }
+
+function setLtStatus(t, val) {
+  if (!PORTFOLIO[t]) return;
+  if (val) PORTFOLIO[t].lt = val;
+  else delete PORTFOLIO[t].lt;
+  savePortfolio(PORTFOLIO);
+  // Update the dropdown colour in-place without full re-render
+  const sel = document.getElementById('lt-' + t);
+  if (sel) applyLtColor(sel);
+}
+function applyLtColor(sel) {
+  const c = {KEEP:'var(--grn)', ADJUST:'var(--ylw)', SELL:'var(--red)'}[sel.value] || 'var(--txt3)';
+  sel.style.color = c;
+  sel.style.borderColor = c;
+}
 
 // Fix up any entry that is missing _portChecked (old saved data or GitHub data from before this field existed).
 // Rule: if shares > 0 → definitely a portfolio position (true).
@@ -2116,7 +2131,18 @@ function renderPortfolioTab(){
       }
       return `<td class="pc-total-hold price-cell" style="color:var(--grn);text-align:right">€ ${eur.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
     })();
+    const ltVal = PORTFOLIO[s.t]?.lt || '';
+    const ltColor = {KEEP:'var(--grn)', ADJUST:'var(--ylw)', SELL:'var(--red)'}[ltVal] || 'var(--txt3)';
     return `<tr class="rport${buyFlag?' rbuy':''}">
+      <td class="pc-lt" style="text-align:center;padding:4px 6px">
+        <select id="lt-${s.t}" onchange="setLtStatus('${s.t}',this.value);applyLtColor(this)"
+          style="background:var(--surf2);border:1px solid ${ltColor};color:${ltColor};font-family:'DM Mono',monospace;font-size:10px;padding:3px 4px;border-radius:4px;cursor:pointer;outline:none;width:72px">
+          <option value="" ${!ltVal?'selected':''} style="color:var(--txt3)">—</option>
+          <option value="KEEP" ${ltVal==='KEEP'?'selected':''} style="color:var(--grn)">KEEP</option>
+          <option value="ADJUST" ${ltVal==='ADJUST'?'selected':''} style="color:var(--ylw)">ADJUST</option>
+          <option value="SELL" ${ltVal==='SELL'?'selected':''} style="color:var(--red)">SELL</option>
+        </select>
+      </td>
       <td class="pc-ticker"><span class="tk" style="color:var(--txt);font-weight:700">${s.t}</span></td>
       <td class="pc-company"><span class="nm" title="${s.n}">${s.n}</span></td>
       <td class="pc-price price-cell">${fmtPrice(pd.price,s.ex)}</td>
@@ -5228,6 +5254,7 @@ function buildPortThead() {
   const dClr = det ? 'color:var(--acc)' : '';
   const pClr = prf ? 'color:var(--acc)' : '';
   return `<tr>
+    <th class="pc-lt" style="width:78px;text-align:center">LT</th>
     <th class="pc-ticker" onclick="portSort('ticker')">Ticker</th>
     <th class="pc-company" onclick="portSort('name')">Company</th>
     <th class="pc-price" onclick="portSort('price')">Price</th>
