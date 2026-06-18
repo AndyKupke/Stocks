@@ -7417,8 +7417,10 @@ async function fetchBigPrices() {
   const tickers = BIG_LIST.map(s => s.t);
   let fetched = 0;
   const CONC = 8;
+  const setStatus = msg => { if (status) status.textContent = msg; };
 
-  setStatus('Fetching BIG prices…');
+  // ── Phase 1: Yahoo Finance for price (+ mcap when available) ──
+  setStatus('Fetching prices…');
   for (let i = 0; i < tickers.length; i += CONC) {
     const batch = tickers.slice(i, i + CONC);
     const results = await Promise.all(batch.map(async sym => {
@@ -7429,7 +7431,9 @@ async function fetchBigPrices() {
           const q = r.quote;
           fetched++;
           return { sym, price: q.regularMarketPrice,
-            mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice) ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9 : (q.marketCap ? q.marketCap/1e9 : null),
+            mcap: (q.sharesOutstanding > 0 && q.regularMarketPrice)
+              ? (q.sharesOutstanding * q.regularMarketPrice) / 1e9
+              : (q.marketCap ? q.marketCap / 1e9 : null),
             chg1d: q.regularMarketChangePercent ?? null, chg7d: null, chg30d: null, chg90d: null, chg1y: null, chgytd: null };
         }
         const d = processYahooCandles(sym, r);
@@ -7438,18 +7442,57 @@ async function fetchBigPrices() {
       return null;
     }));
     applyFetchedPrices(results.filter(Boolean));
-    if (status) status.textContent = `${fetched}/${tickers.length} prices loaded…`;
-    bigRender();
     if (i + CONC < tickers.length) await new Promise(r => setTimeout(r, 150));
   }
+  setStatus(`Prices loaded (${fetched}/${tickers.length}) · fetching market cap…`);
+  bigRender();
+
+  // ── Phase 2: FMP quote for market cap + shares outstanding ──
+  // Yahoo's candles path often omits marketCap/sharesOutstanding from meta.
+  // FMP quote endpoint reliably provides both for all major US stocks.
+  const fmpKey = getFmpKey();
+  if (fmpKey) {
+    // Find tickers still missing mcap
+    const needMcap = tickers.filter(t => !(priceData[t]?.mcap > 0));
+    const FMP_CONC = 5;
+    let mcapFetched = 0;
+    for (let i = 0; i < needMcap.length; i += FMP_CONC) {
+      const batch = needMcap.slice(i, i + FMP_CONC);
+      // FMP batch quote: /api/v3/quote/AAPL,MSFT,GOOGL
+      try {
+        const syms = batch.join(',');
+        const url  = `https://financialmodelingprep.com/api/v3/quote/${encodeURIComponent(syms)}?apikey=${fmpKey}`;
+        const r    = await fetch(url, { signal: AbortSignal.timeout(12000) });
+        if (r.ok) {
+          const quotes = await r.json();
+          if (Array.isArray(quotes)) {
+            quotes.forEach(q => {
+              const sym = q.symbol;
+              if (!sym) return;
+              const existing = priceData[sym] || {};
+              const price = existing.price || q.price || null;
+              const mcap  = q.marketCap ? q.marketCap / 1e9 : null;
+              if (mcap > 0) {
+                priceData[sym] = { ...existing, sym, price, mcap };
+                mcapFetched++;
+              }
+            });
+          }
+        }
+      } catch(e) { /* skip batch */ }
+      if (i + FMP_CONC < needMcap.length) await new Promise(r => setTimeout(r, 300));
+    }
+    setStatus(`Prices + market cap loaded · ${mcapFetched} via FMP ✓`);
+  } else {
+    setStatus(`✓ ${fetched}/${tickers.length} prices loaded (add FMP key in Settings for market cap)`);
+  }
+
+  const t = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  if (status && fmpKey) status.textContent += ` · ${t}`;
 
   bigFetching = false;
   if (btn) { btn.disabled = false; btn.classList.remove('spinning'); }
-  const t = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-  if (status) status.textContent = `✓ ${fetched}/${tickers.length} prices loaded · ${t}`;
   bigRender();
-
-  function setStatus(msg) { if (status) status.textContent = msg; }
 }
 
 // ── STOCK TRACKING ────────────────────────────────────────────────────────────
