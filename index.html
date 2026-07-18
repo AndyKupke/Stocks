@@ -1745,6 +1745,7 @@ let ST=[
 {t:"SNSE",n:"Sensei Biotherapeutics",th:"T8",ind:"Biotech / Health",reg:"US",ex:"NASDAQ",cv:"M",rk:4,dp:true,etf:false,hr:true,priv:false,ipo:false,note:"Cancer immunotherapy. ISIN US81728A2078 / WKN A41A4Z. Tumor microenvironment platform. Clinical-stage. High risk / high reward."},
 {t:"SPIR",n:"Spire Global Inc",th:"T8",ind:"Space / Satellite",reg:"US",ex:"NASDAQ",cv:"H",rk:4,dp:false,etf:false,hr:true,priv:false,ipo:false,note:"Satellite-as-a-service. Maritime AIS, weather, aviation tracking. Multi-purpose constellation. ISIN US81728A2078."}
 ];
+const ST_SEED = ST.slice(); // snapshot of hardcoded list — used to recover portfolio tickers missing from GitHub stockList
 
 // ── PORTFOLIO PERSISTENCE (localStorage) ──────────────────────────────
 // Two completely independent stores:
@@ -1794,6 +1795,30 @@ function normalizePortfolio() {
       entry._portChecked = (entry.shares > 0) || !BUY_SET.has(t);
     }
   }
+}
+
+// Ensure every PORTFOLIO ticker exists in ST (Long List is the master DB).
+// If GitHub stockList is stale and missing a ticker, recover it from ST_SEED
+// (the hardcoded HTML list). If not there either, create a minimal stub.
+function ensurePortfolioInST() {
+  const stTickers = new Set(ST.map(s => s.t));
+  let recovered = 0;
+  for (const tk of Object.keys(PORTFOLIO)) {
+    if (!stTickers.has(tk)) {
+      const seed = ST_SEED.find(s => s.t === tk);
+      if (seed) {
+        ST.push({...seed});
+        console.log('[ensurePortfolioInST] recovered from seed:', tk);
+      } else {
+        ST.push({t:tk, n:tk, th:'T1', ind:'Other', reg:'US', ex:'NASDAQ',
+                 cv:'M', rk:3, dp:true, etf:false, hr:false, priv:false, ipo:false, note:''});
+        console.warn('[ensurePortfolioInST] created stub for unknown ticker:', tk);
+      }
+      stTickers.add(tk);
+      recovered++;
+    }
+  }
+  if (recovered > 0) { markDirty(); setTimeout(syncToGitHub, 2000); }
 }
 
 function loadBuySet(){
@@ -8204,6 +8229,9 @@ async function init(){
 
   el.textContent='Rendering tabs…';
   await new Promise(r=>setTimeout(r,200));
+
+  // Ensure every PORTFOLIO ticker has a Long List entry (recover from seed or create stub)
+  ensurePortfolioInST();
 
   // Ensure _portChecked is set on every PORTFOLIO entry (handles old/missing data from any source)
   normalizePortfolio();
